@@ -4,6 +4,6 @@ A rebuilt version of my original HTML5 avoider game, cleaned up, modular, and ea
 Still simple, still fun, but smarter under the hood.
 
 Built with vanilla JS and Canvas  
-Reworked with some extra guidance along the way  
+Reworked with  AI assistance to try it out  
 Work in progress, evolving into a mini game engine  
 Made for learning, experimenting, and future projects
