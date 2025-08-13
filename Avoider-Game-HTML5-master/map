@@ -1,0 +1,34 @@
+index.html
+   │
+   ▼
+main.js
+   │
+   ├── imports / uses
+   │
+   ├── game.js  ← creates & runs game instance
+   │      │
+   │      ├── uses / calls
+   │      │
+   │      ├── /core
+   │      │     ├── controller.js   ← manages game loop, calls gameLogic updates & inputLogic
+   │      │     ├── gameLogic.js    ← updates game state (player, enemies, collisions)
+   │      │     └── inputLogic.js   ← reads & processes user input
+   │      │
+   │      ├── /render
+   │      │     ├── renderer.js      ← draws the frame, calls spriteRenderer
+   │      │     └── spriteRenderer.js  ← draws specific sprites/animations
+   │      │
+   │      ├── /objects
+   │      │     └── game-objects.js  ← defines base & child game entities
+   │      │
+   │      └── /utils
+   │            └── helpers.js      ← utility functions (collision check, math, etc)
+   │
+/assets
+   ├── /sprites  ← images used by renderer/spriteRenderer
+   ├── /sounds   ← audio assets (future)
+   └── /data     ← JSON/config files for game levels
+/css
+   └── styles.css  ← linked in index.html
+/tests
+   └── gameLogic.test.js  ← test core logic (optional)

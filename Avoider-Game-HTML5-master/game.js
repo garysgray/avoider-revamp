@@ -66,19 +66,19 @@ class Game
     //place where we set up game where we need a device to establish assets    
     initGame(aDev)
 	{
-		aDev.images.addImage("img/bullet.png","bullet");
-        aDev.images.addImage("img/orb.png","orb");
-		aDev.images.addImage("img/fire.png","fireAmmo");
-        aDev.images.addImage("img/ships.png","player");
-        aDev.images.addImage("img/stars.png","background");
-        aDev.images.addImage("img/splash.png","splash");
-		aDev.images.addImage("img/pause.png","pause");
-        aDev.images.addImage("img/die.png","die");
+		aDev.images.addImage("assets/sprites/bullet.png","bullet");
+        aDev.images.addImage("assets/sprites/orb.png","orb");
+		aDev.images.addImage("assets/sprites/fire.png","fireAmmo");
+        aDev.images.addImage("assets/sprites/ships.png","player");
+        aDev.images.addImage("assets/sprites/stars.png","background");
+        aDev.images.addImage("assets/sprites/splash.png","splash");
+		aDev.images.addImage("assets/sprites/pause.png","pause");
+        aDev.images.addImage("assets/sprites/die.png","die");
         
-        aDev.audio.addSound("hit","audio/hit.wav");
-        aDev.audio.addSound("shoot","audio/shoot.wav");
-        aDev.audio.addSound("get","audio/get.wav");
-        aDev.audio.addSound("hurt","audio/hurt.wav");	
+        aDev.audio.addSound("hit","assets/sounds/hit.wav");
+        aDev.audio.addSound("shoot","assets/sounds/shoot.wav");
+        aDev.audio.addSound("get","assets/sounds/get.wav");
+        aDev.audio.addSound("hurt","assets/sounds/hurt.wav");	
 	}
     
     //set up game values eac time game starts

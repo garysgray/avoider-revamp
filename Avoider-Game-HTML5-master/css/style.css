@@ -5,7 +5,7 @@ body
 	padding: 20px;
 	color: #575757;
 	font: 14px/21px Arial,Helvetica,sans-serif;
-	background-image:url(../img/space.jpg);
+	background-image:url(../assets/sprites/space.jpg);
 	background-size: cover;
     background-repeat: no-repeat
 }
