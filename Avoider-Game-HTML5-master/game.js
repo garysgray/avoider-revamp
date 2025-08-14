@@ -8,24 +8,23 @@
 const gameStates = { INIT: 0, PLAY: 1, PAUSE: 2, WIN:3, LOSE:4};
 const playStates = {AVOID:0, SHIELD:1, SHOOT:2 ,SUPER: 3, DEATH:4};
 
-
 class Game
 {
     constructor()
     {
-        this._state = gameStates.INIT;//init
+        this._state = gameStates.INIT; //init
         this._score = 0;
         this._lives = 0;
         this._ammo = 0;
         this._gameConsts = new GameConsts();
         this._canvasWidth = this._gameConsts.screenWidth;
         this._canvasHeight = this._gameConsts.screenHeight;
-        this._player = new Player(32,29,100,100);        
+        this._player = new Player(32, 29, 100, 100);        
         this._playState = playStates.AVOID;        
-        this._backGround = new BackDrop(600,600,0,0);
-        this._splashScreen = new BackDrop(400,100,this._canvasWidth*.5,this._canvasHeight*.5);
-        this._pauseScreen = new BackDrop(400,100,this._canvasWidth*.5,this._canvasHeight*.5);
-        this._dieScreen = new BackDrop(400,100,this._canvasWidth*.5,this._canvasHeight*.5);
+        this._backGround = new BackDrop(600, 600, 0, 0);
+        this._splashScreen = new BackDrop(400, 100,this._canvasWidth*.5,this._canvasHeight*.5);
+        this._pauseScreen = new BackDrop(400, 100,this._canvasWidth*.5,this._canvasHeight*.5);
+        this._dieScreen = new BackDrop(400, 100,this._canvasWidth*.5,this._canvasHeight*.5);
         this._projectiles = new ObjHolder();
         this._gameSprites = new ObjHolder();            
         this._timer = new Timer(1000);
@@ -66,37 +65,37 @@ class Game
     //place where we set up game where we need a device to establish assets    
     initGame(aDev)
 	{
-		aDev.images.addImage("assets/sprites/bullet.png","bullet");
-        aDev.images.addImage("assets/sprites/orb.png","orb");
-		aDev.images.addImage("assets/sprites/fire.png","fireAmmo");
-        aDev.images.addImage("assets/sprites/ships.png","player");
-        aDev.images.addImage("assets/sprites/stars.png","background");
-        aDev.images.addImage("assets/sprites/splash.png","splash");
-		aDev.images.addImage("assets/sprites/pause.png","pause");
-        aDev.images.addImage("assets/sprites/die.png","die");
+		aDev.images.addImage("assets/sprites/bullet.png", "bullet");
+        aDev.images.addImage("assets/sprites/orb.png", "orb");
+		aDev.images.addImage("assets/sprites/fire.png", "fireAmmo");
+        aDev.images.addImage("assets/sprites/ships.png", "player");
+        aDev.images.addImage("assets/sprites/stars.png", "background");
+        aDev.images.addImage("assets/sprites/splash.png", "splash");
+		aDev.images.addImage("assets/sprites/pause.png", "pause");
+        aDev.images.addImage("assets/sprites/die.png", "die");
         
-        aDev.audio.addSound("hit","assets/sounds/hit.wav");
-        aDev.audio.addSound("shoot","assets/sounds/shoot.wav");
-        aDev.audio.addSound("get","assets/sounds/get.wav");
-        aDev.audio.addSound("hurt","assets/sounds/hurt.wav");	
+        aDev.audio.addSound("hit", "assets/sounds/hit.wav");
+        aDev.audio.addSound("shoot", "assets/sounds/shoot.wav");
+        aDev.audio.addSound("get", "assets/sounds/get.wav");
+        aDev.audio.addSound("hurt", "assets/sounds/hurt.wav");	
 	}
     
-    //set up game values eac time game starts
+    //set up game values each time game starts
     setGame(aDev)
 	{
 		this._score = 0;
 		this._lives = 5;
 		this._gameSprites.clearObjects();
-		this._player.movePos(250,250);
+		this._player.movePos(250, 250);
         this._playState = playStates.AVOID;
         this._ammo = 0;
-        this.setMouseToPlayer(aDev,this._player);
+        this.setMouseToPlayer(aDev, this._player);
     }
     
     //this is used when the game needs an object (player) bounded to mouses location
-	setMouseToPlayer(aDev,aPlayer)
+	setMouseToPlayer(aDev, aPlayer)
 	{
-		aDev.setupMouse(aPlayer,aDev);
+		aDev.setupMouse(aPlayer, aDev);
 	}  
 }
 //Its a bit wierd but it helps me keep key const in one place that I can add

@@ -232,17 +232,17 @@ class ObjHolder
     
     addImage(aSrc,aName)
     {
-        var aObject = new Sprite(aSrc,aName);
+        var aObject = new Sprite(aSrc, aName);
         this._objects.push(aObject);
     }
-          
+
 	addObject(aObject)
 	{
 		this._objects.push(aObject);	
 	}
 	subObject(aIndex)
 	{
-		this._objects.splice(aIndex,1);
+		this._objects.splice(aIndex, 1);
 	}
 	clearObjects()
 	{
@@ -261,7 +261,7 @@ class ObjHolder
 	{
 		for(var i = 0; i < this._objects.length; i++)
 		{
-			this._objects[i].update(aDev,aDT);
+			this._objects[i].update(aDev, aDT);
 		}
 	}
     getImage(aName)
@@ -344,7 +344,7 @@ class Timer
 		{
 			this._clock = 0;
 		}
-		aDev.putText("TIME:  "+this._clock,x,y);
+		aDev.putText("TIME:  " + this._clock, x, y);
 
 	}
 	set(startAmt)

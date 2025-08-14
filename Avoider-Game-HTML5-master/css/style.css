@@ -1,69 +1,46 @@
+
+:root 
+{
+	--color-white: #FFFFFF;
+	--color-black: #000000;
+	--color-red: #FF0000;
+	--font-format:  bold 18px Calibri;
+	--canvas-border: 2px solid #FFFFFF;
+	--body-padding: 25px;
+	--image-url: url(../assets/sprites/space.jpg);
+}
+
 body 
 {
-	background: black;
+	background: var(--color-black);
 	text-align: center;
-	padding: 20px;
-	color: #575757;
-	font: 14px/21px Arial,Helvetica,sans-serif;
-	background-image:url(../assets/sprites/space.jpg);
+	padding: var(--body-padding);
+	background-image: var(--image-url);
 	background-size: cover;
     background-repeat: no-repeat
 }
 
-a 
-{
-	color: #B93F14;
-}
-
-a:hover
-{
-    text-decoration: none;
-}
-
-ol 
-{
-	width: 600px;
-	text-align: left;
-	margin: 15px auto;
-}
 canvas
 {
-	border: 2px solid white;
-	cursor: none
-	
+	border: var(--canvas-border);
+	cursor: none;
 }
 
-h3
+a 
 {
-	color: red;
+	color: var(--color-red);
 }
 
 #top_menu
 {
-	background:black;
-	border:red;
-	text-align:center;
-	color:red;
+	background: var(--color-black);
+	font: var(--font-format);
 }
 
 #message
 {
-	background:black;
-	font: bold 18px Calibri;
-	
-	color:red;
+	background: var(--color-black);
+	font: var(--font-format);
+	color: var(--color-red);
 }
 
-#top_menu li
-{
-	display:inline-block;
-	list-style:none;
-	padding:5px;
-	font: bold 14px Calibri;
-}
-
-a
-{
-    font: bold 18px Calibri;
-    color:red;
-}
