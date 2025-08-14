@@ -53,21 +53,23 @@ class GameObject
 		this._posY = newY;
 	}
        
-	checkObjCollision(aPosX,aPosY,aWidth,aHeight)
+	checkObjCollision(aPosX, aPosY, aWidth, aHeight)
 	{
         if(this._posX + this._width*.5-this._spaceBuffer > aPosX - aWidth*.5 && this._posX-this._width*.5-this._spaceBuffer < aPosX + aWidth*.5
         &&
         this._posY + this._height*.5-this._spaceBuffer > aPosY - aHeight*.5 && this._posY- this._height*.5-this._spaceBuffer < aPosY + aHeight*.5 )   
         {
-        return true;
-        }		
+            return true;
+        }
+        
+        return false;		
 	}   
 }
 
 //player has a timer and delay  for shooting bullets
 class Player extends GameObject
 {
-    constructor(aWidth,aHeight,newX,newY,aSpeed)
+    constructor(aWidth, aHeight, newX, newY, aSpeed)
     {
         super();
         this._width = aWidth;
