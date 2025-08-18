@@ -11,19 +11,47 @@ var myControl = new Controller(myGame.gameConsts.screenWidth, myGame.gameConsts.
 //init the actual game using controller 
 myControl.initGame(myGame);
 
-//this is how we do the game loop 
-function gameLoop() 
-{
-    window.requestAnimationFrame(gameLoop);
-    var now = new Date().getTime();
-    var dt = (now - (time || now))/FRAME_RATE;
-	myControl.updateGame(myGame, dt);
-    time = now;
+// ------------------------------
+// FIXED STEP GAME LOOP
+// ------------------------------
+// Why do this?
+// - Keeps game logic running at a stable rate (60 updates/sec).
+// - Prevents "fast computers" from running the game faster
+//   or "slow computers" from breaking physics updates.
+// - Rendering still happens once per frame, so animation stays smooth.
+
+// Time tracking
+let lastTime = performance.now();   // The time of the last frame
+let accumulator = 0;                // Stores leftover time between updates
+const fixedStep = 1 / 60;           // Update step = 1/60 sec (≈16.6ms)
+
+function gameLoop() {
     
-	//***DEBUGING text lines example
-    //myControl.m_Dev.debugText(myGame.playState,50,50);
+    // 1. Measure how much real time passed since the last frame
+    const now = performance.now();
+    let frameTime = (now - lastTime) / 1000; // Convert ms → seconds
+    lastTime = now;
+
+    // Safety check: cap very large frame times
+    // (prevents the "spiral of death" if the game lags badly)
+    if (frameTime > 0.25) frameTime = 0.25;
+
+    // 2. Add this frame’s time to the accumulator
+    accumulator += frameTime;
+
+    // 3. Run the game update as many times as needed
+    // Each update advances the game by exactly fixedStep seconds
+    while (accumulator >= fixedStep) {
+        myControl.updateGame(myGame, fixedStep);
+        accumulator -= fixedStep;
+    }
+
+    //for debugging game states and what have you
+    myControl.dev.debugText("Debug Text", 150, 150);
+
+    // 4. Request the next frame
+    requestAnimationFrame(gameLoop);
 }
 
-//run it
+// Kick it off
 gameLoop();
-
