@@ -13,7 +13,7 @@ function update(aDev,aGame,aDT)
             aGame.setGame(aDev);           
             //check to see if player has used input to start game
             
-            if(aDev.checkKey(aGame.gameConsts.playKey))////spacebar key
+            if(aDev.keys.isKeyPressed(aGame.gameConsts.playKey))////spacebar key
             {
                 //then change the state accordinly
                 aGame.state = gameStates.PLAY;
@@ -67,7 +67,7 @@ function update(aDev,aGame,aDT)
         case gameStates.PAUSE:
         {
             //during pause hold player position set sheild time and wait for key press        
-            if(aDev.checkKeyUp(aGame.gameConsts.pauseKey))//P-key
+            if(aDev.keys.isKeyReleased(aGame.gameConsts.pauseKey))//P-key
             {	
                 aGame.player.posX = aGame.holdX;
                 aGame.player.posY = aGame.holdY;                
@@ -76,7 +76,7 @@ function update(aDev,aGame,aDT)
                 aGame.state = gameStates.PLAY;
             }
             //little cheat to restart game
-            if(aDev.checkKey(aGame.gameConsts.resetKey))//R-key
+            if(aDev.keys.isKeyDown(aGame.gameConsts.resetKey))//R-key
             {
                 aGame.state = gameStates.INIT;
             }
@@ -86,7 +86,7 @@ function update(aDev,aGame,aDT)
         case gameStates.WIN:
         {
             //check to see if player has used input to restart game
-            if(aDev.checkKey(aGame.gameConsts.resetKey))//R-key
+            if(aDev.keys.isKeyDown(aGame.gameConsts.resetKey))//R-key
             {
                 aGame.state = gameStates.INIT;
             }
@@ -104,7 +104,7 @@ function update(aDev,aGame,aDT)
             if(aGame.lives <= 0)
             {                
                 //check to see if player has used input to restart game
-                if(aDev.checkKey(aGame.gameConsts.resetKey))//R-key
+                if(aDev.keys.isKeyDown(aGame.gameConsts.resetKey))//R-key
                 {
                     aGame.state = gameStates.INIT;      
                 }
@@ -112,7 +112,7 @@ function update(aDev,aGame,aDT)
             else
             {
                 //check to see if player has used input to respawn player
-                if(aDev.checkKey(aGame.gameConsts.resetKey))//R-key
+                if(aDev.keys.isKeyDown(aGame.gameConsts.resetKey))//R-key
                 {
                     //clear all objects (orbs) out of arrays so that there is a fresh screen next round
                     //projectiles are cleared when they hit an object or go off screen
