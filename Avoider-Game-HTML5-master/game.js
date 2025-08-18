@@ -107,9 +107,9 @@ class GameConsts
         this._BULLET_SPEED = 550;
         this._ORB_SPEED = 200;
         this._SHIELD_TIME = 3;
-        this._PLAY_KEY = 32;
-        this._RESET_KEY = 82;
-        this._PAUSE_KEY = 80;
+        this._PLAY_KEY = "Space";
+        this._RESET_KEY = "KeyR";
+        this._PAUSE_KEY = "KeyP";
         this._SCREEN_WIDTH = 600;
         this._SCREEN_HEIGHT = 600;
         this._AMMO_AMOUNT = 10;

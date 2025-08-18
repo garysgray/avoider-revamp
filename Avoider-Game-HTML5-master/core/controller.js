@@ -7,7 +7,7 @@ class Controller
         //our controller has a device object to control the HTML5 Canvas
         this._dev = new Device(newWidth,newHeight);
         //key events are wrapped in the device object as well, this sets them up
-        this._dev.initKeys();
+        this._dev.keys.initKeys();
     }
     //getter of the device object
     get dev(){return this._dev;}

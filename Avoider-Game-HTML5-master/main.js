@@ -49,7 +49,10 @@ function gameLoop() {
     //for debugging game states and what have you
     myControl.dev.debugText("Debug Text", 150, 150);
 
-    // 4. Request the next frame
+    // 4. clears out key arrays to prevent errors
+    myControl.dev.keys.clearFrameKeys();
+
+    // 5. Request the next frame
     requestAnimationFrame(gameLoop);
 }
 

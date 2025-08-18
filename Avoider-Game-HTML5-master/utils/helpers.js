@@ -4,11 +4,6 @@
 //holders to utilize sprite, and sound class objects
 //last but not least there is also timer object
 
-//these are global and used by device key checker
-//its a issue i need to fix but works for now
-keysDown = {};
-keysUp = {}; 
-
 class Device
 {
     constructor(width,height)
@@ -18,9 +13,9 @@ class Device
         this._canvas.width = width;
         this._canvas.height = height;
         this._mouseDown =  false;
-        this._keydown =  false;
         this._images = new ObjHolder();
-        this._audio = new AudioPlayer();       
+        this._audio = new AudioPlayer(); 
+		this._keys = new KeyManager();    
     }
     
     //getter functions
@@ -29,49 +24,10 @@ class Device
     get mouseDown(){return this._mouseDown;}
     get images(){return this._images;}
     get audio(){return this._audio;}
+	get keys(){return this._keys;}
     
     //setter functions
     set mouseDown(newState){this._mouseDown = newState;}
-    
-	initKeys() 
-	{
-		window.addEventListener('keydown', function(e) 
-		{
-			keysDown[e.keyCode] = true;
-						
-		});
-	
-		window.addEventListener('keyup', function(e) 
-		{
-			delete keysDown[e.keyCode];
-			keysUp[e.keyCode] = true;			
-		});	
-	}
-    
-    checkKey(aNum)
-	{	
-		if(aNum in keysDown)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-    
-	checkKeyUp(aNum)
-	{	
-		if(aNum in keysUp && (aNum in keysDown) == false)
-		{
-			delete keysUp[aNum];
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
     
     setupMouse(sprite,aDev)
 	{       
@@ -152,6 +108,51 @@ class Device
         this.colorText("white");		
         this.putText(text.toString(),posX,posY);
     }  
+}
+
+class KeyManager 
+{
+	constructor() {
+        this.keysDown = {};       // currently held keys
+        this.keysPressed = {};    // pressed this frame
+        this.keysReleased = {};   // released this frame
+
+        this.initKeys();
+    }
+
+    initKeys() {
+        window.addEventListener("keydown", (e) => {
+            if (!this.keysDown[e.code]) {
+                this.keysPressed[e.code] = true; // only once
+            }
+            this.keysDown[e.code] = true;
+        });
+
+        window.addEventListener("keyup", (e) => {
+            delete this.keysDown[e.code];
+            this.keysReleased[e.code] = true; // only once
+        });
+    }
+
+    // --- Query methods ---
+    isKeyDown(key) {
+        return !!this.keysDown[key]; // held
+    }
+
+    isKeyPressed(key) {
+        return !!this.keysPressed[key]; // just pressed
+    }
+
+    isKeyReleased(key) {
+        return !!this.keysReleased[key]; // just released
+    }
+
+    // Clear one-frame states (call at end of game loop)
+    clearFrameKeys() {
+        this.keysPressed = {};
+        this.keysReleased = {};
+    }
+
 }
 
 class Sound

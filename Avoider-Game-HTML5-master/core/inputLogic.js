@@ -5,7 +5,7 @@
 function checkUserInput(aDev,aGame)
 {
      if(aDev.mouseDown && Date.now()-aGame.player.projectileTimer > aGame.player.shootDelay || 
-        aDev.checkKey(aGame.gameConsts.playKey)  && Date.now()-aGame.player.projectileTimer > aGame.player.shootDelay)
+        aDev.keys.isKeyPressed(aGame.gameConsts.playKey)  && Date.now()-aGame.player.projectileTimer > aGame.player.shootDelay)
     {
         var bullet = new GameObject("bullet",12,12,(aGame.player.posX) ,aGame.player.posY ,aGame.gameConsts.bulletSpeed);
         //this is where objects are getting adjusted to the center
@@ -32,12 +32,19 @@ function checkUserInput(aDev,aGame)
 //grabs current position first for when un-pausing
 function checkforPause(aDev,aGame)
 {
-    if(aDev.checkKeyUp(aGame.gameConsts.pauseKey))//P-key
-    {	aGame.holdX = aGame.player.posX;
-        aGame.holdY= aGame.player.posY;
-        aGame.state = gameStates.PAUSE;
+    if(aDev.keys.isKeyReleased(aGame.gameConsts.pauseKey))//P-key
+    {
+        if (aGame.state === gameStates.PLAY)
+        {	aGame.holdX = aGame.player.posX;
+            aGame.holdY= aGame.player.posY;
+            aGame.state = gameStates.PAUSE;
+        }
+        else if (aGame.state === gameStates.PAUSE) 
+        {
+            aGame.state = gameStates.PLAY;
+        }
     }
-}    
+}
    
 //**functions that update game objects**
 
