@@ -7,7 +7,7 @@
 //has a collision function, might get more
 class GameObject
 {
-    constructor(aName,aWidth,aHeight,newX,newY,aSpeed)
+    constructor(aName, aWidth, aHeight, newX, newY, aSpeed)
     {
         this._name = aName;	
         this._width = aWidth;

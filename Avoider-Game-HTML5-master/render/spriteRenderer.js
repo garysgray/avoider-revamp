@@ -65,7 +65,7 @@ function renderPlayer(aDev,aGame)
         break; 
         case playStates.SUPER:
         {         
-            aGame.player.state =playStates.SUPER;
+            aGame.player.state = playStates.SUPER;
             aDev.renderClip(tempImage,temp.posX,temp.posY,temp.width,temp.height,temp.state); 
         }
         break; 

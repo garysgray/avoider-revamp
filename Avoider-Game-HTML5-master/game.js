@@ -3,10 +3,40 @@
 //assets, consts for image placments, game objects ect ect ..
 //a few functions mainly for set up.
 
+//Central constants
+class GameConsts {
+    #BULLET_SPEED = 550;
+    #ORB_SPEED = 200;
+    #SHIELD_TIME = 3;
+    #PLAY_KEY = "Space";
+    #RESET_KEY = "KeyR";
+    #PAUSE_KEY = "KeyP";
+    #SCREEN_WIDTH = 600;
+    #SCREEN_HEIGHT = 600;
+    #AMMO_AMOUNT = 10;
+    #SCORE_INCREASE = 10;
+    #BUFFER_1 = 10;
+    #BUFFER_2 = 20;
+    #RND_RATIO = 20;
+
+    get BULLET_SPEED() { return this.#BULLET_SPEED; }
+    get ORB_SPEED() { return this.#ORB_SPEED; }
+    get SHIELD_TIME() { return this.#SHIELD_TIME; }
+    get PLAY_KEY() { return this.#PLAY_KEY; }
+    get RESET_KEY() { return this.#RESET_KEY; }
+    get PAUSE_KEY() { return this.#PAUSE_KEY; }
+    get SCREEN_WIDTH() { return this.#SCREEN_WIDTH; }
+    get SCREEN_HEIGHT() { return this.#SCREEN_HEIGHT; }
+    get AMMO_AMOUNT() { return this.#AMMO_AMOUNT; }
+    get SCORE_INCREASE() { return this.#SCORE_INCREASE; }
+    get BUFFER_1() { return this.#BUFFER_1; }
+    get BUFFER_2() { return this.#BUFFER_2; }
+    get RND_RATIO() { return this.#RND_RATIO; }
+}
 
 //state objects help keep track of what should happen or what assets get used during differnt points of game
-const gameStates = { INIT: 0, PLAY: 1, PAUSE: 2, WIN:3, LOSE:4};
-const playStates = {AVOID:0, SHIELD:1, SHOOT:2 ,SUPER: 3, DEATH:4};
+const gameStates = { INIT: 0, PLAY: 1, PAUSE: 2, WIN: 3, LOSE: 4 };
+const playStates = { AVOID: 0, SHIELD: 1, SHOOT: 2 ,SUPER: 3, DEATH: 4 };
 
 class Game
 {
@@ -17,9 +47,9 @@ class Game
         this._lives = 0;
         this._ammo = 0;
         this._gameConsts = new GameConsts();
-        this._canvasWidth = this._gameConsts.screenWidth;
-        this._canvasHeight = this._gameConsts.screenHeight;
-        this._player = new Player(32, 29, 100, 100);        
+        this._canvasWidth = this.gameConsts.SCREEN_WIDTH
+        this._canvasHeight = this.gameConsts.SCREEN_HEIGHT;
+        this._player = new Player(32, 29, this._canvasWidth / 2, this._canvasHeight - (this._canvasHeight / 3));        
         this._playState = playStates.AVOID;        
         this._backGround = new BackDrop(600, 600, 0, 0);
         this._splashScreen = new BackDrop(400, 100,this._canvasWidth*.5,this._canvasHeight*.5);
@@ -55,8 +85,11 @@ class Game
     set playState(newState){this._playState = newState;}   
     set holdX(newX){this._holdX = newX;}
     set holdY(newY){this._holdY = newY;}
+    set score(newScore){this._score = newScore;}
+    set lives(newLives){this._lives = newLives;}
+    set ammo(newAmmo){this._ammo = newAmmo;}
     
-    emptyAmmo(){this._ammo =0;}    
+    emptyAmmo(){this._ammo = 0;}    
     increaseAmmo(amount){this._ammo += amount;}
     decreaseAmmo(amount){this._ammo -= amount;}
     decreaseLives(amount){this._lives -= amount;}
@@ -82,13 +115,12 @@ class Game
     
     //set up game values each time game starts
     setGame(aDev)
-	{
-		this._score = 0;
-		this._lives = 5;
-		this._gameSprites.clearObjects();
-		this._player.movePos(250, 250);
-        this._playState = playStates.AVOID;
-        this._ammo = 0;
+	{ 
+		this.score = 0;
+		this.lives = 5;
+        this.ammo = 0;
+		this.gameSprites.clearObjects();
+        this.playState = playStates.AVOID;   
         this.setMouseToPlayer(aDev, this._player);
     }
     
@@ -98,40 +130,3 @@ class Game
 		aDev.setupMouse(aPlayer, aDev);
 	}  
 }
-//Its a bit wierd but it helps me keep key const in one place that I can add
-//genrally help with game play and tweeking things
-class GameConsts
-{
-    constructor()
-    {
-        this._BULLET_SPEED = 550;
-        this._ORB_SPEED = 200;
-        this._SHIELD_TIME = 3;
-        this._PLAY_KEY = "Space";
-        this._RESET_KEY = "KeyR";
-        this._PAUSE_KEY = "KeyP";
-        this._SCREEN_WIDTH = 600;
-        this._SCREEN_HEIGHT = 600;
-        this._AMMO_AMOUNT = 10;
-        this._SCORE_INCREASE_VALUE = 10;
-        this._BUFFER_1 = 10;
-        this._BUFFER_2 = 20;
-        this._RND_RATIO = 20;
-    }
-    //getters
-    get bulletSpeed(){return this._BULLET_SPEED;}
-    get orbSpeed(){return this._ORB_SPEED;}
-    get shieldTime(){return this._SHIELD_TIME;}
-    get playKey(){return this._PLAY_KEY;}
-    get resetKey(){return this._RESET_KEY;}
-    get pauseKey(){return this._PAUSE_KEY;}
-    get screenWidth(){return this._SCREEN_WIDTH;}
-    get screenHeight(){return this._SCREEN_HEIGHT;}
-    get ammoAmount(){return this._AMMO_AMOUNT;}
-    get scoreIncreaseAmount(){return this._SCORE_INCREASE_VALUE;}        
-    get buffer1(){return this._BUFFER_1;}
-    get buffer2(){return this._BUFFER_2;}
-    get rndRatio(){return this._RND_RATIO;}
-  
-}
-

@@ -5,9 +5,9 @@
 function checkUserInput(aDev,aGame)
 {
      if(aDev.mouseDown && Date.now()-aGame.player.projectileTimer > aGame.player.shootDelay || 
-        aDev.keys.isKeyPressed(aGame.gameConsts.playKey)  && Date.now()-aGame.player.projectileTimer > aGame.player.shootDelay)
+        aDev.keys.isKeyPressed(aGame.gameConsts.PLAY_KEY)  && Date.now()-aGame.player.projectileTimer > aGame.player.shootDelay)
     {
-        var bullet = new GameObject("bullet",12,12,(aGame.player.posX) ,aGame.player.posY ,aGame.gameConsts.bulletSpeed);
+        var bullet = new GameObject("bullet", 12, 12,(aGame.player.posX) , aGame.player.posY , aGame.gameConsts.BULLET_SPEED);
         //this is where objects are getting adjusted to the center
         bullet.posX -= bullet.width*.5;
         bullet.posY += bullet.height*.5;
@@ -32,7 +32,7 @@ function checkUserInput(aDev,aGame)
 //grabs current position first for when un-pausing
 function checkforPause(aDev,aGame)
 {
-    if(aDev.keys.isKeyReleased(aGame.gameConsts.pauseKey))//P-key
+    if(aDev.keys.isKeyReleased(aGame.gameConsts.PAUSE_KEY))//P-key
     {
         if (aGame.state === gameStates.PLAY)
         {	aGame.holdX = aGame.player.posX;
@@ -67,12 +67,12 @@ function updateProjectiles(aDev,aGame, aDT)
 //basicly updates there positions and then calls for collision
 function updateNPCSprites(aDev,aGame,aDT)
 {		
-    if(Math.random() < 1/aGame.gameConsts.rndRatio)
+    if(Math.random() < 1/aGame.gameConsts.RND_RATIO)
     {
         //this is made to help get us a X pos  in range that will not let orb be off the screen
         //buff values help dial in perfect position
-        var rndXValue = Math.floor(Math.random() *((aDev.canvas.width-aGame.gameConsts.buffer1)-aGame.gameConsts.buffer2+1));		
-        orb = new GameObject("orb",29,29,rndXValue,0, aGame.gameConsts.orbSpeed);
+        var rndXValue = Math.floor(Math.random() *((aDev.canvas.width-aGame.gameConsts.BUFFER_1)-aGame.gameConsts.BUFFER_2+1));		
+        orb = new GameObject("orb",29,29,rndXValue,0, aGame.gameConsts.ORB_SPEED);
                 
         for(var i = 0;i < aGame.gameSprites.getSize();i++)
         {			
@@ -84,7 +84,7 @@ function updateNPCSprites(aDev,aGame,aDT)
                 {
                     break;
                 }
-                var rndXValue = Math.floor(Math.random() *((aDev.canvas.width-(aGame.gameConsts.buffer1*count))-(aGame.gameConsts.buffer2*count)+1));
+                var rndXValue = Math.floor(Math.random() *((aDev.canvas.width-(aGame.gameConsts.BUFFER_1*count))-(aGame.gameConsts.BUFFER_2*count)+1));
                 orb.movePos = (rndXValue,0);
                 count ++;
             }		
@@ -96,8 +96,8 @@ function updateNPCSprites(aDev,aGame,aDT)
     {
         //this is made to help get us a X pos  in range that will not let sprite be off the screen
         //buff values help dial in perfect position
-        var rndXValue = Math.floor(Math.random() *((aDev.canvas.width-aGame.gameConsts.buffer1)-aGame.gameConsts.buffer2+1));			
-        fireAmmo = new GameObject("fireAmmo",20,20,rndXValue,0, aGame.gameConsts.orbSpeed);       
+        var rndXValue = Math.floor(Math.random() *((aDev.canvas.width-aGame.gameConsts.BUFFER_1)-aGame.gameConsts.BUFFER_2+1));			
+        fireAmmo = new GameObject("fireAmmo",20,20,rndXValue,0, aGame.gameConsts.ORB_SPEED);       
         for(var i = 0;i < aGame.gameSprites.getSize();i++)
         {
             var count = 0;
@@ -108,7 +108,7 @@ function updateNPCSprites(aDev,aGame,aDT)
                 {
                     break;
                 }
-                var rndXValue = Math.floor(Math.random() *((aDev.canvas.width-(aGame.gameConsts.buffer1*count))-(aGame.gameConsts.buffer2*count)+1));
+                var rndXValue = Math.floor(Math.random() *((aDev.canvas.width-(aGame.gameConsts.BUFFER_1*count))-(aGame.gameConsts.BUFFER_2*count)+1));
                 fireAmmo.movePos = (rndXValue,0);
                 count ++;
             }				
@@ -143,7 +143,7 @@ function updateProjectilesCollision(aDev,aGame, aDT)
             {
                 aDev.audio.playSound("hit");
                 aGame.gameSprites.subObject(j);
-                aGame.increaseScore(aGame.gameConsts.scoreIncreaseAmount);
+                aGame.increaseScore(aGame.gameConsts.SCORE_INCREASE);
                 aGame.projectiles.subObject();
                 break;
             }
@@ -167,7 +167,7 @@ function check_NPC_Collision(aDev,aGame)
                 aDev.audio.playSound("get");
                 aGame.gameSprites.subObject(i);
                 aGame.playState = playStates.SHOOT;
-                aGame.increaseAmmo(aGame.gameConsts.ammoAmount);					
+                aGame.increaseAmmo(aGame.gameConsts.AMMO_AMOUNT);					
             }
             else
             {

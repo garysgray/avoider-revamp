@@ -1,12 +1,10 @@
-//values for gameloop
-const FRAME_RATE = 1000;	
-var time = 0;
+//the main page for the avoider game
 
 //make game object that loads game data
 var myGame = new Game();
 
 //controller helps set things up and directs how things should work using game
-var myControl = new Controller(myGame.gameConsts.screenWidth, myGame.gameConsts.screenHeight);
+var myControl = new Controller(myGame.gameConsts.SCREEN_WIDTH, myGame.gameConsts.SCREEN_HEIGHT);
 
 //init the actual game using controller 
 myControl.initGame(myGame);
@@ -47,7 +45,7 @@ function gameLoop() {
     }
 
     //for debugging game states and what have you
-    myControl.dev.debugText("Debug Text", 150, 150);
+    //myControl.dev.debugText(myGame.state, 150, 50);
 
     // 4. clears out key arrays to prevent errors
     myControl.dev.keys.clearFrameKeys();
