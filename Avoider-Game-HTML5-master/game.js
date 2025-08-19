@@ -98,19 +98,25 @@ class Game
     //place where we set up game where we need a device to establish assets    
     initGame(aDev)
 	{
-		aDev.images.addImage("assets/sprites/bullet.png", "bullet");
-        aDev.images.addImage("assets/sprites/orb.png", "orb");
-		aDev.images.addImage("assets/sprites/fire.png", "fireAmmo");
-        aDev.images.addImage("assets/sprites/ships.png", "player");
-        aDev.images.addImage("assets/sprites/stars.png", "background");
-        aDev.images.addImage("assets/sprites/splash.png", "splash");
-		aDev.images.addImage("assets/sprites/pause.png", "pause");
-        aDev.images.addImage("assets/sprites/die.png", "die");
+        const images = [
+            { src: "assets/sprites/bullet.png", name: "bullet" },
+            { src: "assets/sprites/orb.png", name: "orb" },
+            { src: "assets/sprites/fire.png", name: "fireAmmo" },
+            { src: "assets/sprites/ships.png", name: "player" },
+            { src: "assets/sprites/stars.png", name: "background" },
+            { src: "assets/sprites/splash.png", name: "splash" },
+            { src: "assets/sprites/pause.png", name: "pause" },
+            { src: "assets/sprites/die.png", name: "die" }
+        ];
+        images.forEach(img => aDev.images.addImage(img.src, img.name));
         
-        aDev.audio.addSound("hit", "assets/sounds/hit.wav");
-        aDev.audio.addSound("shoot", "assets/sounds/shoot.wav");
-        aDev.audio.addSound("get", "assets/sounds/get.wav");
-        aDev.audio.addSound("hurt", "assets/sounds/hurt.wav");	
+        const sounds = [
+            { src: "assets/sounds/hit.wav", name: "hit" },
+            { src: "assets/sounds/shoot.wav", name: "shoot" },
+            { src: "assets/sounds/get.wav", name: "get" },
+            { src: "assets/sounds/hurt.wav", name: "hurt" }
+        ];
+        sounds.forEach(snd => aDev.audio.addSound(snd.name, snd.src));
 	}
     
     //set up game values each time game starts
