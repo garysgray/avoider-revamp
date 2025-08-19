@@ -4,10 +4,10 @@
 //called from controller 
 
 function renderGameObjects(aDev,aGame)
-{
+{   
     //canvas render stuff
     aDev.ctx.fillStyle = '#000';
-    aDev.ctx.fillRect(0, 0, canvas.width, canvas.height);
+    aDev.ctx.fillRect(0, 0, aGame.gameConsts.SCREEN_WIDTH, aGame.gameConsts.SCREEN_HEIGHT);
         
     //use game state to dictate what should render
     switch(aGame.state)
