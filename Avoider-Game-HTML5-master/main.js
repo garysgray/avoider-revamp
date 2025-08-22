@@ -45,7 +45,7 @@ function gameLoop() {
     }
 
     //for debugging game states and what have you
-    //myControl.dev.debugText(myGame.state, 150, 50);
+    myControl.dev.debugText(myGame.canvasWidth, 150, 50);
 
     // 4. clears out key arrays to prevent errors
     myControl.dev.keys.clearFrameKeys();
