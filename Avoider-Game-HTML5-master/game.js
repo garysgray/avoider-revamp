@@ -1,10 +1,16 @@
-//lot of stuff in here most info is related to the game as a whole 
-//game data that helps game objects know where to be and what to do..
-//assets, consts for image placments, game objects ect ect ..
-//a few functions mainly for set up.
+// Game.js
+// Serves as the central data hub for the game.
+// - Stores core constants, dimensions, and configuration values.
+// - Holds references to all fundamental game objects (player, projectiles, UI, etc).
+// - Provides accessors to retrieve and update state as needed.
+// Theae classwa dont run the game loop itself; instead, it acts as a
+// structured container that the controller and other systems can use
+// to coordinate the game’s logic.
 
 //Central constants
-class GameConsts {
+class GameConsts 
+{
+    // ----Private fields----
     #BULLET_SPEED = 550;
     #ORB_SPEED = 200;
     #SHIELD_TIME = 3;
@@ -19,6 +25,7 @@ class GameConsts {
     #BUFFER_2 = 20;
     #RND_RATIO = 20;
 
+    //----get Functions----
     get BULLET_SPEED() { return this.#BULLET_SPEED; }
     get ORB_SPEED() { return this.#ORB_SPEED; }
     get SHIELD_TIME() { return this.#SHIELD_TIME; }
@@ -34,68 +41,113 @@ class GameConsts {
     get RND_RATIO() { return this.#RND_RATIO; }
 }
 
-//state objects help keep track of what should happen or what assets get used during differnt points of game
-const gameStates = { INIT: 0, PLAY: 1, PAUSE: 2, WIN: 3, LOSE: 4 };
-const playStates = { AVOID: 0, SHIELD: 1, SHOOT: 2 ,SUPER: 3, DEATH: 4 };
+// ---- State Objects ----
+const gameStates = Object.freeze({
+    INIT: 0,
+    PLAY: 1,
+    PAUSE: 2,
+    WIN: 3,
+    LOSE: 4
+});
+
+const playStates = Object.freeze({
+    AVOID: 0,
+    SHIELD: 1,
+    SHOOT: 2,
+    SUPER: 3,
+    DEATH: 4
+});
 
 class Game
 {
+    #gameConsts;
+    #projectiles;
+    #gameSprites;
+    #timer;
+    #player;
+    #canvasWidth;
+    #canvasHeight;
+    #playState;
+    #state;
+    #backGround;
+    #splashScreen;
+    #pauseScreen;
+    #dieScreen;
+    #score;
+    #lives;
+    #ammo;
+    #holdX;
+    #holdY;
+
     constructor()
     {
-        this._state = gameStates.INIT; //init
-        this._score = 0;
-        this._lives = 0;
-        this._ammo = 0;
-        this._gameConsts = new GameConsts();
-        this._canvasWidth = this.gameConsts.SCREEN_WIDTH
-        this._canvasHeight = this.gameConsts.SCREEN_HEIGHT;
-        this._player = new Player(32, 29, this._canvasWidth / 2, this._canvasHeight - (this._canvasHeight / 3));        
-        this._playState = playStates.AVOID;        
-        this._backGround = new BackDrop(600, 600, 0, 0);
-        this._splashScreen = new BackDrop(400, 100,this._canvasWidth*.5,this._canvasHeight*.5);
-        this._pauseScreen = new BackDrop(400, 100,this._canvasWidth*.5,this._canvasHeight*.5);
-        this._dieScreen = new BackDrop(400, 100,this._canvasWidth*.5,this._canvasHeight*.5);
-        this._projectiles = new ObjHolder();
-        this._gameSprites = new ObjHolder();            
-        this._timer = new Timer(1000);
-        this._holdX = 0;
-        this._holdY = 0;
+        this.#gameConsts = new GameConsts();
+        this.#projectiles = new ObjHolder();
+        this.#gameSprites = new ObjHolder();            
+        this.#timer = new Timer(1000);
+        this.#player = new Player(32, 29, this.#canvasWidth / 2, this.#canvasHeight - (this.#canvasHeight / 3)); 
+
+        this.#canvasWidth = this.#gameConsts.SCREEN_WIDTH
+        this.#canvasHeight = this.#gameConsts.SCREEN_HEIGHT;
+        
+        this.#playState = playStates.AVOID; 
+        this.#state = gameStates.INIT;
+       
+        this.#backGround = new BackDrop(600, 600, 0, 0);
+        this.#splashScreen = new BackDrop(400, 100,this.#canvasWidth*.5,this.#canvasHeight*.5);
+        this.#pauseScreen = new BackDrop(400, 100,this.#canvasWidth*.5,this.#canvasHeight*.5);
+        this.#dieScreen = new BackDrop(400, 100,this.#canvasWidth*.5,this.#canvasHeight*.5);
+        
+        this.#score = 0;
+        this.#lives = 0;
+        this.#ammo = 0;   
+        this.#holdX = 0;
+        this.#holdY = 0;
     }
     
     //get functions
-    get state(){return this._state;}
-    get score(){return this._score;}
-    get lives(){return this._lives;}
-    get ammo(){return this._ammo;}
-    get gameConsts(){return this._gameConsts;}
-    get player(){return this._player;}   
-    get playState(){return this._playState;}
-    get backGround(){return this._backGround;}
-    get splashScreen(){return this._splashScreen;}
-    get pauseScreen(){return this._pauseScreen;}
-    get dieScreen(){return this._dieScreen;}
-    get projectiles(){return this._projectiles;}
-    get gameSprites(){return this._gameSprites;}
-    get timer(){return this._timer;}   
-    get holdX(){return this._holdX;}
-    get holdY(){return this._holdY;}
+
+    get gameConsts(){ return this.#gameConsts; }
+    get projectiles(){ return this.#projectiles; }
+    get gameSprites(){ return this.#gameSprites; }
+    get timer(){ return this.#timer; }
+    get player(){ return this.#player; }
+
+    get canvasWidth(){ return this.#canvasWidth; }
+    get canvasHeight(){ return this.#canvasHeight; }
+
+    get state() { return this.#state; }
+    get playState(){ return this.#playState; }
+
+    get backGround(){ return this.#backGround; }
+    get splashScreen(){ return this.#splashScreen; }
+    get pauseScreen(){ return this.#pauseScreen; }
+    get dieScreen(){ return this.#dieScreen; }
+   
+    get score(){ return this.#score; }
+    get lives(){ return this.#lives; }
+    get ammo(){ return this.#ammo; } 
+    get holdX(){ return this.#holdX; }
+    get holdY(){ return this.#holdY; }
     
     //set Functions
-    set state(newState){this._state = newState;}
-    set playState(newState){this._playState = newState;}   
-    set holdX(newX){this._holdX = newX;}
-    set holdY(newY){this._holdY = newY;}
-    set score(newScore){this._score = newScore;}
-    set lives(newLives){this._lives = newLives;}
-    set ammo(newAmmo){this._ammo = newAmmo;}
+    set state(v) { this.#state = v; }
+    set score(v) { this.#score = v; }
+
+    set playState(newState){ this.#playState = newState; }   
+    set holdX(newX){ this._holdX = newX; }
+    set holdY(newY){ this._holdY = newY; }
+
+    set lives(newLives){ this.#lives = newLives; }
+    set ammo(newAmmo){ this.#ammo = newAmmo; }
     
     emptyAmmo(){this._ammo = 0;}    
-    increaseAmmo(amount){this._ammo += amount;}
-    decreaseAmmo(amount){this._ammo -= amount;}
-    decreaseLives(amount){this._lives -= amount;}
-    increaseScore(amount){this._score += amount;}
+    increaseAmmo(amount){ this.#ammo += amount; }
+    decreaseAmmo(amount){ this.#ammo -= amount; }
+    decreaseLives(amount){ this.#lives -= amount; }
+    increaseScore(amount){ this.#score += amount; }
     
-    //place where we set up game where we need a device to establish assets    
+    // ---- Game Setup ----    
     initGame(aDev)
 	{
         const images = [
@@ -127,10 +179,10 @@ class Game
         this.ammo = 0;
 		this.gameSprites.clearObjects();
         this.playState = playStates.AVOID;   
-        this.setMouseToPlayer(aDev, this._player);
+        this.setMouseToPlayer(aDev, this.#player);
     }
     
-    //this is used when the game needs an object (player) bounded to mouses location
+    // ---- Player Mouse Binding ----
 	setMouseToPlayer(aDev, aPlayer)
 	{
 		aDev.setupMouse(aPlayer, aDev);

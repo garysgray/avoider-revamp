@@ -5,9 +5,9 @@
 
 function renderGameObjects(aDev,aGame)
 {   
-    //canvas render stuff
+    //canvas render stuff//const thing bug for fillstyle
     aDev.ctx.fillStyle = '#000';
-    aDev.ctx.fillRect(0, 0, aGame.gameConsts.SCREEN_WIDTH, aGame.gameConsts.SCREEN_HEIGHT);
+    aDev.ctx.fillRect(0, 0, aGame.canvasWidth, aGame.canvasHeight);
         
     //use game state to dictate what should render
     switch(aGame.state)
