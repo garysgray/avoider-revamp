@@ -14,25 +14,32 @@
 
 class Device
 {
+	#canvas;
+    #ctx;
+    #mouseDown;
+    #images;
+    #audio;
+    #keys;
+
     constructor(width,height)
     {
-        this._canvas = document.getElementById("canvas");
-        this._ctx = this._canvas.getContext('2d');
-        this._canvas.width = width;
-        this._canvas.height = height;
-        this._mouseDown =  false;
-        this._images = new ObjHolder();
-        this._audio = new AudioPlayer(); 
-		this._keys = new KeyManager();    
+        this.#canvas = document.getElementById("canvas");
+        this.#ctx = this.#canvas.getContext('2d');
+        this.#canvas.width = width;
+        this.#canvas.height = height;
+        this.#mouseDown =  false;
+        this.#images = new ObjHolder();
+        this.#audio = new AudioPlayer(); 
+		this.#keys = new KeyManager();    
     }
     
     //getter functions
-    get canvas(){return this._canvas;}
-    get ctx(){return this._ctx;}
-    get mouseDown(){return this._mouseDown;}
-    get images(){return this._images;}
-    get audio(){return this._audio;}
-	get keys(){return this._keys;}
+    get canvas(){return this.#canvas;}
+    get ctx(){return this.#ctx;}
+    get mouseDown(){return this.#mouseDown;}
+    get images(){return this.#images;}
+    get audio(){return this.#audio;}
+	get keys(){return this.#keys;}
     
     //setter functions
     set mouseDown(newState){this._mouseDown = newState;}
@@ -58,22 +65,22 @@ class Device
 	{
 		if (!aImageOrSprite) return;
 		if (aImageOrSprite.image) {
-			this._ctx.drawImage(aImageOrSprite.image, aX, aY);
+			this.#ctx.drawImage(aImageOrSprite.image, aX, aY);
 		} else {
-			this._ctx.drawImage(aImageOrSprite, aX, aY);
+			this.#ctx.drawImage(aImageOrSprite, aX, aY);
 		}
 	}
 
     renderClip(aClip, aPosX, aPosY, aWidth, aHeight, aState)
 	{
-		this._ctx.drawImage(
+		this.#ctx.drawImage(
         aClip,
         aState * aWidth,
         0, 
         aWidth,
 		aHeight,
-        aPosX - aWidth*.5,
-		aPosY  -aHeight*.5,
+        aPosX - aWidth * .5,
+		aPosY - aHeight * .5,
         aWidth,
         aHeight);
 	}
@@ -83,43 +90,47 @@ class Device
 		const w = aImage.width ?? aImage.image.width;
     	const h = aImage.height ?? aImage.image.height;
 
-		if (aImage.image) {
-        this._ctx.drawImage(aImage.image, aPosX - w / 2, aPosY - h / 2);
-		} else {
-	
-			this._ctx.drawImage(aImage, aPosX - w / 2, aPosY - h / 2);
+		if (aImage.image) 
+		{
+        	this.#ctx.drawImage(aImage.image, aPosX - w / 2, aPosY - h / 2);
+		}
+		else
+		{
+			this.#ctx.drawImage(aImage, aPosX - w / 2, aPosY - h / 2);
 		}
     }
 
     putText(aString, x, y)
 	{
-		this._ctx.fillText(aString, x, y);
+		this.#ctx.fillText(aString, x, y);
 	}
 	
+	//FIX magic nums
 	centerTextX(aString, y)
 	{
 		var temp = aString.length;
-		var center = (this._canvas.width *.5) -temp*4;
-		this._ctx.fillText(aString,center,y);
+		var center = (this.#canvas.width * .5) -temp * 4;
+		this.#ctx.fillText(aString, center, y);
 	}
 	
+	//FIX magic nums
 	centerTextXY(aString)
 	{
 		var temp = aString.length;
-		var centerX = (this._canvas.width *.5) -temp*3.5;
-		var centerY = (this._canvas.height *.5);
+		var centerX = (this.#canvas.width * .5) -temp * 3.5;
+		var centerY = (this.#canvas.height * .5);
 		
-		this._ctx.fillText(aString,centerX,centerY);
+		this.#ctx.fillText(aString,centerX,centerY);
 	}
 	
 	colorText(color)
 	{
-		this._ctx.fillStyle = color.toString(); 
+		this.#ctx.fillStyle = color.toString(); 
 	}
     
 	setFont(font)
 	{
-		this._ctx.font= font.toString();
+		this.#ctx.font= font.toString();
 	}
     
     debugText(text,posX,posY)
@@ -131,97 +142,119 @@ class Device
 }
 
 class ObjHolder {
-    constructor() {
-        this._objects = [];        // main container
-        this._orderedList = [];    // keeps objects in a specific order if needed
+	#objects;       // main container
+    #orderedList;   // keeps objects in order
+
+    constructor() 
+	{
+        this.#objects = [];        // main container
+        this.#orderedList = [];    // keeps objects in a specific order if needed
     }
 
     // --- Add / remove objects ---
-    addObject(obj, addToOrder = true) {
-        this._objects.push(obj);
-        if (addToOrder) this._orderedList.push(obj);
+    addObject(obj, addToOrder = true)
+	{
+        this.#objects.push(obj);
+        if (addToOrder) this.#orderedList.push(obj);
     }
 
-    subObject(index) {
-        const obj = this._objects[index];
+    subObject(index) 
+	{
+        const obj = this.#objects[index];
         if (!obj) return;
-        this._objects.splice(index, 1);
+        this.#objects.splice(index, 1);
 
         // Also remove from ordered list if present
-        const orderIndex = this._orderedList.indexOf(obj);
-        if (orderIndex !== -1) this._orderedList.splice(orderIndex, 1);
+        const orderIndex = this.#orderedList.indexOf(obj);
+        if (orderIndex !== -1) this.#orderedList.splice(orderIndex, 1);
     }
 
-    clearObjects() {
-        this._objects = [];
-        this._orderedList = [];
+    clearObjects() 
+	{
+        this.#objects = [];
+        this.#orderedList = [];
     }
 
-    getIndex(index) {
-        return this._objects[index];
+    getIndex(index) 
+	{
+        return this.#objects[index];
     }
 
     getSize() {
-        return this._objects.length;
+        return this.#objects.length;
     }
 
     // --- Lookup ---
-    getObjectByName(name) {
-        return this._objects.find(obj => obj.name === name);
+    getObjectByName(name) 
+	{
+        return this.#objects.find(obj => obj.name === name);
     }
 
-    getImage(name) {
-        const obj = this._objects.find(obj => obj.name === name);
+    getImage(name) 
+	{
+        const obj = this.#objects.find(obj => obj.name === name);
         return obj ? obj.image : null;
     }
 
     // --- Reorder ---
-    setOrder(newOrderArray) {
-        this._orderedList = newOrderArray.filter(obj => this._objects.includes(obj));
+    setOrder(newOrderArray) 
+	{
+        this.#orderedList = newOrderArray.filter(obj => this.#objects.includes(obj));
     }
 }
 
 class KeyManager 
 {
-	constructor() {
-        this.keysDown = {};       // currently held keys
-        this.keysPressed = {};    // pressed this frame
-        this.keysReleased = {};   // released this frame
+	#keysDown;       // currently held keys
+    #keysPressed;    // keys pressed this frame
+    #keysReleased;   // keys released this frame
+
+	constructor() 
+	{
+        this.#keysDown = {};       // currently held keys
+        this.#keysPressed = {};    // pressed this frame
+        this.#keysReleased = {};   // released this frame
 
         this.initKeys();
     }
 
-    initKeys() {
+    initKeys() 
+	{
         window.addEventListener("keydown", (e) => {
-            if (!this.keysDown[e.code]) {
-                this.keysPressed[e.code] = true; // only once
+            if (!this.#keysDown[e.code]) 
+			{
+                this.#keysPressed[e.code] = true; // only once
             }
-            this.keysDown[e.code] = true;
+            this.#keysDown[e.code] = true;
         });
 
         window.addEventListener("keyup", (e) => {
-            delete this.keysDown[e.code];
-            this.keysReleased[e.code] = true; // only once
+            delete this.#keysDown[e.code];
+            this.#keysReleased[e.code] = true; // only once
         });
     }
 
     // --- Query methods ---
-    isKeyDown(key) {
-        return !!this.keysDown[key]; // held
+    isKeyDown(key)
+	{
+        return !!this.#keysDown[key]; // held
     }
 
-    isKeyPressed(key) {
-        return !!this.keysPressed[key]; // just pressed
+    isKeyPressed(key) 
+	{
+        return !!this.#keysPressed[key]; // just pressed
     }
 
-    isKeyReleased(key) {
-        return !!this.keysReleased[key]; // just released
+    isKeyReleased(key) 
+	{
+        return !!this.#keysReleased[key]; // just released
     }
 
     // Clear one-frame states (call at end of game loop)
-    clearFrameKeys() {
-        this.keysPressed = {};
-        this.keysReleased = {};
+    clearFrameKeys() 
+	{
+        this.#keysPressed = {};
+        this.#keysReleased = {};
     }
 
 }
@@ -277,11 +310,16 @@ class Sprite {
     #name;
 	#loaded;
 
-    constructor(src, name) {
+    constructor(src, name, width = null, height = null) 
+	{
         this.#image = new Image();
         this.#image.src = src;
         this.#name = name;
 		this.#loaded = false;
+
+		// Optional width/height override
+        this.#image.width = width ?? this.#image.width;
+        this.#image.height = height ?? this.#image.height;
 
 		this.#image.onload = () => {
             this.#loaded = true;
@@ -289,24 +327,29 @@ class Sprite {
     }
 
     // Getter for the name
-    get name() {
+    get name() 
+	{
         return this.#name;
     }
 
     // Getter for the raw Image object (used for ctx.drawImage)
-    get image() {
+    get image() 
+	{
         return this.#image;
     }
 
     // Optional helper to return width/height directly from the image
-    get width() {
+    get width() 
+	{
         return this.#image.width;
     }
 
-    get height() {
+    get height() 
+	{
         return this.#image.height;
     }
-	get loaded() {
+	get loaded() 
+	{
         return this.#loaded;
     }
 }
