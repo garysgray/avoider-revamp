@@ -36,12 +36,12 @@ function update(aDev,aGame,aDT)
             //**UPDATE Player**
             aGame.player.update(aDev,aDT);
             aGame.player.borderCheck(aDev);
-            //this timer is to tell us when the shield timer is up and state changes to avoid
-            ////if timer is still going (active) then update it
-            //when time is up then the player goes out of shield mode and in to avoider mode
-            if(aGame.timer.active == true)
+            // Manage the shield timer:
+            // If the timer is active, update it with the elapsed time (aDT).
+            // When the timer finishes, automatically switch the player from SHIELD to AVOID mode.      
+            if(aGame.timer.active)
             {
-                if(aGame.timer.update())
+                if(aGame.timer.update(aDT))
                 {
                  aGame.playState = playStates.AVOID;
                 }
@@ -72,7 +72,7 @@ function update(aDev,aGame,aDT)
                 aGame.player.posX = aGame.holdX;
                 aGame.player.posY = aGame.holdY;                
                 aGame.playState = playStates.SHIELD
-                aGame.timer.set(aGame.gameConsts.SHIELD_TIME);
+                aGame.timer.reset(aGame.gameConsts.SHIELD_TIME);
                 aGame.state = gameStates.PLAY;
             }
             //little cheat to restart game
@@ -119,7 +119,7 @@ function update(aDev,aGame,aDT)
                     aGame.emptyAmmo();
                     aGame.gameSprites.clearObjects();
                     aGame.state = gameStates.PLAY;
-                    aGame.timer.set(aGame.gameConsts.SHIELD_TIME);
+                    aGame.timer.reset(aGame.gameConsts.SHIELD_TIME);
                     aGame.playState = playStates.SHIELD;
                 }
             }
