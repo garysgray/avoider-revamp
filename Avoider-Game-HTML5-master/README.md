@@ -44,4 +44,12 @@ General improvements
 	Clear separation of concerns for easier extension.
 
 
+Sprite position tracking
+	Added posX and posY fields to track object position.
+	Setters and getters allow safe access while keeping code consistent.
+	Mouse input now updates sprite position directly via these fields.
 
+Timer class
+	Refactored to leaner update logic for shield timing and state changes.
+	Active flag now clearly indicates whether timer is running.
+	Methods simplified to split concerns: starting, updating, and displaying.

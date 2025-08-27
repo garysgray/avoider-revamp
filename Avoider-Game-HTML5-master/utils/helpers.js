@@ -46,14 +46,14 @@ class Device
     
     setupMouse(sprite,aDev)
 	{       
-		window.addEventListener('mousedown', function(e) {
-			aDev.mouseDown = true;
+		window.addEventListener('mousedown', (e) => {
+        this.#mouseDown = true; // update private field directly
+        });
             
-		});
-		window.addEventListener('mouseup', function(e) {
-			aDev.mouseDown = false;
-            
-		});		
+		window.addEventListener('mouseup', (e) => {
+        this.#mouseDown = false;
+        });
+        
 		window.addEventListener("mousemove", function(mouseEvent) 
 		{
 			sprite._posX = mouseEvent.clientX - canvas.offsetLeft;
@@ -112,7 +112,7 @@ class Device
 		var center = (this.#canvas.width * .5) -temp * 4;
 		this.#ctx.fillText(aString, center, y);
 	}
-	
+
 	//FIX magic nums
 	centerTextXY(aString)
 	{
@@ -309,13 +309,18 @@ class Sprite {
     #image;
     #name;
 	#loaded;
+    #posX = 0;   // current X position
+    #posY = 0;   // current Y position
 
-    constructor(src, name, width = null, height = null) 
+
+    constructor(src, name, x = 0, y = 0, width = null, height = null) 
 	{
         this.#image = new Image();
         this.#image.src = src;
         this.#name = name;
 		this.#loaded = false;
+        this.#posX = x;
+        this.#posY = y;
 
 		// Optional width/height override
         this.#image.width = width ?? this.#image.width;
@@ -326,97 +331,77 @@ class Sprite {
         };
     }
 
-    // Getter for the name
-    get name() 
-	{
-        return this.#name;
-    }
+    // --- Getters ---
+    get name() { return this.#name; }
+    get image() { return this.#image; }
+    get width() { return this.#image.width; }
+    get height() { return this.#image.height; }
+    get loaded() { return this.#loaded; }
+    get posX() { return this.#posX; }
+    get posY() { return this.#posY; }
 
-    // Getter for the raw Image object (used for ctx.drawImage)
-    get image() 
-	{
-        return this.#image;
-    }
-
-    // Optional helper to return width/height directly from the image
-    get width() 
-	{
-        return this.#image.width;
-    }
-
-    get height() 
-	{
-        return this.#image.height;
-    }
-	get loaded() 
-	{
-        return this.#loaded;
-    }
+    // --- Position helpers ---
+    set posX(value) { this.#posX = value; }
+    set posY(value) { this.#posY = value; }
 }
 
 class Timer
 {
-    constructor(timeToCount)
+    #duration;   // how long one cycle lasts (ms)
+    #timeLeft;   // time remaining in current cycle
+    #active;     // is the timer running?
+
+    constructor(duration)
     {
-        this._currentTime = 0;
-        this._lastTime = 0;
-        this._totalTime = 0;
-        this._enoughtTime = timeToCount;
-        this._clock = 0;
-        this._posX =0;
-        this._posY = 0;
-        this._active = false;
+       
+        this.#duration = duration;
+        this.#timeLeft = duration;
+        this.#active = false;
+        
     }
     
     get active()
 	{
-		return this._active;
+		return this.#active;
 	}
-    // getImage()
-	// {
-		// return this._image;
-	// }
-    
-    update()
-	{
-		this._currentTime = Date.now();
-		var  thisTime = this._currentTime - this._lastTime;
-		this._totalTime += thisTime;
-		
-		if(this._clock < 1)
-		{
-            this._active = false;
-			return true;
-		}	
-		if(this._totalTime > this._enoughtTime)
-		{
-			this._totalTime = 0;
-			this._lastTime = this._currentTime;
-			this._clock--;
-		}
-		else
-		{
-			this._lastTime = this._currentTime;
-		}
-	}
-    posClock(x,y)
-	{
-		this._posX = x;
-		this._posY = y;
-	}
-	display(aDev,x,y)
-	{	
-		if(this._clock < 0)
-		{
-			this._clock = 0;
-		}
-		aDev.putText("TIME:  " + this._clock, x, y);
 
-	}
-	set(startAmt)
-	{
-        this._active = true;
-		this._clock = startAmt;
-	}	
+    start() 
+    {
+        this.#timeLeft = this.#duration;
+        this.#active = true;
+    }
+
+    stop() 
+    {
+        this.#active = false;
+    }
+
+    reset(duration = this.#duration) 
+    {
+        this.#duration = duration;
+        this.start();
+    }
+    
+    update(delta) {
+        if (!this.#active) return false;
+
+        this.#timeLeft -= delta;
+        if (this.#timeLeft <= 0) {
+            this.#active = false;
+            return true; // signal "finished"
+        }
+        return false;
+    }
+
+    get timeLeft() 
+    {
+        return Math.max(0, this.#timeLeft);
+    }
+
+    get progress() 
+    {
+        return 1 - (this.#timeLeft / this.#duration);
+    }
+    
 }
 
