@@ -1,8 +1,16 @@
-//tools are here to help the controller render the game
-//main tool is the device which holds the canvas tools for rendering
-//also holds tools to help get user input , 
-//holders to utilize sprite, and sound class objects
-//last but not least there is also timer object
+// helpers.js
+// 
+// This file contains utility classes that support the core game engine. 
+// It does NOT contain game logic itself — these classes are tools for the controller and game objects.
+//
+// - Device: Manages the canvas, rendering functions, and user input tools (mouse, keyboard).
+// - ObjHolder: Container for sprites or other objects, with optional ordering for rendering or updates.
+// - Sprite: Encapsulates an image with a name and optional width/height helpers, fully load-aware.
+// - AudioPlayer & Sound: Manage audio assets and playback.
+// - Timer: Simple countdown timer for timed events in the game.
+//
+// These helpers provide a consistent and reusable foundation for rendering, input, audio, and timing,
+// so that the game controller can focus on high-level game logic.
 
 class Device
 {
@@ -46,13 +54,17 @@ class Device
 		});
 	}
     
-    //this one takes an image object that is passed in directly 
-	renderImage(aImage,aObjectX,aObjectY)
+	renderImage(aImageOrSprite, aX = 0, aY = 0) 
 	{
-		this._ctx.drawImage(aImage,aObjectX,aObjectY);
+		if (!aImageOrSprite) return;
+		if (aImageOrSprite.image) {
+			this._ctx.drawImage(aImageOrSprite.image, aX, aY);
+		} else {
+			this._ctx.drawImage(aImageOrSprite, aX, aY);
+		}
 	}
-    
-    renderClip(aClip,aPosX,aPosY,aWidth,aHeight,aState)
+
+    renderClip(aClip, aPosX, aPosY, aWidth, aHeight, aState)
 	{
 		this._ctx.drawImage(
         aClip,
@@ -66,17 +78,25 @@ class Device
         aHeight);
 	}
     
-    centerImage(aImage,aPosX,aPosY,aWidth,aHeight)
+    centerImage(aImage, aPosX, aPosY)
     {
-        this._ctx.drawImage(aImage,aPosX-aWidth*.5-12,aPosY-aHeight*.5-12);
+		const w = aImage.width ?? aImage.image.width;
+    	const h = aImage.height ?? aImage.image.height;
+
+		if (aImage.image) {
+        this._ctx.drawImage(aImage.image, aPosX - w / 2, aPosY - h / 2);
+		} else {
+	
+			this._ctx.drawImage(aImage, aPosX - w / 2, aPosY - h / 2);
+		}
     }
-    
-    putText(aString,x,y)
+
+    putText(aString, x, y)
 	{
-		this._ctx.fillText(aString,x,y);
+		this._ctx.fillText(aString, x, y);
 	}
 	
-	centerTextX(aString,y)
+	centerTextX(aString, y)
 	{
 		var temp = aString.length;
 		var center = (this._canvas.width *.5) -temp*4;
@@ -108,6 +128,57 @@ class Device
         this.colorText("white");		
         this.putText(text.toString(),posX,posY);
     }  
+}
+
+class ObjHolder {
+    constructor() {
+        this._objects = [];        // main container
+        this._orderedList = [];    // keeps objects in a specific order if needed
+    }
+
+    // --- Add / remove objects ---
+    addObject(obj, addToOrder = true) {
+        this._objects.push(obj);
+        if (addToOrder) this._orderedList.push(obj);
+    }
+
+    subObject(index) {
+        const obj = this._objects[index];
+        if (!obj) return;
+        this._objects.splice(index, 1);
+
+        // Also remove from ordered list if present
+        const orderIndex = this._orderedList.indexOf(obj);
+        if (orderIndex !== -1) this._orderedList.splice(orderIndex, 1);
+    }
+
+    clearObjects() {
+        this._objects = [];
+        this._orderedList = [];
+    }
+
+    getIndex(index) {
+        return this._objects[index];
+    }
+
+    getSize() {
+        return this._objects.length;
+    }
+
+    // --- Lookup ---
+    getObjectByName(name) {
+        return this._objects.find(obj => obj.name === name);
+    }
+
+    getImage(name) {
+        const obj = this._objects.find(obj => obj.name === name);
+        return obj ? obj.image : null;
+    }
+
+    // --- Reorder ---
+    setOrder(newOrderArray) {
+        this._orderedList = newOrderArray.filter(obj => this._objects.includes(obj));
+    }
 }
 
 class KeyManager 
@@ -201,92 +272,43 @@ class AudioPlayer
 	}
 }
 
-class Sprite
-{
-    constructor(aSrc,aName)
-    {
-        this._image = new Image();
-        this._image.src = aSrc;
-        this._name = aName;
-    }
-    get name()
-	{
-		return this._name;
-	}
-    get image()
-	{
-		return this._image;
-	}
-}
+class Sprite {
+    #image;
+    #name;
+	#loaded;
 
-class ObjHolder
-{
-    constructor()
-    {
-        this._objects = new Array(); 
+    constructor(src, name) {
+        this.#image = new Image();
+        this.#image.src = src;
+        this.#name = name;
+		this.#loaded = false;
+
+		this.#image.onload = () => {
+            this.#loaded = true;
+        };
     }
 
-    get objects()
-    {
-        return this._objects;
-    }
-    
-    addImage(aSrc,aName)
-    {
-        var aObject = new Sprite(aSrc, aName);
-        this._objects.push(aObject);
+    // Getter for the name
+    get name() {
+        return this.#name;
     }
 
-	addObject(aObject)
-	{
-		this._objects.push(aObject);	
-	}
-	subObject(aIndex)
-	{
-		this._objects.splice(aIndex, 1);
-	}
-	clearObjects()
-	{
-		this._objects = [];
-		this._objects = new Array();
-	}
-	getIndex(aIndex)
-	{
-		return this._objects[aIndex];
-	}
-	getSize()
-	{
-		return this._objects.length;
-	}
-	update(aDev,aDT)
-	{
-		for(var i = 0; i < this._objects.length; i++)
-		{
-			this._objects[i].update(aDev, aDT);
-		}
-	}
-    getImage(aName)
-	{
-		for(var i = 0; i < this._objects.length; i++)
-		{
-			if(this._objects[i].name == aName)
-			{
-				return this._objects[i].image;
-				break;
-			}		
-		}		
-	}
-    getObject(aName)
-        {
-            for(var i = 0; i < this._objects.length; i++)
-            {
-                if(this._objects[i].name == aName)
-                {
-                    return this._objects[i];
-                    break;
-                }		
-            }		
-        }		
+    // Getter for the raw Image object (used for ctx.drawImage)
+    get image() {
+        return this.#image;
+    }
+
+    // Optional helper to return width/height directly from the image
+    get width() {
+        return this.#image.width;
+    }
+
+    get height() {
+        return this.#image.height;
+    }
+	get loaded() {
+        return this.#loaded;
+    }
 }
 
 class Timer

@@ -148,7 +148,7 @@ class Game
     increaseScore(amount){ this.#score += amount; }
     
     // ---- Game Setup ----    
-    initGame(aDev)
+   initGame(aDev)
 	{
         const images = [
             { src: "assets/sprites/bullet.png", name: "bullet" },
@@ -159,8 +159,12 @@ class Game
             { src: "assets/sprites/splash.png", name: "splash" },
             { src: "assets/sprites/pause.png", name: "pause" },
             { src: "assets/sprites/die.png", name: "die" }
-        ];
-        images.forEach(img => aDev.images.addImage(img.src, img.name));
+        ]; 
+        //images.forEach(img => aDev.images.addObject(new Sprite(img.src, img.name)));
+        images.forEach(img => {
+        const sprite = new Sprite(img.src, img.name);
+        aDev.images.addObject(sprite);
+    });
         
         const sounds = [
             { src: "assets/sounds/hit.wav", name: "hit" },

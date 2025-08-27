@@ -15,9 +15,8 @@ function renderGameObjects(aDev,aGame)
         case gameStates.INIT://init-gameState
         {    
             //set up props background and title bar/splash screen no render of any game objects
-            aDev.renderImage(aDev.images.getImage("background"),aGame.backGround.posX,aGame.backGround.posY);           
-            aDev.centerImage(aDev.images.getImage("splash"),aGame.splashScreen.posX,aGame.splashScreen.posX,
-            aGame.splashScreen.width,aGame.splashScreen.height);      
+            aDev.renderImage(aDev.images.getImage("background"), aGame.backGround.posX, aGame.backGround.posY);          
+            aDev.centerImage(aDev.images.getImage("splash"), aGame.splashScreen.posX, aGame.splashScreen.posX);      
         }
         break;
         
@@ -35,8 +34,7 @@ function renderGameObjects(aDev,aGame)
         {            
             //set up props background and pause screen, no render of player
             aDev.renderImage(aDev.images.getImage("background"),aGame.backGround.posX,aGame.backGround.posY);
-            aDev.centerImage(aDev.images.getImage("pause"),aGame.pauseScreen.posX,aGame.pauseScreen.posX,
-            aGame.pauseScreen.width,aGame.pauseScreen.height);            
+            aDev.centerImage(aDev.images.getImage("pause"),aGame.pauseScreen.posX,aGame.pauseScreen.posX);            
         }
         break;
         case gameStates.WIN://Win-gameState
@@ -48,8 +46,7 @@ function renderGameObjects(aDev,aGame)
         {	
             //set up props background and die screen, then shows dead player
             aDev.renderImage(aDev.images.getImage("background"),aGame.backGround._posX,aGame.backGround.posY);            
-            aDev.centerImage(aDev.images.getImage("die"),aGame.dieScreen.posX,aGame.dieScreen.posX,
-            aGame.dieScreen.width,aGame.dieScreen.height);
+            aDev.centerImage(aDev.images.getImage("die"),aGame.dieScreen.posX,aGame.dieScreen.posX);
             renderPlayer(aDev,aGame);
         }
         break;
