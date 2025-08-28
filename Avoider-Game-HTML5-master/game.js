@@ -150,6 +150,8 @@ class Game
     // ---- Game Setup ----    
    initGame(aDev)
 	{
+        aDev.keys.initKeys();
+
         const images = [
             { src: "assets/sprites/bullet.png", name: "bullet" },
             { src: "assets/sprites/orb.png", name: "orb" },

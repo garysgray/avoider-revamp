@@ -6,7 +6,7 @@
 
 
 const layout = {
-    initTextY: [0.7, 0.75, 0.8],   // percentages from top for INIT instructions
+    initTextY: [0.7, 0.75, 0.8, 0.85],   // percentages from top for INIT instructions
     hudY: 0.95,                     // 5% from top for HUD
     hudAmmoX: 0.05,                  // 5% from left
     hudLivesX: 0.85,                 // 85% from left
@@ -31,6 +31,7 @@ function renderText(aDev, aGame)
         {         
            layout.initTextY.forEach((pct, idx) => {
                 const msg = [
+                    "SHOOT THE ORBS!!!",
                     "CATCH FIRE BALLS TO GET AMMO",
                     "USE SPACE-BAR TO FIRE",
                     "PRESS THE SPACE-BAR TO START"
