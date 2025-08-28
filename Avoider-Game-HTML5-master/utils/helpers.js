@@ -104,24 +104,31 @@ class Device
 	{
 		this.#ctx.fillText(aString, x, y);
 	}
-	
-	//FIX magic nums
-	centerTextX(aString, y)
-	{
-		var temp = aString.length;
-		var center = (this.#canvas.width * .5) -temp * 4;
-		this.#ctx.fillText(aString, center, y);
-	}
 
-	//FIX magic nums
-	centerTextXY(aString)
-	{
-		var temp = aString.length;
-		var centerX = (this.#canvas.width * .5) -temp * 3.5;
-		var centerY = (this.#canvas.height * .5);
+    centerTextOnY(text, posY) 
+    {
+        const textWidth = this.#ctx.measureText(text).width;
+        const centerX = (this.#canvas.width - textWidth) / 2;
+        this.#ctx.fillText(text, centerX, posY);
+    }
+	
+	// //FIX magic nums
+	// centerTextX(aString, y)
+	// {
+	// 	var temp = aString.length;
+	// 	var center = (this.#canvas.width * .5) -temp * 4;
+	// 	this.#ctx.fillText(aString, center, y);
+	// }
+
+	// //FIX magic nums
+	// centerTextXY(aString)
+	// {
+	// 	var temp = aString.length;
+	// 	var centerX = (this.#canvas.width * .5) -temp * 3.5;
+	// 	var centerY = (this.#canvas.height * .5);
 		
-		this.#ctx.fillText(aString,centerX,centerY);
-	}
+	// 	this.#ctx.fillText(aString,centerX,centerY);
+	// }
 	
 	colorText(color)
 	{
@@ -261,57 +268,85 @@ class KeyManager
 
 class Sound
 {
-    constructor(aName,aAudio)
+    #name;
+    #audio;
+
+    constructor(name, src)
     {
-        this._name = aName;
-        this._audio = new Audio(aAudio);
-    }   
-    get name()
-    {
-        return this._name;
-    }
-    get audio()
-    {
-        return this._audio;
-    }
+        this.#name = name;
+        this.#audio = new Audio(src);
+    } 
+
+    get name() { return this.#name; }
+    get audio() { return this.#audio; }
+
+    play() { this.#audio.play(); }
+    pause() { this.#audio.pause(); }
+    stop() { this.#audio.pause(); this.#audio.currentTime = 0; }
 }
 
 class AudioPlayer
-{
+ {
+    #sounds;
+
     constructor()
     {
-        this._sounds = new Array();
+        this.#sounds = new ObjHolder();
     }
-	
-	addSound(aName,aAudio)
-	{
-        var newSound = new Sound(aName,aAudio);
-		this._sounds.push(newSound);	
-	}
-	getSize()
-	{
-		return this._sounds.length;
-	}
-	playSound(aSoundname)
-	{
-		for(var i = 0; i < this._sounds.length; i++)
-		{
-			if(this._sounds[i].name == aSoundname)
-			{
-				this._sounds[i].audio.play();
-				break;
-			}		
-		}
-	}
-}
 
-class Sprite {
+    get size() { return this.#sounds.getSize(); }
+
+    addSound(name, src)
+    {
+        const sound = new Sound(name, src)
+        this.#sounds.addObject(sound);
+    }
+
+    getSound(name)
+    {
+        return this.#sounds.getObjectByName(name);
+    }
+
+    playSound(name) 
+    {
+        const sound = this.getSound(name);
+        if (sound) sound.play();
+    }
+
+    pauseSound(name) 
+    {
+        const sound = this.getSound(name);
+        if (sound) sound.pause();
+    }
+
+    pauseAll()
+    {
+        this.#sounds.forEach(obj => obj.pause());
+    }
+
+    stopSound(name) 
+    {
+        const sound = this.getSound(name);
+        if (sound) sound.stop();
+    }
+
+    stopAll() 
+    {
+        this.#sounds.forEach(s => s.stop());
+    }
+
+    clear() {
+        this.#sounds.clearObjects();
+    }
+ }
+
+class Sprite
+ {
     #image;
     #name;
 	#loaded;
     #posX = 0;   // current X position
     #posY = 0;   // current Y position
-
 
     constructor(src, name, x = 0, y = 0, width = null, height = null) 
 	{
@@ -353,17 +388,14 @@ class Timer
 
     constructor(duration)
     {
-       
         this.#duration = duration;
         this.#timeLeft = duration;
         this.#active = false;
-        
     }
     
-    get active()
-	{
-		return this.#active;
-	}
+    get active() { return this.#active; }
+    get timeLeft() { return Math.max(0, this.#timeLeft); }
+    get progress() { return 1 - (this.#timeLeft / this.#duration); }
 
     start() 
     {
@@ -391,17 +423,6 @@ class Timer
             return true; // signal "finished"
         }
         return false;
-    }
-
-    get timeLeft() 
-    {
-        return Math.max(0, this.#timeLeft);
-    }
-
-    get progress() 
-    {
-        return 1 - (this.#timeLeft / this.#duration);
-    }
-    
+    } 
 }
 

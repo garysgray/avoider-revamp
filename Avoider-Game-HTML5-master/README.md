@@ -16,40 +16,40 @@ helpers.js contains all the core utility classes that support the game controlle
 Recent Updates / Changelog
 
 Sprite class
-	Converted to private fields (#name, #image, #loaded).
-	Added width/height getters.
-	Added safe image loading tracking (loaded property).
+  Converted to private fields (#name, #image, #loaded).
+  Added width/height getters.
+  Added safe image loading tracking (loaded property).
+  Added posX and posY fields for position tracking.
+  Getters and setters provide safe, consistent access.
+  Mouse input updates sprite position directly via these fields.
 
 ObjHolder class
-	Supports ordered and unordered object storage.
-	Lookup helpers: getObjectByName and getImage.
-	Iteration helpers: forEach and forEachOrdered.
-	Removed redundant update method to follow OOP principles.
+  Supports ordered and unordered object storage. 
+  Lookup helpers: getObjectByName and getImage.
+  Iteration helpers: forEach and forEachOrdered.
+  Removed redundant update method to follow OOP principles.
 
 Device class
-	Core members use private fields (#canvas, #ctx, #images, #audio, #keys, #mouseDown).
-	renderImage and centerImage handle both raw images and Sprite instances.
-	Centralized canvas rendering, text, and debug helpers.
-	Integrated KeyManager and mouse state handling.
+  Core members use private fields (#canvas, #ctx, #images, #audio, #keys, #mouseDown).
+  renderImage and centerImage handle both raw images and Sprite instances.
+  Centralized canvas rendering, text, and debug helpers.
+  Integrated KeyManager and mouse state handling.
+  Added centerTextOnY for easier text placement along canvas width.
+  Added text alignment improvements: moved away from magic numbers by supporting constants and percentage-based layout with optional pixel offsets.
 
 KeyManager class
-	Tracks keys held, pressed, and released per frame.
-	clearFrameKeys() resets one-frame input states.
-	Uses private fields for consistency.
-
-General improvements
-	Unified modern OOP style using private fields (#).
-	Safer, more consistent sprite and object handling across rendering.
-	Simplified code paths and fewer runtime errors.
-	Clear separation of concerns for easier extension.
-
-
-Sprite position tracking
-	Added posX and posY fields to track object position.
-	Setters and getters allow safe access while keeping code consistent.
-	Mouse input now updates sprite position directly via these fields.
+  Tracks keys held, pressed, and released per frame.
+  clearFrameKeys() resets one-frame input states.
+  Uses private fields for consistency.
 
 Timer class
-	Refactored to leaner update logic for shield timing and state changes.
-	Active flag now clearly indicates whether timer is running.
-	Methods simplified to split concerns: starting, updating, and displaying.
+  Refactored to leaner update logic for shield timing and state      changes.
+  Active flag now clearly indicates whether timer is running.
+  Methods simplified to split concerns: starting, updating, and  displaying.
+
+General improvements
+  Unified modern OOP style using private fields (#).
+  Safer, more consistent sprite and object handling across rendering.
+  Simplified code paths and fewer runtime errors.
+  Clear separation of concerns for easier extension.
+  Began replacing “magic numbers” in UI with calculated positions (percentages + pixel padding) for text and HUD elements.
