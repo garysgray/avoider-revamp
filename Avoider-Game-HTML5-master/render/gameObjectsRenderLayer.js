@@ -3,7 +3,7 @@
 //no game logic should be called in here some for placment of objects maybe
 //called from controller 
 
-function renderGameObjects(aDev, aGame)
+function renderGameObjectsLayer(aDev, aGame)
 {   
     //canvas render stuff//const thing bug for fillstyle
     aDev.ctx.fillStyle = '#000';
@@ -58,4 +58,4 @@ function renderGameObjects(aDev, aGame)
 }
 
 // Wrap it in a Layer
-const gameObjectsLayer = new Layer("GameObjects", renderGameObjects);
+const gameObjectsLayer = new Layer("GameObjects", renderGameObjectsLayer);
