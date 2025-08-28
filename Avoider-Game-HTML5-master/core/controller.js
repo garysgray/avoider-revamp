@@ -65,7 +65,7 @@ class Controller
 
         // Render each layer in order (background → text → debug, etc.)
         for (const layer of this.#layers) {
-            layer.render(this.#device, this.#game, delta);
+            layer.render(this.#device, this.#game);
         }
 
         // Clear per-frame input (prevents sticky key issues)
