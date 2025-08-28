@@ -1,61 +1,79 @@
-//big part of update cycle with in gameloop, basiclly the rendering part
-//based on there positions  
-//no game logic should be called in here some for placment of objects maybe
-//called from controller 
-
-function renderGameObjectsLayer(aDev, aGame)
+/**
+ * GameObjects Layer
+ * -----------------
+ * Handles rendering of all core game visuals (background, splash, objects, player, UI overlays).
+ * 
+ * - Called by the Controller during the main update cycle
+ * - Responsible only for drawing (no game logic here)
+ * - Uses game state to decide what to render
+ */
+function renderGameObjectsLayer(device, game)
 {   
-    //canvas render stuff//const thing bug for fillstyle
-    aDev.ctx.fillStyle = '#000';
-    aDev.ctx.fillRect(0, 0, aGame.canvasWidth, aGame.canvasHeight);
+    
+    // === Render Static Background ===
+    device.renderImage(
+        device.images.getImage("background"),
+        game.backGround.posX,
+        game.backGround.posY
+    ); 
         
-    //use game state to dictate what should render
-    switch(aGame.state)
+    // === Render Based on Game State ===
+    switch (game.state)
     {
-        case gameStates.INIT://init-gameState
+        case gameStates.INIT: // Splash / Init screen
         {    
-            //set up props background and title bar/splash screen no render of any game objects
-            aDev.renderImage(aDev.images.getImage("background"), aGame.backGround.posX, aGame.backGround.posY);          
-            aDev.centerImage(aDev.images.getImage("splash"), aGame.splashScreen.posX, aGame.splashScreen.posX);      
+            // Show splash image, no game objects yet
+            device.centerImage(
+                device.images.getImage("splash"),
+                game.splashScreen.posX,
+                game.splashScreen.posY
+            );      
         }
         break;
         
-        case gameStates.PLAY://play-gameState	
+        case gameStates.PLAY: // Main gameplay
         {          
-            //set up props background and then renders all game objects during play
-            aDev.renderImage(aDev.images.getImage("background"), aGame.backGround.posX, aGame.backGround.posY);
-            renderNPCSprites(aDev, aGame);
-            renderBullets(aDev, aGame);
-            renderPlayer(aDev, aGame);           
+            // Render all active game objects
+            renderNPCSprites(device, game);
+            renderBullets(device, game);
+            renderPlayer(device, game);           
         }
         break;
 
-        case gameStates.PAUSE://pause-state
+        case gameStates.PAUSE: // Pause overlay
         {            
-            //set up props background and pause screen, no render of player
-            aDev.renderImage(aDev.images.getImage("background"), aGame.backGround.posX, aGame.backGround.posY);
-            aDev.centerImage(aDev.images.getImage("pause"), aGame.pauseScreen.posX, aGame.pauseScreen.posX);            
+            // Show pause screen, no player render
+            device.centerImage(
+                device.images.getImage("pause"),
+                game.pauseScreen.posX,
+                game.pauseScreen.posY
+            );            
         }
         break;
 
-        case gameStates.WIN://Win-gameState
+        case gameStates.WIN: // Win screen (future use)
         {
-            ////something some day (nobody wins ha ha)
+            // Reserved for future win state content
         }
         break;
 
-        case gameStates.LOSE://Lose-gameState
+        case gameStates.LOSE: // Lose screen
         {	
-            //set up props background and die screen, then shows dead player
-            aDev.renderImage(aDev.images.getImage("background"), aGame.backGround._posX, aGame.backGround.posY);            
-            aDev.centerImage(aDev.images.getImage("die"), aGame.dieScreen.posX, aGame.dieScreen.posX);
-            renderPlayer(aDev, aGame);
+            // Show "die" overlay and player’s final position
+            device.centerImage(
+                device.images.getImage("die"),
+                game.dieScreen.posX,
+                game.dieScreen.posY
+            );
+            renderPlayer(device, game);
         }
         break;
 
-        default:		
+        default:
+            // No-op fallback
     }	
 }
 
-// Wrap it in a Layer
+// === Layer Registration ===
+// Wrap render function into a Layer for the Controller
 const gameObjectsLayer = new Layer("GameObjects", renderGameObjectsLayer);

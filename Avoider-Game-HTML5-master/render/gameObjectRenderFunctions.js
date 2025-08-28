@@ -1,81 +1,97 @@
-//**These Functions are called in renderGameObjects by controller
+//***************************************************************
+// Rendering Functions for Game Objects
+//***************************************************************
+// These helper functions are called inside renderGameObjectsLayer
+// (which is wrapped in a Layer and managed by controller.js).
+// Each function is responsible for rendering a specific type of
+// object in the game: NPC sprites, projectiles, and the player.
+//***************************************************************
 
-//Using dev tools and game info renders gameSprites(ammo and orbs)
-function renderNPCSprites(aDev, aGame)
+//---------------------------------------------------------------
+// Render NPC Sprites (orbs, fireAmmo, etc.)
+//---------------------------------------------------------------
+function renderNPCSprites(device, game)
 {
-    ////this makes a temp object of the image we want to use
-    //this is so the image holder does not have to keep finding image
-    tempImage1 = aDev.images.getImage("orb")
-    tempImage2 = aDev.images.getImage("fireAmmo")	
-     for (var i = 0; i < aGame.gameSprites.getSize(); i++)
-    {	
-        ////this is to make a temp object for easier code to write and understand
-        tempObj = aGame.gameSprites.getIndex(i);            
+    // Preload references to images (avoid repeated lookups each frame)
+    let orbImage      = device.images.getImage("orb");
+    let fireAmmoImage = device.images.getImage("fireAmmo");
+
+    // Loop through all NPC sprites in gameSprites list
+    for (let i = 0; i < game.gameSprites.getSize(); i++)
+    {
+        // Get reference to current sprite object
+        let tempObj = game.gameSprites.getIndex(i);
+
+        // Render sprite based on its name
         switch(tempObj.name)
         {
             case "orb":
-             aDev.renderImage(tempImage1,tempObj.posX,tempObj.posY);
+                device.renderImage(orbImage, tempObj.posX, tempObj.posY);
             break;
+
             case "fireAmmo":
-              aDev.renderImage(tempImage2,tempObj.posX,tempObj.posY);
+                device.renderImage(fireAmmoImage, tempObj.posX, tempObj.posY);
             break;
-        }           
+        }
     }
 }
 
-//Using dev tools and game info renders projectiles(bullets)
-function renderBullets(aDev, aGame)
-{	
-    ////this makes a temp object of the image we want to use
-    //this is so the image holder does not have to keep finding image
-    tempImage = aDev.images.getImage("bullet")	
-     for (var i = 0; i < aGame.projectiles.getSize(); i++)
-        {	
-            ////this is to make a temp object for easier code to write and understand
-            tempObj = aGame.projectiles.getIndex(i);
-            aDev.renderImage(tempImage,tempObj.posX,tempObj.posY);
-        }
+//---------------------------------------------------------------
+// Render Bullets (projectiles)
+//---------------------------------------------------------------
+function renderBullets(device, game)
+{
+    // Preload bullet image
+    let bulletImage = device.images.getImage("bullet");
+
+    // Loop through all active bullets in projectiles list
+    for (let i = 0; i < game.projectiles.getSize(); i++)
+    {
+        // Get reference to current bullet
+        let tempObj = game.projectiles.getIndex(i);
+
+        // Render bullet at its current position
+        device.renderImage(bulletImage, tempObj.posX, tempObj.posY);
+    }
 }
 
-//Using dev tools and game info renders player using different clips based on playerState	
-function renderPlayer(aDev, aGame)
-{    
-    tempImage = aDev.images.getImage("player")
-    temp = aGame.player;
-    
-    switch(aGame.playState)
+//---------------------------------------------------------------
+// Render Player (different clips based on playState)
+//---------------------------------------------------------------
+function renderPlayer(device, game)
+{
+    // Preload player sprite sheet
+    let playerImage = device.images.getImage("player");
+
+    // Shortcut reference to player object
+    let playerObj = game.player;
+
+    // Render player based on their current playState
+    switch(game.playState)
     {
         case playStates.AVOID:
-        {          
-            aGame.player.state = playStates.AVOID;
-            aDev.renderClip(tempImage,temp.posX,temp.posY,temp.width,temp.height,temp.state); 
-        }
+            game.player.state = playStates.AVOID;
+            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
         break;
-        case playStates.SHIELD:
-        {         
-            aGame.player.state = playStates.SHIELD;
-            aDev.renderClip(tempImage,temp.posX,temp.posY,temp.width,temp.height,temp.state);  
-        }
-        break; 
-        case playStates.SHOOT:
-        {         
-            aGame.player.state = playStates.SHOOT;
-            aDev.renderClip(tempImage,temp.posX,temp.posY,temp.width,temp.height,temp.state);
-        }
-        break; 
-        case playStates.SUPER:
-        {         
-            aGame.player.state = playStates.SUPER;
-            aDev.renderClip(tempImage,temp.posX,temp.posY,temp.width,temp.height,temp.state); 
-        }
-        break; 
-        case playStates.DEATH:
-        {         
-            aGame.player.state = playStates.DEATH;
-            aDev.renderClip(tempImage,temp.posX,temp.posY,temp.width,temp.height,temp.state); 
-        }
-        break;      
-    }   
-}
 
-	
+        case playStates.SHIELD:
+            game.player.state = playStates.SHIELD;
+            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
+        break;
+
+        case playStates.SHOOT:
+            game.player.state = playStates.SHOOT;
+            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
+        break;
+
+        case playStates.SUPER:
+            game.player.state = playStates.SUPER;
+            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
+        break;
+
+        case playStates.DEATH:
+            game.player.state = playStates.DEATH;
+            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
+        break;
+    }
+}
