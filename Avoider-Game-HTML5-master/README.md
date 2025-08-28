@@ -3,19 +3,21 @@
 A rebuilt version of my original HTML5 avoider game, cleaned up, modular, and easier to expand.  
 Still simple, still fun, but smarter under the hood.
 
-Built with vanilla JS and Canvas  
-Work in progress, evolving into a mini game engine  
+Built with **vanilla JS** and **Canvas**  
+Work in progress, evolving into a **mini game engine**  
 Made for learning, experimenting, and future projects
 
 ---
 
 ## Helpers.js Overview
 
-`helpers.js` contains core utility classes that support the controller, including asset management, rendering, input handling, and timers. Updates modernize the codebase with proper OOP design:
+`helpers.js` contains core utility classes that support the controller, including asset management, rendering, input handling, and timers.  
+Modernized with proper OOP design and private fields for safety:
 
-- **Sprite** now tracks its own loaded state and dimensions  
+- **Sprite** tracks its own loaded state and dimensions  
 - **ObjHolder** efficiently manages objects with optional ordered rendering  
 - **Device** safely handles drawing sprites and text on the canvas  
+- **Layer** system organizes rendering into clean, modular pieces  
 
 This makes asset management consistent, rendering safer and more reliable, and the system easier to extend.
 
@@ -25,7 +27,7 @@ This makes asset management consistent, rendering safer and more reliable, and t
 
 ### Sprite class
 - Private fields (`#name`, `#image`, `#loaded`)  
-- Added width / height getters  
+- Added `width` / `height` getters  
 - Safe image loading tracking (`loaded`)  
 - `posX` / `posY` for position tracking  
 - Getters and setters for safe access  
@@ -53,20 +55,22 @@ This makes asset management consistent, rendering safer and more reliable, and t
 ### Timer class
 - Leaner update logic for shield timing and state changes  
 - `active` flag indicates running state  
-- Simplified methods: start, update, display  
+- Simplified methods: `start`, `update`, `display`  
 
 ### Controller + Layer System
 - Controller owns the game instance, centralizing update / render flow  
-- Added `Layer` class for modular rendering (sprites, HUD, text)  
+- Added **Layer** class for modular rendering (sprites, HUD, text)  
 - Layers registered and rendered sequentially  
 - Game object layers (player, NPCs, projectiles) now modular  
 - Text rendering is a separate `textRenderLayer`  
 - Layers access game state and device, allowing dynamic rendering  
-- Layers easily added / removed without changing main update loop  
+- Layers easily added / removed without changing the main update loop  
+- New **background rendering helper** (`renderBackground`) removes repetition  
 
 ### Game Logic & Rendering
 - `updateGame()` calls game logic and iterates layers for rendering  
 - `spriteRenderer.js` functions (`renderNPCSprites`, `renderBullets`, `renderPlayer`) refactored into layers  
+- **Player rendering simplified**: `renderPlayer` uses state-based clips with cleaner switch logic  
 - Text rendering (`textRender.js`) moved to `Layer`  
 - Controller clears frame keys each update to prevent input errors  
 - Game state checks remain in layers, keeping rendering and logic separate  
@@ -75,9 +79,8 @@ This makes asset management consistent, rendering safer and more reliable, and t
 ### GameObject, Player, BackDrop
 - Private fields for all properties (`#width`, `#height`, `#posX`, `#posY`, `#speed`, etc.)  
 - Getters / setters for all internal state  
-- `Player` has projectile timer and shoot delay  
-- Player enforces canvas bounds  
-- `BackDrop` supports potential scrolling / animations  
+- **Player** has projectile timer, shoot delay, and enforces canvas bounds  
+- **BackDrop** supports potential scrolling / animations  
 - Consistent modern OOP style using private fields  
 
 ### General Improvements
@@ -85,4 +88,14 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Safer, more consistent sprite / object handling  
 - Simplified code paths and fewer runtime errors  
 - Clear separation of concerns  
-- UI elements positioned using percentages + pixel padding, no magic numbers
+- UI elements positioned using percentages + pixel padding, no magic numbers  
+- Reduced **repetition** across rendering (e.g., background, player states)
+
+---
+
+## Roadmap
+- Expand the **Layer** system into a full scene/engine manager  
+- Add **collision system refactor** with reusable physics helpers  
+- Build modular **UI layers** (menus, HUD, pause screen)  
+- Expand asset pipeline (sprite sheets, animation helpers)  
+- Possible export as a **lightweight game engine** for future projects
