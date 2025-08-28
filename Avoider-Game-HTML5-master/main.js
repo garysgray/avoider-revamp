@@ -1,13 +1,10 @@
 //the main page for the avoider game
 
-//make game object that loads game data
-var myGame = new Game();
-
 //controller helps set things up and directs how things should work using game
-var myControl = new Controller(myGame.gameConsts.SCREEN_WIDTH, myGame.gameConsts.SCREEN_HEIGHT);
+var myControl = new Controller();
 
 //init the actual game using controller 
-myControl.initGame(myGame);
+myControl.initGame();
 
 // ------------------------------
 // FIXED STEP GAME LOOP
@@ -39,18 +36,16 @@ function gameLoop() {
 
     // 3. Run the game update as many times as needed
     // Each update advances the game by exactly fixedStep seconds
-    while (accumulator >= fixedStep) {
-        myControl.updateGame(myGame, fixedStep);
+    while (accumulator >= fixedStep)
+    {
+        myControl.updateGame(fixedStep);
         accumulator -= fixedStep;
     }
 
     //for debugging game states and what have you
     //myControl.dev.debugText(myGame.splashScreen.posY, 150, 50);
 
-    // 4. clears out key arrays to prevent errors
-    myControl.dev.keys.clearFrameKeys();
-
-    // 5. Request the next frame
+    // 4. Request the next frame
     requestAnimationFrame(gameLoop);
 }
 

@@ -33,7 +33,7 @@ class Device
 		this.#keys = new KeyManager();    
     }
     
-    //getter functions
+    //----get Functions----
     get canvas(){return this.#canvas;}
     get ctx(){return this.#ctx;}
     get mouseDown(){return this.#mouseDown;}
@@ -41,7 +41,7 @@ class Device
     get audio(){return this.#audio;}
 	get keys(){return this.#keys;}
     
-    //setter functions
+    //----set Functions----
     set mouseDown(newState){this._mouseDown = newState;}
     
     setupMouse(sprite,aDev)
@@ -111,24 +111,6 @@ class Device
         const centerX = (this.#canvas.width - textWidth) / 2;
         this.#ctx.fillText(text, centerX, posY);
     }
-	
-	// //FIX magic nums
-	// centerTextX(aString, y)
-	// {
-	// 	var temp = aString.length;
-	// 	var center = (this.#canvas.width * .5) -temp * 4;
-	// 	this.#ctx.fillText(aString, center, y);
-	// }
-
-	// //FIX magic nums
-	// centerTextXY(aString)
-	// {
-	// 	var temp = aString.length;
-	// 	var centerX = (this.#canvas.width * .5) -temp * 3.5;
-	// 	var centerY = (this.#canvas.height * .5);
-		
-	// 	this.#ctx.fillText(aString,centerX,centerY);
-	// }
 	
 	colorText(color)
 	{
