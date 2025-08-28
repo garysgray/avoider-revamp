@@ -1,60 +1,74 @@
-//I like having a controller it helps when developing and then later relocate to a better place
-//for example one could have 2 game objects running and controller is where one could delegate the updates to run both
+// ============================================================================
+// Controller Class
+// ----------------------------------------------------------------------------
+// The Controller acts as the "director" of the game. It sets up the game,
+// manages the Device (canvas + input), tracks render layers, and delegates
+// update + render calls.
+//
+// Benefits:
+// - Central place to organize initialization and updates
+// - Makes it easy to later run multiple games or scenes by delegating here
+// ============================================================================
 
-
-// class Layer {
-//     constructor(name, renderFn) {
-//         this.name = name;
-//         this.renderFn = renderFn;
-//     }
-//     render(dev, game, delta) {
-//         this.renderFn(dev, game, delta);
-//     }
-// }
-
-class Controller
+class Controller 
 {
-    #dev;
-    #game;
-    #layers;    // array of Layer instances
+    #device;    // Manages canvas and input
+    #game;      // Holds core game state and logic
+    #layers;    // Array of Layer instances (render order matters)
 
-    constructor()
+    constructor() 
     {
-        //our controller has a device object to control the HTML5 Canvas
+        // Create the core Game instance
         this.#game = new Game();
-        this.#dev = new Device( this.#game.canvasWidth,  this.#game.canvasHeight);
+
+        // Create the Device (canvas + input), sized to match the game
+        this.#device = new Device(this.#game.canvasWidth, this.#game.canvasHeight);
+
+        // Start with an empty list of rendering layers
         this.#layers = [];
     }
 
-    //----get Functions---- 
-    get dev() { return this.#dev; }
-    get game() { return this.#game; }
-    
-    initGame()
-	{
-        this.#game.initGame(this.#dev);
+    // ------------------------------------------------------------------------
+    // Getters
+    // ------------------------------------------------------------------------
+    get device() { return this.#device; }
+    get game()   { return this.#game; }
 
-        this.addLayer(gameObjectsLayer);
-        this.addLayer(textRenderLayer);
-	}
+    // ------------------------------------------------------------------------
+    // Initialize the game
+    // ------------------------------------------------------------------------
+    initGame() 
+    {
+        // Pass device into game for setup (canvas, input, etc.)
+        this.#game.initGame(this.#device);
 
+        // Add default render layers (order defines render priority)
+        this.addLayer(gameObjectsLayer);  // Sprites / world objects
+        this.addLayer(textRenderLayer);   // UI text / HUD
+    }
+
+    // ------------------------------------------------------------------------
     // Add a render layer
-    addLayer(layer) {
+    // ------------------------------------------------------------------------
+    addLayer(layer) 
+    {
         this.#layers.push(layer);
     }
 
-    //update game logic and then render game objects and game text
-    updateGame(delta)
+    // ------------------------------------------------------------------------
+    // Update + Render
+    // ------------------------------------------------------------------------
+    updateGame(delta) 
     {
-        update(this.#dev, this.#game, delta)
-    
-        // Render each layer in order
-        for (const layer of this.#layers) 
-        {
-            layer.render(this.#dev, this.#game, delta);
+        // Update game logic first
+        updateGameLogic(this.#device, this.#game, delta);
+
+        // Render each layer in order (background → text → debug, etc.)
+        for (const layer of this.#layers) {
+            layer.render(this.#device, this.#game, delta);
         }
-        
-        //clears out key arrays to prevent errors
-        this.#dev.keys.clearFrameKeys();
+
+        // Clear per-frame input (prevents sticky key issues)
+        this.#device.keys.clearFrameKeys();
     }
 }
