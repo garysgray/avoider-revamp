@@ -44,6 +44,7 @@ function renderTextLayer(dev, game, delta) {
             dev.centerTextOnY("PRESS P TO RESUME GAME", ch * layout.pauseY);
             break;
 
+        //No current way to win game
         case gameStates.WIN:
             dev.centerTextOnY("PRESS R TO PLAY AGAIN", ch * layout.winLoseY);
             break;
