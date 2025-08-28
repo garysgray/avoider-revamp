@@ -1,64 +1,73 @@
-//big part of update cycle with in gameloop, basiclly the updating game logic part
-//game objects will be updated based on what game state they  are in 
-//user input is also update here
-//this update is called from controller in the update function
-
+//---------------------------------------------------------------
+// Update Game Logic
+// - Called each frame from the controller's update() function
+// - Handles core game logic, input responses, and state transitions
+// - Updates all game objects depending on current game state
+//---------------------------------------------------------------
 function updateGameLogic(device, game, delta)
 {		
     switch(game.state)
     {
+        //-------------------------------------------------------
+        // INIT STATE
+        // - Reset the entire game (fresh start)
+        // - Wait for user input to begin playing
+        //-------------------------------------------------------
         case gameStates.INIT:
         {
-            //this is how to reset the whole map and back to play state
+            // Reset map, player, and game objects
             game.setGame(device);           
-            //check to see if player has used input to start game
-            
-            if(device.keys.isKeyPressed(game.gameConsts.PLAY_KEY))////spacebar key
+
+            // Start game when the play key (e.g., spacebar) is pressed
+            if(device.keys.isKeyPressed(game.gameConsts.PLAY_KEY))
             {
-                //then change the state accordinly
                 game.state = gameStates.PLAY;
             }
         }
         break;
 
+        //-------------------------------------------------------
+        // PLAY STATE
+        // - Active gameplay: update player, NPCs, projectiles
+        // - Handle input, collisions, and timers
+        //-------------------------------------------------------
         case gameStates.PLAY:
         {        
-
-            //if the player has gotten a fire ammo they should be able to shoot now
+            // If in SHOOT mode, allow firing on user input (mouse/button)
             if(game.playState == playStates.SHOOT)
             {
-                //this is used to have an event like shooting something when player hits mouse button
                 checkUserInput(device, game); 
             }
-            //changes state of game when player uses input to pause game which takes us to something else
+
+            // Check if pause input is triggered
             checkforPause(device, game);
         
-            //**UPDATE Player**
-            game.player.update(device, delta);
-            //keeps player on screen
-            game.player.enforceBounds(device);
+            // --- Update Player ---
+            game.player.update(device, delta);       // movement, animation, etc.
+            game.player.enforceBounds(device);       // keep player inside screen
 
-            // Manage the shield timer:
-            // If the timer is active, update it with the elapsed time (delta).
-            // When the timer finishes, automatically switch the player from SHIELD to AVOID mode.      
+            // --- Manage Shield Timer ---
+            // If active, update it with elapsed time
+            // When expired, revert player back to AVOID mode
             if(game.timer.active)
             {
                 if(game.timer.update(delta))
                 {
-                 game.playState = playStates.AVOID;
+                    game.playState = playStates.AVOID;
                 }
             }
             
-            //**UPDATE NPC OBJECTS*           
+            // --- Update NPC Objects & Projectiles ---
             updateNPCSprites(device, game, delta);
             updateProjectiles(device, game, delta);
                       
-            //if player is not in shield mode then we apply collisions
+            // --- Collision Handling ---
+            // Only apply collisions if not shielded
             if(game.playState != playStates.SHIELD)
             {    
-                //**UPDATE COLLISIONS FUNCTIONS**
-                if(check_NPC_Collision(device, game)==false)
+                if(check_NPC_Collision(device, game) == false)
                 {
+                    // Store last safe position (for death/respawn logic)
                     game.holdX = game.player.posX;
                     game.holdY = game.player.posY;
                 }
@@ -66,60 +75,75 @@ function updateGameLogic(device, game, delta)
         }
         break;
 
+        //-------------------------------------------------------
+        // PAUSE STATE
+        // - Player is frozen in place
+        // - Wait for unpause or reset input
+        //-------------------------------------------------------
         case gameStates.PAUSE:
         {
-            //during pause hold player position set sheild time and wait for key press        
-            if(device.keys.isKeyReleased(game.gameConsts.PAUSE_KEY))//P-key
+            // Resume game on pause key release
+            if(device.keys.isKeyReleased(game.gameConsts.PAUSE_KEY))
             {	
+                // Restore player position and grant temporary shield
                 game.player.posX = game.holdX;
                 game.player.posY = game.holdY;                
-                game.playState = playStates.SHIELD
+                game.playState = playStates.SHIELD;
                 game.timer.reset(game.gameConsts.SHIELD_TIME);
+
                 game.state = gameStates.PLAY;
             }
-            //little cheat to restart game
-            if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))//R-key
+
+            // Hard reset (restart entire game)
+            if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))
             {
                 game.state = gameStates.INIT;
             }
         }
         break;
         
+        //-------------------------------------------------------
+        // WIN STATE
+        // - End of game, player won
+        // - Wait for reset to play again
+        //-------------------------------------------------------
         case gameStates.WIN:
         {
-            //check to see if player has used input to restart game
-            if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))//R-key
+            if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))
             {
-                aGame.state = gameStates.INIT;
+                game.state = gameStates.INIT;
             }
         }
         break;
         
+        //-------------------------------------------------------
+        // LOSE STATE
+        // - Player died (show death sprite at last position)
+        // - If lives remain, allow respawn
+        // - Otherwise, game over
+        //-------------------------------------------------------
         case gameStates.LOSE:
         {	
-            //this is to hold the image of the player in last location after dying
-            //its to help show the death image in there location of death on screen
+            // Freeze player at last death position
             game.player.posX = game.holdX;
             game.player.posY = game.holdY; 
             
-            //based on how many lives game over or player just dies
             if(game.lives <= 0)
             {                
-                //check to see if player has used input to restart game
-                if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))//R-key
+                // No lives left → reset game on key press
+                if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))
                 {
                     game.state = gameStates.INIT;      
                 }
             }
             else
             {
-                //check to see if player has used input to respawn player
-                if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))//R-key
+                // Respawn player (clear NPCs, grant shield)
+                if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))
                 {
-                    //clear all objects (orbs) out of arrays so that there is a fresh screen next round
-                    //projectiles are cleared when they hit an object or go off screen
-                    game.emptyAmmo();
-                    game.gameSprites.clearObjects();
+                    game.emptyAmmo();                  // clear bullets
+                    game.gameSprites.clearObjects();   // clear NPCs
+
                     game.state = gameStates.PLAY;
                     game.timer.reset(game.gameConsts.SHIELD_TIME);
                     game.playState = playStates.SHIELD;
@@ -129,5 +153,7 @@ function updateGameLogic(device, game, delta)
         break;
   
         default:
+            // Unknown state (failsafe)
+        break;
     }
 }
