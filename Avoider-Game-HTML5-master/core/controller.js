@@ -2,15 +2,15 @@
 //for example one could have 2 game objects running and controller is where one could delegate the updates to run both
 
 
-class Layer {
-    constructor(name, renderFn) {
-        this.name = name;
-        this.renderFn = renderFn;
-    }
-    render(dev, game, delta) {
-        this.renderFn(dev, game, delta);
-    }
-}
+// class Layer {
+//     constructor(name, renderFn) {
+//         this.name = name;
+//         this.renderFn = renderFn;
+//     }
+//     render(dev, game, delta) {
+//         this.renderFn(dev, game, delta);
+//     }
+// }
 
 class Controller
 {
@@ -30,10 +30,12 @@ class Controller
     get dev() { return this.#dev; }
     get game() { return this.#game; }
     
-    //get game using device object
     initGame()
 	{
         this.#game.initGame(this.#dev);
+
+        this.addLayer(gameObjectsLayer);
+        this.addLayer(textRenderLayer);
 	}
 
     // Add a render layer
@@ -45,9 +47,7 @@ class Controller
     updateGame(delta)
     {
         update(this.#dev, this.#game, delta)
-        renderGameObjects(this.#dev, this.#game, delta)
-        renderText(this.#dev, this.#game, delta)
-
+    
         // Render each layer in order
         for (const layer of this.#layers) 
         {

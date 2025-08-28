@@ -10,7 +10,7 @@ myControl.initGame();
 // FIXED STEP GAME LOOP
 // ------------------------------
 // Why do this?
-// - Keeps game logic running at a stable rate (60 updates/sec).
+// - Keeps game logic running at a stable rate (60 updates/sec).//
 // - Prevents "fast computers" from running the game faster
 //   or "slow computers" from breaking physics updates.
 // - Rendering still happens once per frame, so animation stays smooth.

@@ -1,7 +1,7 @@
 //**These Functions are called in renderGameObjects by controller
 
 //Using dev tools and game info renders gameSprites(ammo and orbs)
-function renderNPCSprites(aDev,aGame)
+function renderNPCSprites(aDev, aGame)
 {
     ////this makes a temp object of the image we want to use
     //this is so the image holder does not have to keep finding image
@@ -24,7 +24,7 @@ function renderNPCSprites(aDev,aGame)
 }
 
 //Using dev tools and game info renders projectiles(bullets)
-function renderBullets(aDev,aGame)
+function renderBullets(aDev, aGame)
 {	
     ////this makes a temp object of the image we want to use
     //this is so the image holder does not have to keep finding image
@@ -38,7 +38,7 @@ function renderBullets(aDev,aGame)
 }
 
 //Using dev tools and game info renders player using different clips based on playerState	
-function renderPlayer(aDev,aGame)
+function renderPlayer(aDev, aGame)
 {    
     tempImage = aDev.images.getImage("player")
     temp = aGame.player;
