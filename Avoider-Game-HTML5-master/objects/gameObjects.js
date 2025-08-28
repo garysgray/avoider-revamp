@@ -37,17 +37,17 @@ class GameObject
     set spaceBuffer(aSpaceBuffer){this._spaceBuffer =aSpaceBuffer;}
     set state(aState){this._state =aState;}
     
-    update(aDev,aDT)
+    update(device, delta)
 	{
 		
 	}
     
-    moveDown(aDT)
+    moveDown(delta)
 	{   
-		this._posY += this._speed * aDT;  
+		this._posY += this._speed * delta;  
 	}
     
-	movePos(newX,newY)
+	movePos(newX, newY)
 	{
 		this._posX = newX;
 		this._posY = newY;
@@ -89,29 +89,29 @@ class Player extends GameObject
     set projectileTimer(aNum){this._projectileTimer = aNum;}
     set shootDelay(aNum){this._shootDelay = aNum;}   
      
-    update(aDev,aDT)
+    update(device, delta)
 	{
 		
 	}
     //checks collision of canvas border and player position
-    borderCheck(aDev)
+    borderCheck(device)
 	{
 		if(this._posX - this._width*.5 < 0 )
 		{
 			this._posX = this._width*.5;
 		}
-		if(this._posX + this._width*.5 > aDev.canvas.width)
+		if(this._posX + this._width*.5 > device.canvas.width)
 		{	
-			this._posX = aDev.canvas.width - this._width*.5;
+			this._posX = device.canvas.width - this._width*.5;
 		}		
 		if(this._posY - this._height*.5 < 0 )
 		{
 			this._posY = this._height*.5;
 		}
 		//// the -50 is for a buffer to keep player from hitting bottom for hud
-		if(this._posY + this._height*.5 > aDev.canvas.height-50)
+		if(this._posY + this._height*.5 > device.canvas.height-50)
 		{		
-			this._posY =(aDev.canvas.height-50) - this._height*.5;
+			this._posY =(device.canvas.height-50) - this._height*.5;
 		}
 	}   
 }
@@ -120,7 +120,7 @@ class Player extends GameObject
 //they have game object functions so they can be moved around easily
 class BackDrop extends GameObject
 {
-    constructor(aWidth,aHeight,newX,newY)
+    constructor(aWidth, aHeight, newX, newY)
     {
         super();
         this._width = aWidth;
@@ -132,7 +132,7 @@ class BackDrop extends GameObject
         this._state = 0
     }
       
-    update(aDev,aDT)
+    update(device, delta)
 	{
 		
 	}

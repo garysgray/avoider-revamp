@@ -1,53 +1,60 @@
-//the main page for the avoider game
+// ============================================================================
+// Main entry point for the Avoider game
+// This file sets up the Controller, initializes the game, and runs the main loop
+// ============================================================================
 
-//controller helps set things up and directs how things should work using game
-var myControl = new Controller();
+// Create the main Controller instance
+// Controller is responsible for managing the game state, logic, and rendering
+var myController = new Controller();
 
-//init the actual game using controller 
-myControl.initGame();
+// Initialize the game through the controller
+myController.initGame();
 
-// ------------------------------
-// FIXED STEP GAME LOOP
-// ------------------------------
-// Why do this?
-// - Keeps game logic running at a stable rate (60 updates/sec).//
-// - Prevents "fast computers" from running the game faster
-//   or "slow computers" from breaking physics updates.
-// - Rendering still happens once per frame, so animation stays smooth.
+// ---------------------------------------------------------------------------
+// Fixed timestep game loop setup
+// ---------------------------------------------------------------------------
 
-// Time tracking
-let lastTime = performance.now();   // The time of the last frame
-let accumulator = 0;                // Stores leftover time between updates
-const fixedStep = 1 / 60;           // Update step = 1/60 sec (≈16.6ms)
+// Track time for each frame
+let lastTime = performance.now();   // Timestamp of the last frame (in ms)
+let accumulator = 0;                // Stores leftover time not yet simulated
+const fixedStep = 1 / 60;           // Logic update step: 1/60th of a second (~16.67ms)
 
-function gameLoop() {
+// ---------------------------------------------------------------------------
+// Main game loop
+// ---------------------------------------------------------------------------
+function gameLoop() 
+{
     
-    // 1. Measure how much real time passed since the last frame
+    // Measure elapsed real time since the last frame (delta time)
     const now = performance.now();
-    let frameTime = (now - lastTime) / 1000; // Convert ms → seconds
+    let frameTime = (now - lastTime) / 1000; // convert ms → seconds
     lastTime = now;
 
-    // Safety check: cap very large frame times
-    // (prevents the "spiral of death" if the game lags badly)
+    // Cap frame time to avoid spiral-of-death during long lags
+    //    (e.g., if a tab is backgrounded for a few seconds)
     if (frameTime > 0.25) frameTime = 0.25;
 
-    // 2. Add this frame’s time to the accumulator
+    // Add this frame’s elapsed time to the accumulator
+    //    The accumulator decides how many fixed updates should run this frame
     accumulator += frameTime;
 
-    // 3. Run the game update as many times as needed
-    // Each update advances the game by exactly fixedStep seconds
-    while (accumulator >= fixedStep)
+    // Run game updates as long as there’s enough accumulated time
+    //    Each update advances the game by exactly `fixedStep` seconds
+    while (accumulator >= fixedStep) 
     {
-        myControl.updateGame(fixedStep);
-        accumulator -= fixedStep;
+        myController.updateGame(fixedStep);  // Update logic + rendering layers
+        accumulator -= fixedStep;         // Remove one step from accumulator
     }
 
-    //for debugging game states and what have you
-    //myControl.dev.debugText(myGame.splashScreen.posY, 150, 50);
+    // Optional: Debugging overlay
+    // Uncomment for real-time debug text (e.g., splash screen position)
+    // myController.device.debugText(myGame.splashScreen.posY, 150, 50);
 
-    // 4. Request the next frame
+    // Request the next frame from the browser
     requestAnimationFrame(gameLoop);
 }
 
-// Kick it off
+// ---------------------------------------------------------------------------
+// Start the loop
+// ---------------------------------------------------------------------------
 gameLoop();
