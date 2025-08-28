@@ -1,141 +1,140 @@
-//game object is the super class and player and backdrops are children
-//they for now just hold info with a few functions
-//will probaly move more functionalaty into them over time
-//for example actually utilize ther update functions
+// --------------------------------------------
+// Base GameObject + Child Classes (Player, BackDrop)
+// --------------------------------------------
+// GameObject is the base class for all in-game entities
+// - Tracks position, size, speed, and state
+// - Provides movement and collision functions
+//
+// Player extends GameObject
+// - Adds shooting mechanics (timer + delay)
+// - Enforces screen boundaries
+//
+// BackDrop extends GameObject
+// - Used for static/scrolling backgrounds or decorative elements
+// --------------------------------------------
 
-//your basic object for keeping track of positions and speed
-//has a collision function, might get more
-class GameObject
-{
-    constructor(aName, aWidth, aHeight, newX, newY, aSpeed)
-    {
-        this._name = aName;	
-        this._width = aWidth;
-        this._height = aHeight;
-        this._posX = newX;
-        this._posY = newY;
-        this._speed = aSpeed;
-        this._spaceBuffer = 12;
-        this._state = 0
-    } 
-    
-    get name(){return this._name;}
-    get width(){return this._width;}
-    get height(){return this._height;}
-    get posX(){return this._posX;}
-    get posY(){return this._posY;}
-    get speed(){return this._speed;}
-    get spaceBuffer(){return this._spaceBuffer;}
-    get state(){return this._state;}
-    
-    set name(aName){this._name =aName;}
-    set width(aWidth){this._width =aWidth;}
-    set height(aHeight){this._height =aHeight;}
-    set posX(aPosX){this._posX =aPosX;}
-    set posY(aPosY){this._posY =aPosY;}
-    set speed(aSpeed){this._speed =aSpeed;}
-    set spaceBuffer(aSpaceBuffer){this._spaceBuffer =aSpaceBuffer;}
-    set state(aState){this._state =aState;}
-    
-    update(device, delta)
-	{
-		
-	}
-    
-    moveDown(delta)
-	{   
-		this._posY += this._speed * delta;  
-	}
-    
-	movePos(newX, newY)
-	{
-		this._posX = newX;
-		this._posY = newY;
-	}
-       
-	checkObjCollision(aPosX, aPosY, aWidth, aHeight)
-	{
-        if(this._posX + this._width*.5-this._spaceBuffer > aPosX - aWidth*.5 && this._posX-this._width*.5-this._spaceBuffer < aPosX + aWidth*.5
-        &&
-        this._posY + this._height*.5-this._spaceBuffer > aPosY - aHeight*.5 && this._posY- this._height*.5-this._spaceBuffer < aPosY + aHeight*.5 )   
-        {
-            return true;
+class GameObject {
+    #name;
+    #width;
+    #height;
+    #posX;
+    #posY;
+    #speed;
+    #spaceBuffer;   // Collision margin
+    #state;
+
+    constructor(name, width, height, posX, posY, speed) {
+        this.#name = name;
+        this.#width = width;
+        this.#height = height;
+        this.#posX = posX;
+        this.#posY = posY;
+        this.#speed = speed;
+
+        this.#spaceBuffer = 12; // TODO: remove or parameterize later
+        this.#state = 0;
+    }
+
+    // ---- Getters ----
+    get name() { return this.#name; }
+    get width() { return this.#width; }
+    get height() { return this.#height; }
+    get posX() { return this.#posX; }
+    get posY() { return this.#posY; }
+    get speed() { return this.#speed; }
+    get spaceBuffer() { return this.#spaceBuffer; }
+    get state() { return this.#state; }
+
+    // ---- Setters ----
+    set name(v) { this.#name = v; }
+    set width(v) { this.#width = v; }
+    set height(v) { this.#height = v; }
+    set posX(v) { this.#posX = v; }
+    set posY(v) { this.#posY = v; }
+    set speed(v) { this.#speed = v; }
+    set spaceBuffer(v) { this.#spaceBuffer = v; }
+    set state(v) { this.#state = v; }
+
+    // Placeholder update (to be overridden by child classes if needed)
+    update(device, delta) {}
+
+    // Move object down at its speed
+    moveDown(delta) {
+        this.#posY += this.#speed * delta;
+    }
+
+    // Teleport object to new position
+    movePos(newX, newY) {
+        this.#posX = newX;
+        this.#posY = newY;
+    }
+
+    // Axis-Aligned Bounding Box (AABB) collision check
+    checkObjCollision(otherX, otherY, otherWidth, otherHeight) {
+        return (
+            this.#posX + this.#width * 0.5 - this.#spaceBuffer > otherX - otherWidth * 0.5 &&
+            this.#posX - this.#width * 0.5 - this.#spaceBuffer < otherX + otherWidth * 0.5 &&
+            this.#posY + this.#height * 0.5 - this.#spaceBuffer > otherY - otherHeight * 0.5 &&
+            this.#posY - this.#height * 0.5 - this.#spaceBuffer < otherY + otherHeight * 0.5
+        );
+    }
+}
+
+// --------------------------------------------
+// Player
+// --------------------------------------------
+// Adds shooting cooldown system + screen boundary enforcement
+// Inherits base movement + collision functions
+// --------------------------------------------
+class Player extends GameObject {
+    #projectileTimer;
+    #shootDelay;
+
+    constructor(width, height, x, y, speed) {
+        super("Player", width, height, x, y, speed);
+
+        this.#projectileTimer = Date.now(); // Tracks last fired shot
+        this.#shootDelay = 200;             // Minimum ms between shots
+    }
+
+    // ---- Getters/Setters ----
+    get projectileTimer() { return this.#projectileTimer; }
+    get shootDelay() { return this.#shootDelay; }
+    set projectileTimer(v) { this.#projectileTimer = v; }
+    set shootDelay(v) { this.#shootDelay = v; }
+
+    // Placeholder update for movement/shooting logic
+    update(device, delta) {}
+
+    // Prevents player from leaving screen bounds
+    enforceBounds(device) {
+        const canvas = device.canvas;
+        const halfW = this.width * 0.5;
+        const halfH = this.height * 0.5;
+        const hudBuffer = 50; // Reserved space at bottom (HUD zone)
+
+        if (this.posX - halfW < 0) this.posX = halfW;
+        if (this.posX + halfW > canvas.width) this.posX = canvas.width - halfW;
+        if (this.posY - halfH < 0) this.posY = halfH;
+        if (this.posY + halfH > canvas.height - hudBuffer) {
+            this.posY = (canvas.height - hudBuffer) - halfH;
         }
-        
-        return false;		
-	}   
-}
-
-//player has a timer and delay  for shooting bullets
-class Player extends GameObject
-{
-    constructor(aWidth, aHeight, newX, newY, aSpeed)
-    {
-        super();
-        this._width = aWidth;
-        this._height = aHeight;
-        this._posX = newX;
-        this._posY = newY;
-        this._speed = aSpeed
-        
-        this._state = 0;       
-        this._projectileTimer = Date.now();
-        this._shootDelay = 200;
-        
     }
-    get projectileTimer(){return this._projectileTimer;}    
-    get shootDelay(){return this._shootDelay;}
-    
-    set projectileTimer(aNum){this._projectileTimer = aNum;}
-    set shootDelay(aNum){this._shootDelay = aNum;}   
-     
-    update(device, delta)
-	{
-		
-	}
-    //checks collision of canvas border and player position
-    borderCheck(device)
-	{
-		if(this._posX - this._width*.5 < 0 )
-		{
-			this._posX = this._width*.5;
-		}
-		if(this._posX + this._width*.5 > device.canvas.width)
-		{	
-			this._posX = device.canvas.width - this._width*.5;
-		}		
-		if(this._posY - this._height*.5 < 0 )
-		{
-			this._posY = this._height*.5;
-		}
-		//// the -50 is for a buffer to keep player from hitting bottom for hud
-		if(this._posY + this._height*.5 > device.canvas.height-50)
-		{		
-			this._posY =(device.canvas.height-50) - this._height*.5;
-		}
-	}   
 }
 
-//utilized for showing things in game like billboards are backgrounds
-//they have game object functions so they can be moved around easily
-class BackDrop extends GameObject
-{
-    constructor(aWidth, aHeight, newX, newY)
-    {
-        super();
-        this._width = aWidth;
-        this._height = aHeight;
-        this._posX = newX;
-        this._posY = newY;
-        
-        this._speed = 0
-        this._state = 0
+// --------------------------------------------
+// BackDrop
+// --------------------------------------------
+// Decorative or background objects
+// Inherits positioning but speed is always 0
+// Could later support parallax scrolling or animation
+// --------------------------------------------
+class BackDrop extends GameObject {
+    constructor(width, height, x, y) {
+        super("BackDrop", width, height, x, y, 0);
     }
-      
-    update(device, delta)
-	{
-		
-	}
+
+    update(device, delta) {
+        // Optional: background movement/scrolling
+    }
 }
-
-

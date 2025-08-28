@@ -44,7 +44,7 @@ class Device
     //----set Functions----
     set mouseDown(newState){this._mouseDown = newState;}
     
-    setupMouse(sprite,aDev)
+    setupMouse(sprite, aDev)
 	{       
 		window.addEventListener('mousedown', (e) => {
         this.#mouseDown = true; // update private field directly
@@ -56,8 +56,8 @@ class Device
         
 		window.addEventListener("mousemove", function(mouseEvent) 
 		{
-			sprite._posX = mouseEvent.clientX - canvas.offsetLeft;
-			sprite._posY = mouseEvent.clientY - canvas.offsetTop;	
+			sprite.posX = mouseEvent.clientX - canvas.offsetLeft;
+			sprite.posY = mouseEvent.clientY - canvas.offsetTop;	
 		});
 	}
     
