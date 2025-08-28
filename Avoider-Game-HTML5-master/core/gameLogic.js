@@ -35,7 +35,9 @@ function updateGameLogic(device, game, delta)
         
             //**UPDATE Player**
             game.player.update(device, delta);
-            game.player.borderCheck(device);
+            //keeps player on screen
+            game.player.enforceBounds(device);
+
             // Manage the shield timer:
             // If the timer is active, update it with the elapsed time (delta).
             // When the timer finishes, automatically switch the player from SHIELD to AVOID mode.      

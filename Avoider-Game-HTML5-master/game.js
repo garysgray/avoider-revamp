@@ -17,7 +17,8 @@
 // -----------------------------
 // Global Constants
 // -----------------------------
-class GameConsts {
+class GameConsts 
+{
     // ---- Private fields ----
     #BULLET_SPEED = 550;
     #ORB_SPEED = 200;
@@ -86,7 +87,8 @@ const playStates = Object.freeze({
 // -----------------------------
 // Game Class
 // -----------------------------
-class Game {
+class Game 
+{
     // ---- Private fields ----
     #gameConsts;
     #projectiles;
@@ -113,7 +115,8 @@ class Game {
     #holdY;
 
     // ---- Constructor ----
-    constructor() {
+    constructor() 
+    {
         // Core systems
         this.#gameConsts   = new GameConsts();
         this.#projectiles  = new ObjHolder();
@@ -198,7 +201,8 @@ class Game {
     // -----------------------------
     // Game Setup
     // -----------------------------
-    initGame(device) {
+    initGame(device) 
+    {
         // Input
         device.keys.initKeys();
 
@@ -229,7 +233,8 @@ class Game {
     }
     
     // Reset values each time a game starts
-    setGame(device) { 
+    setGame(device) 
+    { 
         this.score     = 0;
         this.lives     = 5;
         this.ammo      = 0;
@@ -242,7 +247,8 @@ class Game {
     // -----------------------------
     // Player Input Binding
     // -----------------------------
-    setMouseToPlayer(device, aPlayer) {
+    setMouseToPlayer(device, aPlayer) 
+    {
         device.setupMouse(aPlayer, device);
     }  
 }
