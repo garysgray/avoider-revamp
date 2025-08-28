@@ -60,38 +60,27 @@ function renderBullets(device, game)
 //---------------------------------------------------------------
 function renderPlayer(device, game)
 {
-    // Preload player sprite sheet
-    let playerImage = device.images.getImage("player");
-
     // Shortcut reference to player object
-    let playerObj = game.player;
+    const playerObj = game.player;
 
     // Render player based on their current playState
     switch(game.playState)
     {
         case playStates.AVOID:
-            game.player.state = playStates.AVOID;
-            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
-        break;
-
         case playStates.SHIELD:
-            game.player.state = playStates.SHIELD;
-            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
-        break;
-
         case playStates.SHOOT:
-            game.player.state = playStates.SHOOT;
-            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
-        break;
-
         case playStates.SUPER:
-            game.player.state = playStates.SUPER;
-            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
-        break;
-
         case playStates.DEATH:
-            game.player.state = playStates.DEATH;
-            device.renderClip(playerImage, playerObj.posX, playerObj.posY, playerObj.width, playerObj.height, playerObj.state);
+            playerObj.state = game.playState;
         break;
     }
+
+    device.renderClip(
+        device.images.getImage("player"),
+        playerObj.posX,
+        playerObj.posY,
+        playerObj.width,
+        playerObj.height,
+        playerObj.state
+    );
 }
