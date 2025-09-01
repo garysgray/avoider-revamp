@@ -38,8 +38,17 @@ class GameConsts
     #BUFFER_2 = 20;
     #RND_RATIO = 20;
 
-    #PLAYER_SPRITE_WIDTH = 32;
-    #PLAYER_SPRITE_HEIGHT = 29;
+    #PLAYER_SPRITE_W = 32;
+    #PLAYER_SPRITE_H = 29;
+
+    #ORB_SPRITE_W = 29;
+    #ORB_SPRITE_H = 29;
+
+    #BULLET_SPRITE_W = 12;
+    #BULLET_SPRITE_H = 12;
+
+    #FIRE_AMMO_SPRITE_W = 20;
+    #FIRE_AMMO_SPRITE_H = 20;
 
     // ---- Getters (expose constants safely) ----
     get BULLET_SPEED()   { return this.#BULLET_SPEED; }
@@ -61,8 +70,17 @@ class GameConsts
     get BUFFER_2()       { return this.#BUFFER_2; }
     get RND_RATIO()      { return this.#RND_RATIO; }
 
-    get PLAYER_SPRITE_WIDTH()   { return this.#PLAYER_SPRITE_WIDTH; }
-    get PLAYER_SPRITE_HEIGHT()  { return this.#PLAYER_SPRITE_HEIGHT; }
+    get PLAYER_SPRITE_W()   { return this.#PLAYER_SPRITE_W; }
+    get PLAYER_SPRITE_H()  { return this.#PLAYER_SPRITE_H; }
+
+    get ORB_SPRITE_W()   { return this.#ORB_SPRITE_W; }
+    get ORB_SPRITE_H()  { return this.#ORB_SPRITE_H; }
+
+    get BULLET_SPRITE_W()   { return this.#BULLET_SPRITE_W; }
+    get BULLET_SPRITE_H()  { return this.#BULLET_SPRITE_H; }
+
+    get FIRE_AMMO_SPRITE_W()   { return this.#FIRE_AMMO_SPRITE_W; }
+    get FIRE_AMMO_SPRITE_H()  { return this.#FIRE_AMMO_SPRITE_H; }
 }
 
 // -----------------------------
@@ -82,6 +100,20 @@ const playStates = Object.freeze({
     SHOOT: 2,   // Firing bullets
     SUPER: 3,   // Powered-up state
     DEATH: 4    // Player destruction
+});
+
+const spriteTypes = Object.freeze({
+    PLAYER: "player",
+    ORB: "orb",
+    FIRE_AMMO: "fireAmmo",
+    BULLET: "bullet"
+});
+
+const soundTypes = Object.freeze({
+    HIT: "hit",
+    GET: "get",
+    HURT: "hurt",
+    SHOOT: "shoot"
 });
 
 // -----------------------------
@@ -130,7 +162,7 @@ class Game
         //FIX may be part of bug when player goes to corner
         // Player positioned near lower part of the screen
         this.#player = new Player(
-            this.#gameConsts.PLAYER_SPRITE_WIDTH, this.#gameConsts.PLAYER_SPRITE_HEIGHT, 
+            this.#gameConsts.PLAYER_SPRITE_W, this.#gameConsts.PLAYER_SPRITE_H, 
             this.#canvasWidth * .5, 
             this.#canvasHeight - (this.#canvasHeight * .15)
         ); 
@@ -186,13 +218,13 @@ class Game
     set state(v)        { this.#state = v; }
     set score(v)        { this.#score = v; }
     set playState(v)    { this.#playState = v; }
-    set holdX(v)        { this._holdX = v; }
-    set holdY(v)        { this._holdY = v; }
+    set holdX(v)        { this.#holdX = v; }
+    set holdY(v)        { this.#holdY = v; }
     set lives(v)        { this.#lives = v; }
     set ammo(v)         { this.#ammo = v; }
 
     // Convenience modifiers
-    emptyAmmo()         { this._ammo = 0; }    
+    emptyAmmo()         { this.#ammo = 0; }    
     increaseAmmo(a)     { this.#ammo += a; }
     decreaseAmmo(a)     { this.#ammo -= a; }
     decreaseLives(a)    { this.#lives -= a; }

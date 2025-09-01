@@ -98,15 +98,17 @@ class Player extends GameObject
 
     constructor(width, height, x, y, speed) 
     {
-        super("Player", width, height, x, y, speed);
-
+        super(spriteTypes.PLAYER, width, height, x, y, speed);
+        //FIX not sure about useing date.now
         this.#projectileTimer = Date.now(); // Tracks last fired shot
+        //FIX magic number
         this.#shootDelay = 200;             // Minimum ms between shots
     }
 
     // ---- Getters/Setters ----
     get projectileTimer() { return this.#projectileTimer; }
     get shootDelay() { return this.#shootDelay; }
+    
     set projectileTimer(v) { this.#projectileTimer = v; }
     set shootDelay(v) { this.#shootDelay = v; }
 

@@ -64,8 +64,7 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Game object layers (player, NPCs, projectiles) now modular  
 - Text rendering is a separate `textRenderLayer`  
 - Layers access game state and device, allowing dynamic rendering  
-- Layers easily added / removed without changing the main update loop  
-- New **background rendering helper** (`renderBackground`) removes repetition  
+- Layers easily added / removed without changing the main update loop   
 
 ### Game Logic & Rendering
 - `updateGame()` calls game logic and iterates layers for rendering  

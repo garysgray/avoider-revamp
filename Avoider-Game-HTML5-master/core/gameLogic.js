@@ -32,48 +32,32 @@ function updateGameLogic(device, game, delta)
         // - Handle input, collisions, and timers
         //-------------------------------------------------------
         case gameStates.PLAY:
-        {        
-            // If in SHOOT mode, allow firing on user input (mouse/button)
-            if(game.playState == playStates.SHOOT)
-            {
-                checkUserInput(device, game); 
-            }
+{
+    // --- Handle Input ---
+    checkUserKeyInput(device, game);
 
-            // Check if pause input is triggered
-            checkforPause(device, game);
-        
-            // --- Update Player ---
-            game.player.update(device, delta);       // movement, animation, etc.
-            game.player.enforceBounds(device);       // keep player inside screen
+    // --- Update Player ---
+    game.player.update(device, delta);
+    game.player.enforceBounds(device);
 
-            // --- Manage Shield Timer ---
-            // If active, update it with elapsed time
-            // When expired, revert player back to AVOID mode
-            if(game.timer.active)
-            {
-                if(game.timer.update(delta))
-                {
-                    game.playState = playStates.AVOID;
-                }
-            }
-            
-            // --- Update NPC Objects & Projectiles ---
-            updateNPCSprites(device, game, delta);
-            updateProjectiles(device, game, delta);
-                      
-            // --- Collision Handling ---
-            // Only apply collisions if not shielded
-            if(game.playState != playStates.SHIELD)
-            {    
-                if(check_NPC_Collision(device, game) == false)
-                {
-                    // Store last safe position (for death/respawn logic)
-                    game.holdX = game.player.posX;
-                    game.holdY = game.player.posY;
-                }
-            }
+    // --- Manage Shield Timer ---
+    if (game.timer.active && game.timer.update(delta)) {
+        game.playState = playStates.AVOID;
+    }
+
+    // --- Update NPCs & Projectiles ---
+    updateNPCSprites(device, game, delta);
+    updateProjectiles(device, game, delta);
+
+    // --- Collision Handling ---
+    if (game.playState !== playStates.SHIELD) {
+        if (!check_NPC_Collision(device, game)) {
+            game.holdX = game.player.posX;
+            game.holdY = game.player.posY;
         }
-        break;
+    }
+}
+break;
 
         //-------------------------------------------------------
         // PAUSE STATE
