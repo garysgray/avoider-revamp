@@ -93,27 +93,78 @@ class GameObject
 // --------------------------------------------
 class Player extends GameObject 
 {
-    #projectileTimer;
-    #shootDelay;
+
+    #shootCooldownTimer; // Timer measured in seconds
 
     constructor(width, height, x, y, speed) 
     {
         super(spriteTypes.PLAYER, width, height, x, y, speed);
-        //FIX not sure about useing date.now
-        this.#projectileTimer = Date.now(); // Tracks last fired shot
-        //FIX magic number
-        this.#shootDelay = 200;             // Minimum ms between shots
+
+
+        this.#shootCooldownTimer = new Timer(0);
+
     }
 
     // ---- Getters/Setters ----
-    get projectileTimer() { return this.#projectileTimer; }
-    get shootDelay() { return this.#shootDelay; }
-    
-    set projectileTimer(v) { this.#projectileTimer = v; }
-    set shootDelay(v) { this.#shootDelay = v; }
+    get shootCooldownTimer() { return this.#shootCooldownTimer; }
+
+
+    tryShoot(device, game)
+    {
+        if (game.playState !== playStates.SHOOT) return false;
+        
+
+        if (this.#shootCooldownTimer.active) return false;
+        
+
+            //FIX should player have ammo??
+        if (game.ammo <= 0)
+        {
+            game.playState = playStates.AVOID;
+            return false;
+        }
+
+        // INPUT: mouse donwn or space pressed this frame
+        const firePressed = device.mouseDown  || device.keys.isKeyPressed(game.gameConsts.PLAY_KEY)
+
+        if (!firePressed) return false;
+        
+        const bullet = new GameObject(
+            spriteTypes.BULLET,
+            game.gameConsts.BULLET_SPRITE_W,
+            game.gameConsts.BULLET_SPRITE_H,
+            this.posX,
+            this.posY,
+            game.gameConsts.BULLET_SPEED
+        );
+
+        //FIX do this in bullet?
+        // Center adjustment
+        bullet.posX -= bullet.width * 0.5;
+        bullet.posY += bullet.height * 0.5;
+
+        game.projectiles.addObject(bullet);
+
+        // consume ammo & start coldown
+        game.decreaseAmmo(1);
+        this.#shootCooldownTimer.reset(game.gameConsts.SHOOT_COOLDOWN);
+
+        // Play sound effect
+        device.audio.playSound(soundTypes.SHOOT);
+        return true;
+    }
 
     // Placeholder update for movement/shooting logic
-    update(device, delta) {}
+    update(device, delta, game) 
+    {
+        // Update cooldown timer
+        this.#shootCooldownTimer.update(delta);
+        this.enforceBounds(device);
+
+        // Handle movement/animation here if needed...
+        this.tryShoot(device, game);
+        
+    }
 
     // Prevents player from leaving screen bounds
     enforceBounds(device) 

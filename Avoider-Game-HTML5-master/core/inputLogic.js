@@ -14,49 +14,24 @@
  * Enforces projectile cooldown (shootDelay).
  * Creates a new bullet when allowed and decreases ammo.
  */
-function checkForFireButton(device, game) 
-{
-    const canShoot = 
-        (device.mouseDown || device.keys.isKeyPressed(game.gameConsts.PLAY_KEY)) &&
-        (Date.now() - game.player.projectileTimer > game.player.shootDelay);
-
-    if (canShoot)
-    {
-        // Create projectile at player's position
-        const bullet = new GameObject(spriteTypes.BULLET, game.gameConsts.BULLET_SPRITE_W, game.gameConsts.BULLET_SPRITE_H, game.player.posX, game.player.posY, game.gameConsts.BULLET_SPEED);
-
-        // Center adjustment
-        bullet.posX -= bullet.width * 0.5;
-        bullet.posY += bullet.height * 0.5;
-
-        game.projectiles.addObject(bullet);
-
-        // Reset player shoot timer
-        game.player.projectileTimer = Date.now();
-
-        // Play sound effect
-        device.audio.playSound(soundTypes.SHOOT);
-
-        // Ammo check
-        if (game.ammo <= 0) {
-            game.playState = playStates.AVOID;
-        } else {
-            game.decreaseAmmo(1);
-        }
-    }
-}
 
 /**
  * Handles pause/unpause input.
  * Stores player position when paused and restores state on resume.
  */
-function checkforPause(device, game) {
-    if (device.keys.isKeyReleased(game.gameConsts.PAUSE_KEY)) {
-        if (game.state === gameStates.PLAY) {
+
+function checkforPause(device, game) 
+{
+    if (device.keys.isKeyReleased(game.gameConsts.PAUSE_KEY)) 
+    {
+        if (game.state === gameStates.PLAY) 
+        {
             game.holdX = game.player.posX;
             game.holdY = game.player.posY;
             game.state = gameStates.PAUSE;
-        } else if (game.state === gameStates.PAUSE) {
+        } 
+        else if (game.state === gameStates.PAUSE) 
+        {
             game.state = gameStates.PLAY;
         }
     }
@@ -64,13 +39,6 @@ function checkforPause(device, game) {
 
 function checkUserKeyInput(device, game)
 {
-    // If in SHOOT mode, allow firing on user input (mouse/button)
-     if(game.playState == playStates.SHOOT)
-    {
-        checkForFireButton(device, game); 
-    }
-
-    // Check if pause input is triggered
     checkforPause(device, game);
 }
 
@@ -86,7 +54,7 @@ function checkUserKeyInput(device, game)
  * - Runs collision check against NPCs.
  */
 function updateProjectiles(device, game, delta)
- {
+{
     for (let i = game.projectiles.getSize() - 1; i >= 0; i--)  
         {
         const proj = game.projectiles.getIndex(i);
@@ -111,17 +79,21 @@ function updateProjectiles(device, game, delta)
  * - FireAmmo (rare)
  * Ensures no overlapping spawns and removes off-screen sprites.
  */
-function updateNPCSprites(device, game, delta) {
+function updateNPCSprites(device, game, delta) 
+{
     // Spawn orb
-    if (Math.random() < 1 / game.gameConsts.RND_RATIO) {
+    if (Math.random() < 1 / game.gameConsts.RND_RATIO) 
+    {
         let rndXValue = Math.floor(Math.random() * ((device.canvas.width - game.gameConsts.BUFFER_1) - game.gameConsts.BUFFER_2 + 1));
         const orb = new GameObject(spriteTypes.ORB, game.gameConsts.ORB_SPRITE_W, game.gameConsts.ORB_SPRITE_H, rndXValue, 0, game.gameConsts.ORB_SPEED);
 
         // Prevent overlap with existing NPCs
-        for (let i = 0; i < game.gameSprites.getSize(); i++) {
+        for (let i = 0; i < game.gameSprites.getSize(); i++) 
+        {
             let count = 0;
             let temp = game.gameSprites.getIndex(i);
-            while (orb.checkObjCollision(temp.posX, temp.posY, temp.width, temp.height)) {
+            while (orb.checkObjCollision(temp.posX, temp.posY, temp.width, temp.height)) 
+            {
                 if (count > 3) break;
                 rndXValue = Math.floor(Math.random() * ((device.canvas.width - (game.gameConsts.BUFFER_1 * count)) - (game.gameConsts.BUFFER_2 * count) + 1));
                 orb.movePos(rndXValue, 0);
@@ -132,15 +104,18 @@ function updateNPCSprites(device, game, delta) {
     }
 
     // Spawn fireAmmo
-    if (Math.random() < 1 / 99) {
+    if (Math.random() < 1 / 99) 
+    {
         let rndXValue = Math.floor(Math.random() * ((device.canvas.width - game.gameConsts.BUFFER_1) - game.gameConsts.BUFFER_2 + 1));
         const fireAmmo = new GameObject(spriteTypes.FIRE_AMMO, game.gameConsts.FIRE_AMMO_SPRITE_W, game.gameConsts.FIRE_AMMO_SPRITE_H, rndXValue, 0, game.gameConsts.ORB_SPEED);
 
         // Prevent overlap with existing NPCs
-        for (let i = 0; i < game.gameSprites.getSize(); i++) {
+        for (let i = 0; i < game.gameSprites.getSize(); i++) 
+        {
             let count = 0;
             let temp = game.gameSprites.getIndex(i);
-            while (fireAmmo.checkObjCollision(temp.posX, temp.posY, temp.width, temp.height)) {
+            while (fireAmmo.checkObjCollision(temp.posX, temp.posY, temp.width, temp.height)) 
+            {
                 if (count > 3) break;
                 rndXValue = Math.floor(Math.random() * ((device.canvas.width - (game.gameConsts.BUFFER_1 * count)) - (game.gameConsts.BUFFER_2 * count) + 1));
                 fireAmmo.movePos(rndXValue, 0);
@@ -152,14 +127,15 @@ function updateNPCSprites(device, game, delta) {
 
     // Update NPC positions, remove off-screen
    for (let i = game.gameSprites.getSize() - 1; i >= 0; i--)  
-        {
+   {
         const npc = game.gameSprites.getIndex(i);
         npc.moveDown(delta);
 
-        if (npc.posY > device.canvas.height - 100) {
+        if (npc.posY > device.canvas.height - 100) 
+        {
             game.gameSprites.subObject(i);
         }
-    }
+   }
 }
 
 

@@ -32,32 +32,35 @@ function updateGameLogic(device, game, delta)
         // - Handle input, collisions, and timers
         //-------------------------------------------------------
         case gameStates.PLAY:
-{
-    // --- Handle Input ---
-    checkUserKeyInput(device, game);
+        {
+            // --- Handle Input ---
+            checkUserKeyInput(device, game);
 
-    // --- Update Player ---
-    game.player.update(device, delta);
-    game.player.enforceBounds(device);
+            // --- Update Player ---
+            game.player.update(device, delta, game);
 
-    // --- Manage Shield Timer ---
-    if (game.timer.active && game.timer.update(delta)) {
-        game.playState = playStates.AVOID;
-    }
+            // Shield timer (seconds-based)
+            if (game.timer.active) 
+            {
+                if (game.timer.update(delta)) 
+                {
+                    game.playState = playStates.AVOID;
+                }
+            }
 
-    // --- Update NPCs & Projectiles ---
-    updateNPCSprites(device, game, delta);
-    updateProjectiles(device, game, delta);
+            // --- Update NPCs & Projectiles ---
+            updateNPCSprites(device, game, delta);
+            updateProjectiles(device, game, delta);
 
-    // --- Collision Handling ---
-    if (game.playState !== playStates.SHIELD) {
-        if (!check_NPC_Collision(device, game)) {
-            game.holdX = game.player.posX;
-            game.holdY = game.player.posY;
+            // --- Collision Handling ---
+            if (game.playState !== playStates.SHIELD) {
+                if (!check_NPC_Collision(device, game)) {
+                    game.holdX = game.player.posX;
+                    game.holdY = game.player.posY;
+                }
+            }
         }
-    }
-}
-break;
+        break;
 
         //-------------------------------------------------------
         // PAUSE STATE

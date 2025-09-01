@@ -5,7 +5,7 @@
 
 // Create the main Controller instance
 // Controller is responsible for managing the game state, logic, and rendering
-var myController = new Controller();
+let myController = new Controller();
 
 // Initialize the game through the controller
 myController.initGame();

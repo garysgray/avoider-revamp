@@ -50,6 +50,8 @@ class GameConsts
     #FIRE_AMMO_SPRITE_W = 20;
     #FIRE_AMMO_SPRITE_H = 20;
 
+    #SHOOT_COOLDOWN = 0.2; // 200ms
+
     // ---- Getters (expose constants safely) ----
     get BULLET_SPEED()   { return this.#BULLET_SPEED; }
     get ORB_SPEED()      { return this.#ORB_SPEED; }
@@ -64,6 +66,8 @@ class GameConsts
 
     get AMMO_AMOUNT()    { return this.#AMMO_AMOUNT; }
     get SCORE_INCREASE() { return this.#SCORE_INCREASE; }
+
+    get SHOOT_COOLDOWN() { return this.#SHOOT_COOLDOWN; }
 
     //FIX look into getting rid or using better
     get BUFFER_1()       { return this.#BUFFER_1; }

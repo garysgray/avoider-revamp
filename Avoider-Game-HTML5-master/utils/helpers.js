@@ -364,14 +364,14 @@ class Sprite
 
 class Timer
 {
-    #duration;   // how long one cycle lasts (ms)
-    #timeLeft;   // time remaining in current cycle
+    #duration;   // seconds for one cycle
+    #timeLeft;   // seconds remaining
     #active;     // is the timer running?
 
-    constructor(duration)
+    constructor(durationSeconds)
     {
-        this.#duration = duration;
-        this.#timeLeft = duration;
+        this.#duration = durationSeconds;
+        this.#timeLeft = durationSeconds;
         this.#active = false;
     }
     
@@ -390,17 +390,19 @@ class Timer
         this.#active = false;
     }
 
-    reset(duration = this.#duration) 
+    reset(durationSeconds = this.#duration) 
     {
-        this.#duration = duration;
+        this.#duration = durationSeconds;
         this.start();
     }
     
-    update(delta) {
+    update(delta) 
+    {
         if (!this.#active) return false;
 
         this.#timeLeft -= delta;
-        if (this.#timeLeft <= 0) {
+        if (this.#timeLeft <= 0) 
+        {
             this.#active = false;
             return true; // signal "finished"
         }
