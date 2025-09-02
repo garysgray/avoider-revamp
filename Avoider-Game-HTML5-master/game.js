@@ -22,6 +22,11 @@ class GameConsts
     // ---- Private fields ----
     #BULLET_SPEED = 550;
     #ORB_SPEED = 200;
+    #AMMO_SPEED = 150;
+
+    #ORB_SPAWN_RATIO = 20;
+    #AMMO_SPAWN_RATIO = 200
+    
     #SHIELD_TIME = 3;
 
     #PLAY_KEY = "Space";
@@ -36,7 +41,7 @@ class GameConsts
 
     #BUFFER_1 = 10;
     #BUFFER_2 = 20;
-    #RND_RATIO = 20;
+    
 
     #PLAYER_SPRITE_W = 32;
     #PLAYER_SPRITE_H = 29;
@@ -52,9 +57,13 @@ class GameConsts
 
     #SHOOT_COOLDOWN = 0.2; // 200ms
 
+    #SPAWN_ATTEMPTS = 5;
+    
+
     // ---- Getters (expose constants safely) ----
     get BULLET_SPEED()   { return this.#BULLET_SPEED; }
     get ORB_SPEED()      { return this.#ORB_SPEED; }
+    get AMMO_SPEED()      { return this.#AMMO_SPEED; }
     get SHIELD_TIME()    { return this.#SHIELD_TIME; }
 
     get PLAY_KEY()       { return this.#PLAY_KEY; }
@@ -69,10 +78,13 @@ class GameConsts
 
     get SHOOT_COOLDOWN() { return this.#SHOOT_COOLDOWN; }
 
+    get SPAWN_ATTEMPTS() { return this.#SPAWN_ATTEMPTS; }
+
     //FIX look into getting rid or using better
     get BUFFER_1()       { return this.#BUFFER_1; }
     get BUFFER_2()       { return this.#BUFFER_2; }
-    get RND_RATIO()      { return this.#RND_RATIO; }
+    get ORB_SPAWN_RATIO()      { return this.#ORB_SPAWN_RATIO; }
+    get AMMO_SPAWN_RATIO()      { return this.#AMMO_SPAWN_RATIO; }
 
     get PLAYER_SPRITE_W()   { return this.#PLAYER_SPRITE_W; }
     get PLAYER_SPRITE_H()  { return this.#PLAYER_SPRITE_H; }

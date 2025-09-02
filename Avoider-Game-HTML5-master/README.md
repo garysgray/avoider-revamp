@@ -61,6 +61,7 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Clearer separation of **game logic** vs **rendering**  
 - Safer array/object handling with helper methods  
 - Planning step-by-step **collision system cleanup** as next major milestone  
+- Spawnning of NPC's much improved, less repetative code
 
 ---
 

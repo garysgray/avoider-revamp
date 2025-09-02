@@ -39,7 +39,8 @@ function checkforPause(device, game)
  * - Delegates pause handling to checkforPause().
  * - (Future) Can expand with other global input checks.
  */
-function checkUserKeyInput(device, game) {     
+function checkUserKeyInput(device, game) 
+{     
     checkforPause(device, game); 
 }   
 
@@ -91,49 +92,12 @@ function updateProjectiles(device, game, delta)
  */
 function updateNPCSprites(device, game, delta)  
 {     
-    // Spawn orb
-    if (Math.random() < 1 / game.gameConsts.RND_RATIO)      
-    {         
-        let rndXValue = Math.floor(Math.random() * ((device.canvas.width - game.gameConsts.BUFFER_1) - game.gameConsts.BUFFER_2 + 1));         
-        const orb = new NPC(spriteTypes.ORB, game.gameConsts.ORB_SPRITE_W, game.gameConsts.ORB_SPRITE_H, rndXValue, 0, game.gameConsts.ORB_SPEED);          
+    // spawn orb
+    spawnNPC(device, game, spriteTypes.ORB, game.gameConsts.ORB_SPRITE_W, game.gameConsts.ORB_SPRITE_H, game.gameConsts.ORB_SPEED, 1 / game.gameConsts.ORB_SPAWN_RATIO);
 
-        // Prevent overlap with existing NPCs
-        for (let i = 0; i < game.gameSprites.getSize(); i++)          
-        {             
-            let count = 0;             
-            let temp = game.gameSprites.getIndex(i);             
-            while (orb.checkObjCollision(temp.posX, temp.posY, temp.halfWidth, temp.halfHeight))              
-            {                 
-                if (count > 3) break;                 
-                rndXValue = Math.floor(Math.random() * ((device.canvas.width - (game.gameConsts.BUFFER_1 * count)) - (game.gameConsts.BUFFER_2 * count) + 1));                 
-                orb.movePos(rndXValue, 0);                 
-                count++;             
-            }         
-        }         
-        game.gameSprites.addObject(orb);     
-    }      
+    // spawn fireAmmo
+    spawnNPC(device, game, spriteTypes.FIRE_AMMO, game.gameConsts.FIRE_AMMO_SPRITE_W, game.gameConsts.FIRE_AMMO_SPRITE_H, game.gameConsts.AMMO_SPEED, 1 / game.gameConsts.AMMO_SPAWN_RATIO );
 
-    // Spawn fireAmmo
-    if (Math.random() < 1 / 99)      
-    {         
-        let rndXValue = Math.floor(Math.random() * ((device.canvas.width - game.gameConsts.BUFFER_1) - game.gameConsts.BUFFER_2 + 1));         
-        const fireAmmo = new NPC(spriteTypes.FIRE_AMMO, game.gameConsts.FIRE_AMMO_SPRITE_W, game.gameConsts.FIRE_AMMO_SPRITE_H, rndXValue, 0, game.gameConsts.ORB_SPEED);          
-
-        // Prevent overlap with existing NPCs
-        for (let i = 0; i < game.gameSprites.getSize(); i++)          
-        {             
-            let count = 0;             
-            let temp = game.gameSprites.getIndex(i);             
-            while (fireAmmo.checkObjCollision(temp.posX, temp.posY, temp.halfWidth, temp.halfHeight))              
-            {                 
-                if (count > 3) break;                 
-                rndXValue = Math.floor(Math.random() * ((device.canvas.width - (game.gameConsts.BUFFER_1 * count)) - (game.gameConsts.BUFFER_2 * count) + 1));                 
-                fireAmmo.movePos(rndXValue, 0);                 
-                count++;             
-            }         
-        }         
-        game.gameSprites.addObject(fireAmmo);     
-    }      
 
     // Update NPCs and remove dead or off-screen
     for (let i = game.gameSprites.getSize() - 1; i >= 0; i--)     
@@ -147,6 +111,36 @@ function updateNPCSprites(device, game, delta)
     } 
 }  
 
+
+function spawnNPC(device, game, type, width, height, speed, chance)
+{
+    if (Math.random() >= chance) return 
+    
+    // Pck random X
+    let rndX = Math.floor(Math.random() * ((device.canvas.width - game.gameConsts.BUFFER_1) - game.gameConsts.BUFFER_2 + 1));  
+
+    // Create NPC
+    let posY= 0 //becuse these NPC start at the top of screen
+    const npc = new NPC(type, width, height, rndX, posY, speed); 
+
+    // Prevent overlap with existing NPCs
+    for (let i = 0; i < game.gameSprites.getSize(); i++) {
+        let temp = game.gameSprites.getIndex(i);
+        let count = 0;
+
+        // loop while overlapping
+        while (npc.checkObjCollision(temp.posX, temp.posY, temp.halfWidth, temp.halfHeight)) {
+            if (count > game.gameConsts.SPAWN_ATTEMPTS) break; // stop after 3 tries
+            // recalc X
+            rndX = Math.floor(Math.random() * (device.canvas.width - (game.gameConsts.BUFFER_1 * count) - (game.gameConsts.BUFFER_2 * count) + 1));
+            npc.movePos(rndX, 0);
+            count++;
+        }
+    }
+
+    game.gameSprites.addObject(npc);
+
+}
 
 // -----------------------------------------------------------------------------
 // COLLISION HANDLERS
