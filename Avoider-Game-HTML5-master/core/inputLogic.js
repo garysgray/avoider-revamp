@@ -186,7 +186,7 @@ function updateProjectilesCollision(device, game)
  */
 function check_NPC_Collision(device, game)  
 {     
-    for (let i = 0; i < game.gameSprites.getSize(); i++)     
+    for (let i = game.gameSprites.getSize() -1; i >= 0; i--)     
     {         
         const npc = game.gameSprites.getIndex(i);         
         if (game.player.checkObjCollision(npc.posX, npc.posY, npc.width, npc.height))          
