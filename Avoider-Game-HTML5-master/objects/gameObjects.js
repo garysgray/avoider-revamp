@@ -1,5 +1,5 @@
 // --------------------------------------------
-// Base GameObject + Child Classes (Player, BackDrop)
+// Base GameObject + Child Classes (Player, Projectile, NPC, BackDrop)
 // --------------------------------------------
 // GameObject is the base class for all in-game entities
 // - Tracks position, size, speed, and state
@@ -8,6 +8,14 @@
 // Player extends GameObject
 // - Adds shooting mechanics (timer + delay)
 // - Enforces screen boundaries
+//
+// Projectile extends GameObject
+// - Moves upward each frame until offscreen
+// - Has alive flag for cleanup
+//
+// NPC extends GameObject
+// - Moves downward each frame until offscreen
+// - Has alive flag for cleanup
 //
 // BackDrop extends GameObject
 // - Used for static/scrolling backgrounds or decorative elements
@@ -57,12 +65,13 @@ class GameObject
     set spaceBuffer(v) { this.#spaceBuffer = v; }
     set state(v) { this.#state = v; }
 
+    // ---- Core Methods ----
     // Placeholder update (to be overridden by child classes if needed)
     update(device, delta) {}
 
-    // Move object down at its speed
+    // Move object down based on its speed
     moveDown(delta)
-     {
+    {
         this.#posY += this.#speed * delta;
     }
 
@@ -86,50 +95,109 @@ class GameObject
 }
 
 // --------------------------------------------
+// Projectile
+// --------------------------------------------
+// Fired by the player (or NPCs in the future)
+// - Moves upward each frame
+// - Becomes inactive if offscreen
+// --------------------------------------------
+class Projectile extends GameObject 
+{
+    #alive = true;
+
+    constructor(name, width, height, posX, posY, speed) 
+    {
+        super(name, width, height, posX, posY, speed);
+    }
+
+    // ---- Getters/Setters ----
+    get alive() { return this.#alive; }
+
+    // Mark projectile for removal
+    kill() { this.#alive = false; }
+    
+    // Update position each frame
+    // - Moves upward
+    // - Marks dead if it leaves screen
+    update(device, game, delta) 
+    {
+        this.posY -= this.speed * delta;
+        if (this.posY + this.height * 0.5 < 0) this.kill();
+        // NOTE: collision detection is handled outside for now
+    }
+}
+
+// --------------------------------------------
+// NPC (Enemy/Obstacle)
+// --------------------------------------------
+// Moves downward from top of screen
+// Dies if it leaves the play area
+// --------------------------------------------
+class NPC extends GameObject 
+{
+    #alive;
+
+    constructor(name, width, height, x, y, speed)  
+    {
+        super(name, width, height, x, y, speed);
+        this.#alive = true;
+    }
+
+    // ---- Getters/Setters ----
+    alive() { return this.#alive; }
+    kill() { this.#alive = false; }
+
+    // Update NPC each frame
+    // - Moves down
+    // - Marks dead if it exits screen bottom
+    update(device, game, delta) 
+    {
+        this.moveDown(delta);
+        if (this.posY > device.canvas.height + 50) this.kill();
+    }
+}
+
+// --------------------------------------------
 // Player
 // --------------------------------------------
-// Adds shooting cooldown system + screen boundary enforcement
-// Inherits base movement + collision functions
+// The main controllable entity
+// - Tracks shooting cooldown
+// - Enforces screen boundaries
+// - Spawns projectiles when input detected
 // --------------------------------------------
 class Player extends GameObject 
 {
-
     #shootCooldownTimer; // Timer measured in seconds
 
     constructor(width, height, x, y, speed) 
     {
         super(spriteTypes.PLAYER, width, height, x, y, speed);
-
-
         this.#shootCooldownTimer = new Timer(0);
-
     }
 
     // ---- Getters/Setters ----
     get shootCooldownTimer() { return this.#shootCooldownTimer; }
 
-
+    // Attempt to fire a projectile
+    // - Checks play state, ammo, input, and cooldown
     tryShoot(device, game)
     {
         if (game.playState !== playStates.SHOOT) return false;
-        
-
         if (this.#shootCooldownTimer.active) return false;
-        
 
-            //FIX should player have ammo??
+        // Optional: add player ammo system
         if (game.ammo <= 0)
         {
             game.playState = playStates.AVOID;
             return false;
         }
 
-        // INPUT: mouse donwn or space pressed this frame
-        const firePressed = device.mouseDown  || device.keys.isKeyPressed(game.gameConsts.PLAY_KEY)
-
+        // Fire if mouse is down OR shoot key pressed
+        const firePressed = device.mouseDown || device.keys.isKeyPressed(game.gameConsts.PLAY_KEY);
         if (!firePressed) return false;
         
-        const bullet = new GameObject(
+        // Spawn projectile
+        const bullet = new Projectile(
             spriteTypes.BULLET,
             game.gameConsts.BULLET_SPRITE_W,
             game.gameConsts.BULLET_SPRITE_H,
@@ -138,14 +206,13 @@ class Player extends GameObject
             game.gameConsts.BULLET_SPEED
         );
 
-        //FIX do this in bullet?
-        // Center adjustment
+        // Adjust spawn position
         bullet.posX -= bullet.width * 0.5;
         bullet.posY += bullet.height * 0.5;
 
         game.projectiles.addObject(bullet);
 
-        // consume ammo & start coldown
+        // Consume ammo + trigger cooldown
         game.decreaseAmmo(1);
         this.#shootCooldownTimer.reset(game.gameConsts.SHOOT_COOLDOWN);
 
@@ -154,19 +221,18 @@ class Player extends GameObject
         return true;
     }
 
-    // Placeholder update for movement/shooting logic
+    // Update player each frame
+    // - Updates cooldown
+    // - Enforces screen bounds
+    // - Handles shooting
     update(device, delta, game) 
     {
-        // Update cooldown timer
         this.#shootCooldownTimer.update(delta);
         this.enforceBounds(device);
-
-        // Handle movement/animation here if needed...
         this.tryShoot(device, game);
-        
     }
 
-    // Prevents player from leaving screen bounds
+    // Prevents player from leaving visible play area
     enforceBounds(device) 
     {
         const canvas = device.canvas;
@@ -187,9 +253,8 @@ class Player extends GameObject
 // --------------------------------------------
 // BackDrop
 // --------------------------------------------
-// Decorative or background objects
-// Inherits positioning but speed is always 0
-// Could later support parallax scrolling or animation
+// Static or decorative background object
+// Currently does nothing, but could support parallax or animation
 // --------------------------------------------
 class BackDrop extends GameObject 
 {
@@ -200,6 +265,6 @@ class BackDrop extends GameObject
 
     update(device, delta) 
     {
-        // Optional: background movement/scrolling
+        // Optional: background scrolling/animation
     }
 }
