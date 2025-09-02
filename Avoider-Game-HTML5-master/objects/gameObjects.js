@@ -260,6 +260,7 @@ class BackDrop extends GameObject
 {
     constructor(width, height, x, y) 
     {
+        //FIX naming stuff??
         super("BackDrop", width, height, x, y, 0);
     }
 
