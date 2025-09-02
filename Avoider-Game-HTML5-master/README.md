@@ -53,6 +53,7 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Getters / setters ensure controlled access  
 - **Player**: shooting cooldown logic handled internally with `Timer`  
 - **BackDrop**: ready for scrolling or animated backgrounds  
+- Every game object now has a bool alive member for flagging objects to be removed in updates (life cycle)
 
 ### General Improvements
 - Unified OOP style using private fields (`#`)  
