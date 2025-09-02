@@ -26,6 +26,8 @@ class Controller
 
         // Start with an empty list of rendering layers
         this.#layers = [];
+
+        this.initGame();
     }
 
     // ------------------------------------------------------------------------

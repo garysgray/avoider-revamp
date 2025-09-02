@@ -65,7 +65,7 @@ function updateProjectiles(device, game, delta)
         if (typeof proj.update === "function") proj.update(device, game, delta);          
 
         // Check if projectile is off-screen or flagged dead
-        const offscreen = proj.posY + proj.height * 0.5 < 0;         
+        const offscreen = proj.posY + proj.halfHeight < 0;         
         const dead = proj.alive === false;          
 
         if (offscreen || dead)          
@@ -102,7 +102,7 @@ function updateNPCSprites(device, game, delta)
         {             
             let count = 0;             
             let temp = game.gameSprites.getIndex(i);             
-            while (orb.checkObjCollision(temp.posX, temp.posY, temp.width, temp.height))              
+            while (orb.checkObjCollision(temp.posX, temp.posY, temp.halfWidth, temp.halfHeight))              
             {                 
                 if (count > 3) break;                 
                 rndXValue = Math.floor(Math.random() * ((device.canvas.width - (game.gameConsts.BUFFER_1 * count)) - (game.gameConsts.BUFFER_2 * count) + 1));                 
@@ -124,7 +124,7 @@ function updateNPCSprites(device, game, delta)
         {             
             let count = 0;             
             let temp = game.gameSprites.getIndex(i);             
-            while (fireAmmo.checkObjCollision(temp.posX, temp.posY, temp.width, temp.height))              
+            while (fireAmmo.checkObjCollision(temp.posX, temp.posY, temp.halfWidth, temp.halfHeight))              
             {                 
                 if (count > 3) break;                 
                 rndXValue = Math.floor(Math.random() * ((device.canvas.width - (game.gameConsts.BUFFER_1 * count)) - (game.gameConsts.BUFFER_2 * count) + 1));                 
@@ -166,7 +166,7 @@ function updateProjectilesCollision(device, game)
         for (let j = game.gameSprites.getSize() - 1; j >= 0; j--)      
         {       
             const npc = game.gameSprites.getIndex(j);       
-            if (proj.checkObjCollision(npc.posX, npc.posY, npc.width, npc.height))        
+            if (proj.checkObjCollision(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight))        
             {         
                 device.audio.playSound(soundTypes.HIT);         
                 game.gameSprites.subObject(j);         
@@ -189,7 +189,7 @@ function check_NPC_Collision(device, game)
     for (let i = game.gameSprites.getSize() -1; i >= 0; i--)     
     {         
         const npc = game.gameSprites.getIndex(i);         
-        if (game.player.checkObjCollision(npc.posX, npc.posY, npc.width, npc.height))          
+        if (game.player.checkObjCollision(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight))          
         {             
             if (npc.name === spriteTypes.FIRE_AMMO)             
             {                 

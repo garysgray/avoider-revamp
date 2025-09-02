@@ -7,9 +7,6 @@
 // Controller is responsible for managing the game state, logic, and rendering
 let myController = new Controller();
 
-// Initialize the game through the controller
-myController.initGame();
-
 // ---------------------------------------------------------------------------
 // Fixed timestep game loop setup
 // ---------------------------------------------------------------------------

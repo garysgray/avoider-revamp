@@ -31,6 +31,9 @@ class GameObject
     #speed;
     #spaceBuffer;   // Collision margin
     #state;
+    #alive = true;
+
+    #halfWidth; #halfHeight;
 
     constructor(name, width, height, posX, posY, speed) 
     {
@@ -43,6 +46,10 @@ class GameObject
 
         this.#spaceBuffer = 12; // TODO: remove or parameterize later
         this.#state = 0;
+
+        // cache half-sizes once
+        this.#halfWidth = width * 0.5;
+        this.#halfHeight = height * 0.5;
     }
 
     // ---- Getters ----
@@ -54,6 +61,10 @@ class GameObject
     get speed() { return this.#speed; }
     get spaceBuffer() { return this.#spaceBuffer; }
     get state() { return this.#state; }
+    get alive() { return this.#alive; }
+
+    get halfWidth() { return this.#halfWidth; }
+    get halfHeight() { return this.#halfHeight; }
 
     // ---- Setters ----
     set name(v) { this.#name = v; }
@@ -64,6 +75,20 @@ class GameObject
     set speed(v) { this.#speed = v; }
     set spaceBuffer(v) { this.#spaceBuffer = v; }
     set state(v) { this.#state = v; }
+    set alive(v) { this.#alive = Boolean(v); }
+
+    setWidth(w) 
+    {
+        this.#width = w;
+        this.#halfWidth = w * 0.5;
+    }
+    setHeight(h) 
+    {
+        this.#height = h;
+        this.#halfHeight = h * 0.5;
+    }
+
+    kill() { this.#alive = false; }
 
     // ---- Core Methods ----
     // Placeholder update (to be overridden by child classes if needed)
@@ -83,15 +108,16 @@ class GameObject
     }
 
     // Axis-Aligned Bounding Box (AABB) collision check
-    checkObjCollision(otherX, otherY, otherWidth, otherHeight) 
+    checkObjCollision(otherX, otherY, otherHalfW, otherHalfH) 
     {
         return (
-            this.#posX + this.#width * 0.5 - this.#spaceBuffer > otherX - otherWidth * 0.5 &&
-            this.#posX - this.#width * 0.5 - this.#spaceBuffer < otherX + otherWidth * 0.5 &&
-            this.#posY + this.#height * 0.5 - this.#spaceBuffer > otherY - otherHeight * 0.5 &&
-            this.#posY - this.#height * 0.5 - this.#spaceBuffer < otherY + otherHeight * 0.5
-        );
+            this.#posX + this.#halfWidth - this.#spaceBuffer > otherX - otherHalfW &&
+            this.#posX - this.#halfWidth - this.#spaceBuffer < otherX + otherHalfW &&
+            this.#posY + this.#halfHeight - this.#spaceBuffer > otherY - otherHalfH &&
+            this.#posY - this.#halfHeight - this.#spaceBuffer < otherY + otherHalfH
+            );
     }
+
 }
 
 // --------------------------------------------
@@ -103,26 +129,18 @@ class GameObject
 // --------------------------------------------
 class Projectile extends GameObject 
 {
-    #alive = true;
-
     constructor(name, width, height, posX, posY, speed) 
     {
         super(name, width, height, posX, posY, speed);
     }
 
-    // ---- Getters/Setters ----
-    get alive() { return this.#alive; }
-
-    // Mark projectile for removal
-    kill() { this.#alive = false; }
-    
     // Update position each frame
     // - Moves upward
     // - Marks dead if it leaves screen
     update(device, game, delta) 
     {
         this.posY -= this.speed * delta;
-        if (this.posY + this.height * 0.5 < 0) this.kill();
+        if (this.posY + this.halfHeight < 0) this.kill();
         // NOTE: collision detection is handled outside for now
     }
 }
@@ -135,17 +153,11 @@ class Projectile extends GameObject
 // --------------------------------------------
 class NPC extends GameObject 
 {
-    #alive;
-
     constructor(name, width, height, x, y, speed)  
     {
         super(name, width, height, x, y, speed);
-        this.#alive = true;
+        this.alive = true;
     }
-
-    // ---- Getters/Setters ----
-    alive() { return this.#alive; }
-    kill() { this.#alive = false; }
 
     // Update NPC each frame
     // - Moves down
@@ -207,8 +219,8 @@ class Player extends GameObject
         );
 
         // Adjust spawn position
-        bullet.posX -= bullet.width * 0.5;
-        bullet.posY += bullet.height * 0.5;
+        bullet.posX -= bullet.halfWidth;
+        bullet.posY += bullet.halfHeight;
 
         game.projectiles.addObject(bullet);
 
@@ -236,16 +248,14 @@ class Player extends GameObject
     enforceBounds(device) 
     {
         const canvas = device.canvas;
-        const halfW = this.width * 0.5;
-        const halfH = this.height * 0.5;
         const hudBuffer = 50; // Reserved space at bottom (HUD zone)
 
-        if (this.posX - halfW < 0) this.posX = halfW;
-        if (this.posX + halfW > canvas.width) this.posX = canvas.width - halfW;
-        if (this.posY - halfH < 0) this.posY = halfH;
-        if (this.posY + halfH > canvas.height - hudBuffer) 
+        if (this.posX - this.halfWidth < 0) this.posX = this.halfWidth;
+        if (this.posX + this.halfWidth > canvas.width) this.posX = canvas.width - this.halfWidth;
+        if (this.posY - this.halfHeight < 0) this.posY = this.halfHeight;
+        if (this.posY + this.halfHeight > canvas.height - hudBuffer) 
         {
-            this.posY = (canvas.height - hudBuffer) - halfH;
+            this.posY = (canvas.height - hudBuffer) - this.halfHeight;
         }
     }
 }
