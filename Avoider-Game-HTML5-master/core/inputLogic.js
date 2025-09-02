@@ -130,7 +130,7 @@ function spawnNPC(device, game, type, width, height, speed, chance)
 
         // loop while overlapping
         while (npc.checkObjCollision(temp.posX, temp.posY, temp.halfWidth, temp.halfHeight)) {
-            if (count > game.gameConsts.SPAWN_ATTEMPTS) break; // stop after 3 tries
+            if (count > game.gameConsts.SPAWN_ATTEMPTS) break; // stop after SPAWN_ATTEMPTS tries
             // recalc X
             rndX = Math.floor(Math.random() * (device.canvas.width - (game.gameConsts.BUFFER_1 * count) - (game.gameConsts.BUFFER_2 * count) + 1));
             npc.movePos(rndX, 0);
@@ -159,7 +159,11 @@ function updateProjectilesCollision(device, game)
         const proj = game.projectiles.getIndex(i);     
         for (let j = game.gameSprites.getSize() - 1; j >= 0; j--)      
         {       
-            const npc = game.gameSprites.getIndex(j);    
+            const npc = game.gameSprites.getIndex(j);  
+            
+            // Early-out: skip distant objects
+            if (!proj.isNear(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight)) continue;
+
             if (proj.checkObjCollision(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight))        
             {         
                 device.audio.playSound(soundTypes.HIT);         
@@ -182,7 +186,10 @@ function check_NPC_Collision(device, game)
 {     
     for (let i = game.gameSprites.getSize() -1; i >= 0; i--)     
     {         
-        const npc = game.gameSprites.getIndex(i);         
+        const npc = game.gameSprites.getIndex(i);  
+        
+        if (!game.player.isNear(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight)) continue;
+        
         if (game.player.checkObjCollision(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight))          
         {             
             if (npc.name === spriteTypes.FIRE_AMMO)             

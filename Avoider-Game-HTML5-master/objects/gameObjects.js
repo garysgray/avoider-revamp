@@ -107,6 +107,14 @@ class GameObject
         this.#posY = newY;
     }
 
+    isNear(otherX, otherY, otherHalfWidth, otherHalfHeight) 
+    {
+        const dx = Math.abs(this.posX - otherX);
+        const dy = Math.abs(this.posY - otherY);
+
+        return (dx < (this.halfWidth + otherHalfWidth)) && (dy < (this.halfHeight + otherHalfHeight));
+    }
+
     // Axis-Aligned Bounding Box (AABB) collision check
     checkObjCollision(otherX, otherY, otherHalfW, otherHalfH) 
     {
