@@ -142,7 +142,7 @@ function updateNPCSprites(device, game, delta)
         if (typeof npc.update === "function") npc.update(device, game, delta);         
         if (!npc.alive || npc.posY > device.canvas.height - 100)          
         {             
-            game.gameSprites.subObject(i);         
+            game.gameSprites.subObject(i);        
         }     
     } 
 }  
@@ -165,13 +165,13 @@ function updateProjectilesCollision(device, game)
         const proj = game.projectiles.getIndex(i);     
         for (let j = game.gameSprites.getSize() - 1; j >= 0; j--)      
         {       
-            const npc = game.gameSprites.getIndex(j);       
+            const npc = game.gameSprites.getIndex(j);    
             if (proj.checkObjCollision(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight))        
             {         
                 device.audio.playSound(soundTypes.HIT);         
-                game.gameSprites.subObject(j);         
-                game.projectiles.subObject(i);         
-                game.increaseScore(game.gameConsts.SCORE_INCREASE);         
+                game.increaseScore(game.gameConsts.SCORE_INCREASE);  
+                npc.kill(); 
+                proj.kill();            
                 break; // projectile removed, continue with next projectile       
             }     
         }   
@@ -193,14 +193,14 @@ function check_NPC_Collision(device, game)
         {             
             if (npc.name === spriteTypes.FIRE_AMMO)             
             {                 
-                game.gameSprites.subObject(i);                 
+                npc.kill();                
                 device.audio.playSound(soundTypes.GET);                 
                 game.playState = playStates.SHOOT;                 
                 game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);                           
             }              
             else              
             {                 
-                game.gameSprites.subObject(i);                 
+                npc.kill();                 
                 device.audio.playSound(soundTypes.HURT);                 
                 game.playState = playStates.DEATH;                 
                 game.state = gameStates.LOSE;                 
