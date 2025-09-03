@@ -1,0 +1,40 @@
+
+ ### Key Points of the Folder Structure:
+- The root contains an `index.html` file that serves as the entry point to the game.
+- The `JS` directory holds all JavaScript files organized into subdirectories based on functionality:
+  - **core**: Contains the foundational logic of the game, including controller logic and input handling.
+  - **objects**: Holds game object definitions, such as `Player`, `Projectile`, `NPC`, and other entities.
+  - **render**: Includes rendering functions and layers that manage the drawing of game objects and UI.
+  - **utils**: Contains utility classes and functions that support various functionalities (like sound management and drawing).
+- The `css` directory contains the stylesheet for styling the game's UI.
+
+
+Avoider-Game-HTML5-master/
+│
+├── index.html
+│
+├── JS/
+│   ├── core/
+│   │   ├── controller.js
+│   │   ├── game.js
+│   │   ├── gameLogic.js
+│   │   └── inputLogic.js
+│   │
+│   ├── objects/
+│   │   └── gameObjects.js
+│   │
+│   ├── render/
+│   │   ├── gameObjectRenderFunctions.js
+│   │   ├── gameObjectsRenderLayer.js
+│   │   └── textRenderLayer.js
+│   │
+│   ├── utils/
+│   │   └── helpers.js
+│   │
+│   └── main.js
+│
+└── css/
+    └── style.css
+
+
+   
