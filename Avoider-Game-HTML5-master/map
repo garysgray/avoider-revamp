@@ -1,34 +1,37 @@
-index.html
-   │
-   ▼
-main.js
-   │
-   ├── imports / uses
-   │
-   ├── game.js  ← creates & runs game instance
-   │      │
-   │      ├── uses / calls
-   │      │
-   │      ├── /core
-   │      │     ├── controller.js   ← manages game loop, calls gameLogic updates & inputLogic
-   │      │     ├── gameLogic.js    ← updates game state (player, enemies, collisions)
-   │      │     └── inputLogic.js   ← reads & processes user input
-   │      │
-   │      ├── /render
-   │      │     ├── renderer.js      ← draws the frame, calls spriteRenderer
-   │      │     └── spriteRenderer.js  ← draws specific sprites/animations
-   │      │
-   │      ├── /objects
-   │      │     └── game-objects.js  ← defines base & child game entities
-   │      │
-   │      └── /utils
-   │            └── helpers.js      ← utility functions (collision check, math, etc)
-   │
-/assets
-   ├── /sprites  ← images used by renderer/spriteRenderer
-   ├── /sounds   ← audio assets (future)
-   └── /data     ← JSON/config files for game levels
-/css
-   └── styles.css  ← linked in index.html
-/tests
-   └── gameLogic.test.js  ← test core logic (optional)
+Avoider-Game-HTML5-master/
+│
+├── index.html
+│
+├── JS/
+│   ├── core/
+│   │   ├── controller.js
+│   │   ├── game.js
+│   │   ├── gameLogic.js
+│   │   └── inputLogic.js
+│   │
+│   ├── objects/
+│   │   └── gameObjects.js
+│   │
+│   ├── render/
+│   │   ├── gameObjectRenderFunctions.js
+│   │   ├── gameObjectsRenderLayer.js
+│   │   └── textRenderLayer.js
+│   │
+│   ├── utils/
+│   │   └── helpers.js
+│   │
+│   └── main.js
+│
+└── css/
+    └── style.css
+
+
+    ### Key Points of the Folder Structure:
+- The root contains an `index.html` file that serves as the entry point to the game.
+- The `JS` directory holds all JavaScript files organized into subdirectories based on functionality:
+  - **core**: Contains the foundational logic of the game, including controller logic and input handling.
+  - **objects**: Holds game object definitions, such as `Player`, `Projectile`, `NPC`, and other entities.
+  - **render**: Includes rendering functions and layers that manage the drawing of game objects and UI.
+  - **utils**: Contains utility classes and functions that support various functionalities (like sound management and drawing).
+- The `css` directory contains the stylesheet for styling the game's UI.
+
