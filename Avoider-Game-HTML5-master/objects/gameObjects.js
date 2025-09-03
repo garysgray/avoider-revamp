@@ -77,17 +77,6 @@ class GameObject
     set state(v) { this.#state = v; }
     set alive(v) { this.#alive = Boolean(v); }
 
-    setWidth(w) 
-    {
-        this.#width = w;
-        this.#halfWidth = w * 0.5;
-    }
-    setHeight(h) 
-    {
-        this.#height = h;
-        this.#halfHeight = h * 0.5;
-    }
-
     kill() { this.#alive = false; }
 
     // ---- Core Methods ----
@@ -107,25 +96,28 @@ class GameObject
         this.#posY = newY;
     }
 
-    isNear(otherX, otherY, otherHalfWidth, otherHalfHeight) 
+    // Return an axis-aligned hitbox for this object.
+    // scale lets you make the box a bit smaller (e.g., 0.9 for friendlier hits).
+    // buffer shrinks it further by pixels on each side.
+    // Both are clamped so they can’t go negative.
+    getHitbox(scale = 1.0, buffer = 0)
     {
-        const dx = Math.abs(this.posX - otherX);
-        const dy = Math.abs(this.posY - otherY);
-
-        return (dx < (this.halfWidth + otherHalfWidth)) && (dy < (this.halfHeight + otherHalfHeight));
+        const hw = Math.max(0, this.#halfWidth  * scale - buffer);
+        const hh = Math.max(0, this.#halfHeight * scale - buffer);
+        return {
+            left:   this.#posX - hw,
+            right:  this.#posX + hw,
+            top:    this.#posY - hh,
+            bottom: this.#posY + hh
+        };
     }
 
-    // Axis-Aligned Bounding Box (AABB) collision check
-    checkObjCollision(otherX, otherY, otherHalfW, otherHalfH) 
+    getRoughRadius() 
     {
-        return (
-            this.#posX + this.#halfWidth - this.#spaceBuffer > otherX - otherHalfW &&
-            this.#posX - this.#halfWidth - this.#spaceBuffer < otherX + otherHalfW &&
-            this.#posY + this.#halfHeight - this.#spaceBuffer > otherY - otherHalfH &&
-            this.#posY - this.#halfHeight - this.#spaceBuffer < otherY + otherHalfH
-            );
+        return Math.max(this.#halfWidth, this.#halfHeight);
     }
 
+    
 }
 
 // --------------------------------------------
@@ -222,13 +214,9 @@ class Player extends GameObject
             game.gameConsts.BULLET_SPRITE_W,
             game.gameConsts.BULLET_SPRITE_H,
             this.posX,
-            this.posY,
+            this.posY - this.halfHeight - (game.gameConsts.BULLET_SPAWN_GAP || 0) - (game.gameConsts.BULLET_SPRITE_H * 0.5),
             game.gameConsts.BULLET_SPEED
         );
-
-        // Adjust spawn position
-        bullet.posX -= bullet.halfWidth;
-        bullet.posY += bullet.halfHeight;
 
         game.projectiles.addObject(bullet);
 
