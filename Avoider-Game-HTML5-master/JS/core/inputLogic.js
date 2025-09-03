@@ -142,13 +142,16 @@ function spawnNPC(device, game, type, width, height, speed, chance)
 }
 
 // helper: does npc overlap any existing alive sprite?
-function overlapsAny(npc, holder) {
+function overlapsAny(npc, holder) 
+{
     const count = holder.getSize();
     const npcBox = npc.getHitbox(1.0, 0);
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count; i++) 
+    {
         const other = holder.getIndex(i);
         if (!other.alive) continue;
-        if (rectsCollide(npcBox, other.getHitbox(1.0, 0))) {
+        if (rectsCollide(npcBox, other.getHitbox(1.0, 0))) 
+        {
             return true;
         }
     }
@@ -244,7 +247,6 @@ function check_NPC_Collision(device, game)
     return true; 
 } 
 
-// ---------- Collision helpers (global) ----------
 function rectsCollide(a, b) 
 {
     // AABB overlap test
