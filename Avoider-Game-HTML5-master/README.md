@@ -31,7 +31,7 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Added **projectile timer** (`Timer` class instance) inside `Player` to manage shooting cooldowns cleanly  
 - `Player` now enforces **canvas bounds** internally rather than relying on external logic  
 
-### Timer class
+### Timer Class
 - Added reusable **Timer** class with private fields (`#duration`, `#timeLeft`, `#active`)  
 - Supports `start`, `stop`, `reset`, and `update` methods  
 - Used for player shooting delay (projectile cooldown)  
@@ -67,11 +67,24 @@ This makes asset management consistent, rendering safer and more reliable, and t
 
 ---
 
-## Roadmap
-- Expand **collision system** into reusable physics helpers  
-- Finalize **reverse iteration / safe removal** in collision loops  
-- Extend **Layer system** into a full scene/engine manager  
-- Build modular **UI layers** (menus, HUD, pause screen)  
-- Add **animation helpers** (sprite sheets, frame timing)  
-- Expand asset pipeline with better loading + state management  
-- Possible export as a **lightweight game engine** for future projects
+## New Additions
+
+### Debugging & Developer Tools
+- Added **toggleable hitbox debug mode** (draws bounding boxes around objects for collision testing)  
+- Debug drawing uses consistent styling for easy visibility without clutter  
+
+### CSS / Front-End Cleanup
+- Moved **repeated values** (colors, padding, borders, radius, shadows, blur) into `:root` CSS variables  
+- Centralized **border shorthand** (`--border`) to ensure consistency across canvas, menus, and messages  
+- Added **clamp-based padding** for responsive scaling  
+- Introduced **glass/blur background** effects for menus and messages (modernized look)  
+- Easier theming: color or layout tweaks can now be done by editing variables in one place  
+
+---
+
+## Setup / How to Run
+
+1. Clone or download the repository.  
+   ```bash
+   git clone https://github.com/your-username/avoider-game.git
+   cd avoider-game
