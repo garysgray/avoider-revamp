@@ -5,6 +5,10 @@
 
 // Create the main Controller instance
 // Controller is responsible for managing the game state, logic, and rendering
+
+//let DEBUG_DRAW_HITBOXES = true;
+let DEBUG_DRAW_HITBOXES = false;
+
 let myController = new Controller();
 
 // ---------------------------------------------------------------------------

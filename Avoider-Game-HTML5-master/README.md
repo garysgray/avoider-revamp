@@ -39,12 +39,14 @@ This makes asset management consistent, rendering safer and more reliable, and t
 
 ### Collision Handling
 - Identified efficiency issue: `check_NPC_Collision` iterates forward while mutating the array  
-- Plan to switch to **reverse iteration** or a **mark-and-remove pass** for safety and performance  
-- Refactor will move **collision detection logic into Player** where appropriate (e.g., Player bullets vs NPCs)  
-- Central collision system planned for reuse across entities (Player ↔ NPC, NPC ↔ NPC, bullets ↔ walls, etc.)  
+- Switched to **reverse iteration** for safe removals during collision checks  
+- Added **early-out checks** (`isNear()`) before full AABB collision to reduce wasted comparisons  
+- Introduced consistent **bounding box hitboxes** (center-based) so visuals and collision align perfectly  
+- Optional **debug hitbox rendering** added (toggleable) for verifying collision boxes visually  
 
 ### Sprite / Rendering
 - Player render simplified with **state-based rendering** (using sprite states instead of multiple scattered checks)  
+- All rendering functions updated to use **center-based coordinates** (`posX`, `posY` as object center, with half-width/height offsets)  
 - Added groundwork for **animation helpers** via sprite sheet clips  
 - Layers system improved: player, NPCs, projectiles, and HUD are cleanly separated  
 
@@ -53,15 +55,15 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Getters / setters ensure controlled access  
 - **Player**: shooting cooldown logic handled internally with `Timer`  
 - **BackDrop**: ready for scrolling or animated backgrounds  
-- Every game object now has a bool alive member for flagging objects to be removed in updates (life cycle)
+- Every game object now has a bool `alive` member for flagging objects to be removed in updates (life cycle)  
+- Added unified `kill()` method in `GameObject` superclass to simplify cleanup across children  
 
 ### General Improvements
 - Unified OOP style using private fields (`#`)  
 - Reduced code duplication across update/render flows  
 - Clearer separation of **game logic** vs **rendering**  
 - Safer array/object handling with helper methods  
-- Planning step-by-step **collision system cleanup** as next major milestone  
-- Spawnning of NPC's much improved, less repetative code
+- NPC spawning centralized in `spawnNPC()` helper (less repetitive code, overlap prevention)  
 
 ---
 

@@ -92,11 +92,11 @@ class Device
 
 		if (aImage.image) 
 		{
-        	this.#ctx.drawImage(aImage.image, aPosX - w / 2, aPosY - h / 2);
+        	this.#ctx.drawImage(aImage.image, aPosX - w  * .5, aPosY - h  * .5);
 		}
 		else
 		{
-			this.#ctx.drawImage(aImage, aPosX - w / 2, aPosY - h / 2);
+			this.#ctx.drawImage(aImage, aPosX - w  * .5, aPosY - h  * .5);
 		}
     }
 
@@ -126,7 +126,7 @@ class Device
     {
         this.setFont("24px Arial Black");
         this.colorText("white");		
-        this.putText(text.toString(),posX,posY);
+        this.putText(text.toString(), posX, posY);
     }  
 }
 
@@ -410,3 +410,30 @@ class Timer
     } 
 }
 
+// Draw a rectangle around an object's hitbox (uses object's getHitbox())
+function drawHitbox(device, obj, options = {}) 
+{
+    const color = options.color || 'magenta';
+    const lineWidth = options.lineWidth ?? 1;
+    const fill = options.fill || false;
+    const alpha = options.alpha ?? 1.0;
+
+    if (typeof obj.getHitbox !== 'function') return; // safety
+
+    const hb = obj.getHitbox(options.scale ?? 1.0, options.buffer ?? 0);
+    const w = hb.right - hb.left;
+    const h = hb.bottom - hb.top;
+    const ctx = device.ctx;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = lineWidth;
+    ctx.strokeStyle = color;
+    if (fill) {
+        ctx.fillStyle = color;
+        ctx.fillRect(hb.left, hb.top, w, h);
+    } else {
+        ctx.strokeRect(hb.left, hb.top, w, h);
+    }
+    ctx.restore();
+}

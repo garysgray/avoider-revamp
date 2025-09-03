@@ -26,12 +26,17 @@ function renderNPCSprites(device, game)
         switch(tempObj.name)
         {
             case "orb":
-                device.renderImage(orbImage, tempObj.posX, tempObj.posY);
+                device.centerImage(orbImage, tempObj.posX , tempObj.posY );
             break;
 
             case "fireAmmo":
-                device.renderImage(fireAmmoImage, tempObj.posX, tempObj.posY);
+                device.centerImage(fireAmmoImage, tempObj.posX , tempObj.posY );
             break;
+        }
+
+        if (DEBUG_DRAW_HITBOXES) 
+        {
+             drawHitBoxs(device, tempObj);
         }
     }
 }
@@ -51,7 +56,12 @@ function renderBullets(device, game)
         let tempObj = game.projectiles.getIndex(i);
 
         // Render bullet at its current position
-        device.renderImage(bulletImage, tempObj.posX, tempObj.posY);
+        device.centerImage(bulletImage, tempObj.posX , tempObj.posY );
+
+        if (DEBUG_DRAW_HITBOXES)
+        {
+             drawHitBoxs(device, tempObj);
+        }
     }
 }
 
@@ -61,7 +71,7 @@ function renderBullets(device, game)
 function renderPlayer(device, game)
 {
     // Shortcut reference to player object
-    const playerObj = game.player;
+    const tempObj = game.player;
 
     // Render player based on their current playState
     switch(game.playState)
@@ -71,16 +81,35 @@ function renderPlayer(device, game)
         case playStates.SHOOT:
         case playStates.SUPER:
         case playStates.DEATH:
-            playerObj.state = game.playState;
+            tempObj.state = game.playState;
         break;
     }
 
     device.renderClip(
         device.images.getImage("player"),
-        playerObj.posX,
-        playerObj.posY,
-        playerObj.width,
-        playerObj.height,
-        playerObj.state
+        tempObj.posX ,
+        tempObj.posY ,
+        tempObj.width,
+        tempObj.height,
+        tempObj.state
     );
+
+    if (DEBUG_DRAW_HITBOXES)
+    {
+        drawHitBoxs(device, tempObj);
+    }
+}
+
+//---------------------------------------------------------------
+// Render HITBOXS if the DEBUG_DRAW_HITBOXES == true
+//---------------------------------------------------------------
+function drawHitBoxs(device, tempObj)
+{
+    device.ctx.strokeStyle = "lime";
+        device.ctx.strokeRect(
+            tempObj.posX - tempObj.halfWidth,
+            tempObj.posY - tempObj.halfHeight,
+            tempObj.width,
+            tempObj.height
+        );
 }

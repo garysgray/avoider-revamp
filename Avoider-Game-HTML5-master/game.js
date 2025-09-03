@@ -58,6 +58,8 @@ class GameConsts
     #SHOOT_COOLDOWN = 0.2; // 200ms
 
     #SPAWN_ATTEMPTS = 5;
+
+    #BULLET_SPAWN_GAP = 0;
     
 
     // ---- Getters (expose constants safely) ----
@@ -85,6 +87,8 @@ class GameConsts
     get BUFFER_2()       { return this.#BUFFER_2; }
     get ORB_SPAWN_RATIO()      { return this.#ORB_SPAWN_RATIO; }
     get AMMO_SPAWN_RATIO()      { return this.#AMMO_SPAWN_RATIO; }
+
+    get BULLET_SPAWN_GAP()      { return this.#BULLET_SPAWN_GAP; }
 
     get PLAYER_SPRITE_W()   { return this.#PLAYER_SPRITE_W; }
     get PLAYER_SPRITE_H()  { return this.#PLAYER_SPRITE_H; }

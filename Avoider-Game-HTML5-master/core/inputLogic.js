@@ -104,7 +104,7 @@ function updateNPCSprites(device, game, delta)
     {         
         const npc = game.gameSprites.getIndex(i);         
         if (typeof npc.update === "function") npc.update(device, game, delta);         
-        if (!npc.alive || npc.posY > device.canvas.height - 100)          
+        if (!npc.alive || npc.posY > device.canvas.height - 50)          
         {             
             game.gameSprites.subObject(i);        
         }     
@@ -114,33 +114,47 @@ function updateNPCSprites(device, game, delta)
 
 function spawnNPC(device, game, type, width, height, speed, chance)
 {
-    if (Math.random() >= chance) return 
-    
-    // Pck random X
-    let rndX = Math.floor(Math.random() * ((device.canvas.width - game.gameConsts.BUFFER_1) - game.gameConsts.BUFFER_2 + 1));  
+    if (Math.random() >= chance) return;
 
-    // Create NPC
-    let posY= 0 //becuse these NPC start at the top of screen
-    const npc = new NPC(type, width, height, rndX, posY, speed); 
+    // Create the NPC at a temporary X; we'll slide it if overlapping
+    const npc = new NPC(type, width, height, 0, 0, speed);
 
-    // Prevent overlap with existing NPCs
-    for (let i = 0; i < game.gameSprites.getSize(); i++) {
-        let temp = game.gameSprites.getIndex(i);
-        let count = 0;
+    // Choose a valid center X range that keeps the whole sprite on screen
+    const leftMargin  = game.gameConsts.BUFFER_1 || 0;
+    const rightMargin = game.gameConsts.BUFFER_2 || 0;
+    const minX = npc.halfWidth + leftMargin;
+    const maxX = device.canvas.width - npc.halfWidth - rightMargin;
 
-        // loop while overlapping
-        while (npc.checkObjCollision(temp.posX, temp.posY, temp.halfWidth, temp.halfHeight)) {
-            if (count > game.gameConsts.SPAWN_ATTEMPTS) break; // stop after SPAWN_ATTEMPTS tries
-            // recalc X
-            rndX = Math.floor(Math.random() * (device.canvas.width - (game.gameConsts.BUFFER_1 * count) - (game.gameConsts.BUFFER_2 * count) + 1));
-            npc.movePos(rndX, 0);
-            count++;
-        }
+    // start at top
+    const startY = 0 + npc.halfHeight; // center placed just inside the top
+    npc.movePos(minX + Math.random() * (maxX - minX), startY);
+
+    // Try a few times to avoid overlapping other NPCs
+    const attemptsMax = game.gameConsts.SPAWN_ATTEMPTS || 3;
+    let attempts = 0;
+
+    while (attempts < attemptsMax && overlapsAny(npc, game.gameSprites)) {
+        npc.movePos(minX + Math.random() * (maxX - minX), startY);
+        attempts++;
     }
 
     game.gameSprites.addObject(npc);
-
 }
+
+// helper: does npc overlap any existing alive sprite?
+function overlapsAny(npc, holder) {
+    const count = holder.getSize();
+    const npcBox = npc.getHitbox(1.0, 0);
+    for (let i = 0; i < count; i++) {
+        const other = holder.getIndex(i);
+        if (!other.alive) continue;
+        if (rectsCollide(npcBox, other.getHitbox(1.0, 0))) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 // -----------------------------------------------------------------------------
 // COLLISION HANDLERS
@@ -154,17 +168,26 @@ function spawnNPC(device, game, type, width, height, speed, chance)
  */
 function updateProjectilesCollision(device, game)  
 {   
-    for (let i = game.projectiles.getSize() - 1; i >= 0; i--)    
+    const spritesCount = game.gameSprites.getSize();
+    const projsCount   = game.projectiles.getSize();
+
+
+    for (let i = projsCount - 1; i >= 0; i--)    
     {     
-        const proj = game.projectiles.getIndex(i);     
-        for (let j = game.gameSprites.getSize() - 1; j >= 0; j--)      
+        const proj = game.projectiles.getIndex(i);  
+        if (!proj.alive) continue;
+
+        const projBox = proj.getHitbox(1.0, 0);
+
+        for (let j = spritesCount - 1; j >= 0; j--)      
         {       
             const npc = game.gameSprites.getIndex(j);  
+            if (!npc.alive) continue;
             
             // Early-out: skip distant objects
-            if (!proj.isNear(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight)) continue;
-
-            if (proj.checkObjCollision(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight))        
+            //if (objectsNear(proj, npc) && objectsCollide(proj, npc))   
+            const npcBox = npc.getHitbox(1.0, 0);
+            if (rectsCollide(projBox, npcBox))    
             {         
                 device.audio.playSound(soundTypes.HIT);         
                 game.increaseScore(game.gameConsts.SCORE_INCREASE);  
@@ -183,32 +206,63 @@ function updateProjectilesCollision(device, game)
  * - orb/others → causes damage, reduces life, sets DEATH/LOSE state.
  */
 function check_NPC_Collision(device, game)  
-{     
-    for (let i = game.gameSprites.getSize() -1; i >= 0; i--)     
+{    
+    const spritesCount = game.gameSprites.getSize();
+    const player = game.player;
+    const playerBox = player.getHitbox(1.0, 0);
+
+    for (let i = spritesCount -1; i >= 0; i--)     
     {         
         const npc = game.gameSprites.getIndex(i);  
+        if (!npc.alive) continue;
+
+        // optional broad phase to skip far NPCs
+        if (!roughNear(player, npc)) continue;
+
+        const npcBox = npc.getHitbox(1.0, 0);
+        if (!rectsCollide(playerBox, npcBox)) continue;
         
-        if (!game.player.isNear(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight)) continue;
-        
-        if (game.player.checkObjCollision(npc.posX, npc.posY, npc.halfWidth, npc.halfHeight))          
-        {             
-            if (npc.name === spriteTypes.FIRE_AMMO)             
-            {                 
-                npc.kill();                
-                device.audio.playSound(soundTypes.GET);                 
-                game.playState = playStates.SHOOT;                 
-                game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);                           
-            }              
-            else              
-            {                 
-                npc.kill();                 
-                device.audio.playSound(soundTypes.HURT);                 
-                game.playState = playStates.DEATH;                 
-                game.state = gameStates.LOSE;                 
-                game.decreaseLives(1);                 
-                return false;             
-            }         
-        }     
+                    
+        if (npc.name === spriteTypes.FIRE_AMMO)             
+        {                 
+            npc.kill();                
+            device.audio.playSound(soundTypes.GET);                 
+            game.playState = playStates.SHOOT;                 
+            game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);                           
+        }              
+        else              
+        {                 
+            npc.kill();                 
+            device.audio.playSound(soundTypes.HURT);                 
+            game.playState = playStates.DEATH;                 
+            game.state = gameStates.LOSE;                 
+            game.decreaseLives(1);                 
+            return false;             
+        }         
+           
     }     
     return true; 
 } 
+
+// ---------- Collision helpers (global) ----------
+function rectsCollide(a, b) 
+{
+    // AABB overlap test
+    return !(
+        a.right  < b.left  ||
+        a.left   > b.right ||
+        a.bottom < b.top   ||
+        a.top    > b.bottom
+    );
+}
+
+// Optional broad phase: fast circle-ish "near" check to skip far pairs
+function roughNear(a, b, pad = 0) 
+{
+    const dx = a.posX - b.posX;
+    const dy = a.posY - b.posY;
+    const ra = a.getRoughRadius();
+    const rb = b.getRoughRadius();
+    const r = ra + rb + pad;
+    return (dx * dx + dy * dy) <= (r * r);
+}
