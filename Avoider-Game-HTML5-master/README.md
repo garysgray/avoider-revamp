@@ -56,18 +56,7 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - **Player**: shooting cooldown logic handled internally with `Timer`  
 - **BackDrop**: ready for scrolling or animated backgrounds  
 - Every game object now has a bool `alive` member for flagging objects to be removed in updates (life cycle)  
-- Added unified `kill()` method in `GameObject` superclass to simplify cleanup across children  
-
-### General Improvements
-- Unified OOP style using private fields (`#`)  
-- Reduced code duplication across update/render flows  
-- Clearer separation of **game logic** vs **rendering**  
-- Safer array/object handling with helper methods  
-- NPC spawning centralized in `spawnNPC()` helper (less repetitive code, overlap prevention)  
-
----
-
-## New Additions
+- Added unified `kill()` method in `GameObject` superclass to simplify cleanup across children 
 
 ### Debugging & Developer Tools
 - Added **toggleable hitbox debug mode** (draws bounding boxes around objects for collision testing)  
@@ -80,11 +69,15 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Introduced **glass/blur background** effects for menus and messages (modernized look)  
 - Easier theming: color or layout tweaks can now be done by editing variables in one place  
 
----
+### General Improvements
+- Unified OOP style using private fields (`#`)  
+- Reduced code duplication across update/render flows  
+- Clearer separation of **game logic** vs **rendering**  
+- Safer array/object handling with helper methods  
+- NPC spawning centralized in `spawnNPC()` helper (less repetitive code, overlap prevention)  
 
 ## Setup / How to Run
-
-1. Clone or download the repository.  
-   ```bash
-   git clone https://github.com/your-username/avoider-game.git
-   cd avoider-game
+- Clone or download the repository.  
+- Open index.html directly in a web browser.
+- Works with any modern browser (Chrome, Firefox, Edge).
+- No build step required (pure vanilla JS).
