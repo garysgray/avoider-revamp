@@ -61,13 +61,23 @@ class Device
 		});
 	}
     
-    renderImage(aImageOrSprite, aX = 0, aY = 0, w, h) 
+    renderImage(aImageOrSprite, aX = 0, aY = 0, w = 0, h = 0) 
 	{
 		if (!aImageOrSprite) return;
 		if (aImageOrSprite.image) {
 			this.#ctx.drawImage(aImageOrSprite.image, aX, aY, w, h);
 		} else {
 			this.#ctx.drawImage(aImageOrSprite, aX, aY, w, h);
+		}
+	}
+
+    renderImage2(aImageOrSprite, aX = 0, aY = 0) 
+	{
+		if (!aImageOrSprite) return;
+		if (aImageOrSprite.image) {
+			this.#ctx.drawImage(aImageOrSprite.image, aX, aY);
+		} else {
+			this.#ctx.drawImage(aImageOrSprite, aX, aY);
 		}
 	}
 

@@ -15,6 +15,53 @@
 // =======================================================
 
 // -----------------------------
+// Enumerated Game States
+// -----------------------------
+const gameStates = Object.freeze({
+    INIT: 0,    // Pre-game setup
+    PLAY: 1,    // Actively playing
+    PAUSE: 2,   // Paused mid-game
+    WIN: 3,     // Player victory
+    LOSE: 4     // Player defeat
+});
+
+const playStates = Object.freeze({
+    AVOID: 0,   // Dodging orbs
+    SHIELD: 1,  // Shield active
+    SHOOT: 2,   // Firing bullets
+    SUPER: 3,   // Powered-up state
+    DEATH: 4    // Player destruction
+});
+
+const spriteTypes = Object.freeze({
+    PLAYER: "player",
+    ORB: "orb",
+    FIRE_AMMO: "fireAmmo",
+    BULLET: "bullet"
+});
+
+const soundTypes = Object.freeze({
+    HIT: "hit",
+    GET: "get",
+    HURT: "hurt",
+    SHOOT: "shoot"
+});
+
+const imageTypes = Object.freeze({
+    DIE: "die",
+    PAUSE: "pause",
+    SPLASH: "splash",
+    BACKGROUND: "background"
+});
+
+const keyTypes = Object.freeze({
+    PLAY_KEY: "Space",
+    RESET_KEY: "Space",
+    PAUSE_KEY_L: "ControlLeft"
+ 
+});
+
+// -----------------------------
 // Global Constants
 // -----------------------------
 class GameConsts 
@@ -103,56 +150,6 @@ class GameConsts
 
     get GAME_LIVES_START_AMOUNT()  { return this.#GAME_LIVES_START_AMOUNT; }
 }
-
-
-
-// -----------------------------
-// Enumerated Game States
-// -----------------------------
-const gameStates = Object.freeze({
-    INIT: 0,    // Pre-game setup
-    PLAY: 1,    // Actively playing
-    PAUSE: 2,   // Paused mid-game
-    WIN: 3,     // Player victory
-    LOSE: 4     // Player defeat
-});
-
-const playStates = Object.freeze({
-    AVOID: 0,   // Dodging orbs
-    SHIELD: 1,  // Shield active
-    SHOOT: 2,   // Firing bullets
-    SUPER: 3,   // Powered-up state
-    DEATH: 4    // Player destruction
-});
-
-const spriteTypes = Object.freeze({
-    PLAYER: "player",
-    ORB: "orb",
-    FIRE_AMMO: "fireAmmo",
-    BULLET: "bullet"
-});
-
-const soundTypes = Object.freeze({
-    HIT: "hit",
-    GET: "get",
-    HURT: "hurt",
-    SHOOT: "shoot"
-});
-
-const imageTypes = Object.freeze({
-    DIE: "die",
-    PAUSE: "pause",
-    SPLASH: "splash",
-    BACKGROUND: "background"
-});
-
-const keyTypes = Object.freeze({
-    PLAY_KEY: "Space",
-    RESET_KEY: "Space",
-    PAUSE_KEY_L: "ControlLeft"
- 
-});
-
 
 // -----------------------------
 // Game Class
