@@ -13,8 +13,8 @@
 function renderNPCSprites(device, game)
 {
     // Preload references to images (avoid repeated lookups each frame)
-    let orbImage      = device.images.getImage("orb");
-    let fireAmmoImage = device.images.getImage("fireAmmo");
+    let orbImage      = device.images.getImage(spriteTypes.ORB);
+    let fireAmmoImage = device.images.getImage(spriteTypes.FIRE_AMMO);
 
     // Loop through all NPC sprites in gameSprites list
     for (let i = 0; i < game.gameSprites.getSize(); i++)
@@ -25,11 +25,11 @@ function renderNPCSprites(device, game)
         // Render sprite based on its name
         switch(tempObj.name)
         {
-            case "orb":
+            case spriteTypes.ORB:
                 device.centerImage(orbImage, tempObj.posX , tempObj.posY );
             break;
 
-            case "fireAmmo":
+            case spriteTypes.FIRE_AMMO:
                 device.centerImage(fireAmmoImage, tempObj.posX , tempObj.posY );
             break;
         }
@@ -47,7 +47,7 @@ function renderNPCSprites(device, game)
 function renderBullets(device, game)
 {
     // Preload bullet image
-    let bulletImage = device.images.getImage("bullet");
+    let bulletImage = device.images.getImage(spriteTypes.BULLET);
 
     // Loop through all active bullets in projectiles list
     for (let i = 0; i < game.projectiles.getSize(); i++)
@@ -56,7 +56,7 @@ function renderBullets(device, game)
         let tempObj = game.projectiles.getIndex(i);
 
         // Render bullet at its current position
-        device.centerImage(bulletImage, tempObj.posX , tempObj.posY );
+        device.centerImage(bulletImage, tempObj.posX , tempObj.posY);
 
         if (DEBUG_DRAW_HITBOXES)
         {
@@ -86,7 +86,7 @@ function renderPlayer(device, game)
     }
 
     device.renderClip(
-        device.images.getImage("player"),
+        device.images.getImage(spriteTypes.PLAYER),
         tempObj.posX ,
         tempObj.posY ,
         tempObj.width,

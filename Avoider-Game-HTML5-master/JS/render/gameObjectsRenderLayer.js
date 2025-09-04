@@ -12,9 +12,11 @@ function renderGameObjectsLayer(device, game)
     
     // === Render Static Background ===
     device.renderImage(
-        device.images.getImage("background"),
+        device.images.getImage(imageTypes.BACKGROUND),
         game.backGround.posX,
-        game.backGround.posY
+        game.backGround.posY,
+        game.gameConsts.SCREEN_WIDTH,
+        game.gameConsts.SCREEN_HEIGHT    
     ); 
         
     // === Render Based on Game State ===
@@ -24,7 +26,7 @@ function renderGameObjectsLayer(device, game)
         {    
             // Show splash image, no game objects yet
             device.centerImage(
-                device.images.getImage("splash"),
+                device.images.getImage(imageTypes.SPLASH),
                 game.splashScreen.posX,
                 game.splashScreen.posY
             );      
@@ -44,7 +46,7 @@ function renderGameObjectsLayer(device, game)
         {            
             // Show pause screen, no player render
             device.centerImage(
-                device.images.getImage("pause"),
+                device.images.getImage(imageTypes.PAUSE),
                 game.pauseScreen.posX,
                 game.pauseScreen.posY
             );            
@@ -61,7 +63,7 @@ function renderGameObjectsLayer(device, game)
         {	
             // Show "die" overlay and player’s final position
             device.centerImage(
-                device.images.getImage("die"),
+                device.images.getImage(imageTypes.DIE),
                 game.dieScreen.posX,
                 game.dieScreen.posY
             );

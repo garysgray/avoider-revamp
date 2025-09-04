@@ -61,13 +61,13 @@ class Device
 		});
 	}
     
-	renderImage(aImageOrSprite, aX = 0, aY = 0) 
+    renderImage(aImageOrSprite, aX = 0, aY = 0, w, h) 
 	{
 		if (!aImageOrSprite) return;
 		if (aImageOrSprite.image) {
-			this.#ctx.drawImage(aImageOrSprite.image, aX, aY);
+			this.#ctx.drawImage(aImageOrSprite.image, aX, aY, w, h);
 		} else {
-			this.#ctx.drawImage(aImageOrSprite, aX, aY);
+			this.#ctx.drawImage(aImageOrSprite, aX, aY, w, h);
 		}
 	}
 
@@ -108,7 +108,7 @@ class Device
     centerTextOnY(text, posY) 
     {
         const textWidth = this.#ctx.measureText(text).width;
-        const centerX = (this.#canvas.width - textWidth) / 2;
+        const centerX = (this.#canvas.width - textWidth) * .5;
         this.#ctx.fillText(text, centerX, posY);
     }
 	

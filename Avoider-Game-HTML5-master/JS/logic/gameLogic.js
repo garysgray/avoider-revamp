@@ -19,7 +19,7 @@ function updateGameLogic(device, game, delta)
             game.setGame(device);           
 
             // Start game when the play key (e.g., spacebar) is pressed
-            if(device.keys.isKeyPressed(game.gameConsts.PLAY_KEY))
+            if(device.keys.isKeyPressed(keyTypes.PLAY_KEY))
             {
                 game.state = gameStates.PLAY;
             }
@@ -70,7 +70,7 @@ function updateGameLogic(device, game, delta)
         case gameStates.PAUSE:
         {
             // Resume game on pause key release
-            if(device.keys.isKeyReleased(game.gameConsts.PAUSE_KEY))
+            if( device.keys.isKeyPressed(keyTypes.PAUSE_KEY_L))
             {	
                 // Restore player position and grant temporary shield
                 game.player.posX = game.holdX;
@@ -82,7 +82,7 @@ function updateGameLogic(device, game, delta)
             }
 
             // Hard reset (restart entire game)
-            if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))
+            if(device.keys.isKeyDown(keyTypes.RESET_KEY))
             {
                 game.state = gameStates.INIT;
             }
@@ -96,7 +96,7 @@ function updateGameLogic(device, game, delta)
         //-------------------------------------------------------
         case gameStates.WIN:
         {
-            if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))
+            if(device.keys.isKeyDown(keyTypes.RESET_KEY))
             {
                 game.state = gameStates.INIT;
             }
@@ -118,7 +118,7 @@ function updateGameLogic(device, game, delta)
             if(game.lives <= 0)
             {                
                 // No lives left → reset game on key press
-                if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))
+                if(device.keys.isKeyDown(keyTypes.RESET_KEY))
                 {
                     game.state = gameStates.INIT;      
                 }
@@ -126,7 +126,7 @@ function updateGameLogic(device, game, delta)
             else
             {
                 // Respawn player (clear NPCs, grant shield)
-                if(device.keys.isKeyDown(game.gameConsts.RESET_KEY))
+                if(device.keys.isKeyDown(keyTypes.RESET_KEY))
                 {
                     game.emptyAmmo();                  // clear bullets
                     game.gameSprites.clearObjects();   // clear NPCs
