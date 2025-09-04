@@ -49,7 +49,7 @@ function gameLoop()
 
     // Optional: Debugging overlay
     // Uncomment for real-time debug text (e.g., splash screen position)
-    // myController.device.debugText(myController.game.holdX, 150, 50);
+    //myController.device.debugText(myController.game.splashScreen.posX, 150, 50);
 
     // Request the next frame from the browser
     requestAnimationFrame(gameLoop);
