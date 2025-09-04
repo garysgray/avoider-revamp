@@ -29,7 +29,6 @@ class GameObject
     #posX;
     #posY;
     #speed;
-    #spaceBuffer;   // Collision margin
     #state;
     #alive = true;
 
@@ -44,7 +43,6 @@ class GameObject
         this.#posY = posY;
         this.#speed = speed;
 
-        this.#spaceBuffer = 12; // TODO: remove or parameterize later
         this.#state = 0;
 
         // cache half-sizes once
@@ -59,7 +57,7 @@ class GameObject
     get posX() { return this.#posX; }
     get posY() { return this.#posY; }
     get speed() { return this.#speed; }
-    get spaceBuffer() { return this.#spaceBuffer; }
+
     get state() { return this.#state; }
     get alive() { return this.#alive; }
 
@@ -73,7 +71,7 @@ class GameObject
     set posX(v) { this.#posX = v; }
     set posY(v) { this.#posY = v; }
     set speed(v) { this.#speed = v; }
-    set spaceBuffer(v) { this.#spaceBuffer = v; }
+
     set state(v) { this.#state = v; }
     set alive(v) { this.#alive = Boolean(v); }
 
@@ -205,7 +203,7 @@ class Player extends GameObject
         }
 
         // Fire if mouse is down OR shoot key pressed
-        const firePressed = device.mouseDown || device.keys.isKeyPressed(game.gameConsts.PLAY_KEY);
+        const firePressed = device.mouseDown || device.keys.isKeyPressed(keyTypes.PLAY_KEY);
         if (!firePressed) return false;
         
         // Spawn projectile

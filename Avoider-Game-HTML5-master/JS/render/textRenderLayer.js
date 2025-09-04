@@ -9,7 +9,7 @@ function renderTextLayer(device, game)
     // Define layout positions as percentages of canvas height/width
     const layout = 
     {
-        initTextY: [0.7, 0.75, 0.8, 0.85],   // Intro screen text lines
+        initTextY: [0.65, 0.70, 0.75, 0.80],   // Intro screen text lines
         hudY: 0.95,                          // HUD vertical placement
         hudAmmoX: 0.05,                      // Left-side HUD text (Ammo)
         hudLivesX: 0.85,                     // Right-side HUD text (Lives)
@@ -21,12 +21,9 @@ function renderTextLayer(device, game)
     const cw = device.canvas.width;
     const ch = device.canvas.height;
 
-    // TODO: Replace with scalable font size (currently fixed "magic number")
-    const fontSize = 16;
-
     // Set default font and color
-    device.setFont(`bold ${fontSize}pt Calibri`);
-    device.colorText("white");
+    device.setFont(game.gameConsts.FONT_SETTINGS);
+    device.colorText(game.gameConsts.FONT_COLOR);
 
     // Switch behavior based on current game state
     switch (game.state) 
@@ -38,10 +35,10 @@ function renderTextLayer(device, game)
         case gameStates.INIT:
             layout.initTextY.forEach((pct, idx) => {
                 const msg = [
-                    "SHOOT THE ORBS!!!",
-                    "CATCH FIRE BALLS TO GET AMMO",
-                    "USE SPACE-BAR TO FIRE",
-                    "PRESS THE SPACE-BAR TO START"
+                    "Shoot the Orbs!!!",
+                    "Catch the Fire Balls for Ammo",
+                    "Use Space-Bar or Mouse Btn to Fire",
+                    "Press Space-Bar to Start"
                 ][idx];
                 device.centerTextOnY(msg, ch * pct);
             });
@@ -62,14 +59,14 @@ function renderTextLayer(device, game)
         // ==============================
         case gameStates.PAUSE:
             device.colorText("white");
-            device.centerTextOnY("PRESS P TO RESUME GAME", ch * layout.pauseY);
+            device.centerTextOnY("PRESS  CTRL  TO  RESUME  GAME", ch * layout.pauseY);
             break;
 
         // ==============================
         // WIN STATE: Replay prompt
         // ==============================
         case gameStates.WIN:
-            device.centerTextOnY("PRESS R TO PLAY AGAIN", ch * layout.winLoseY);
+            device.centerTextOnY("PRESS  ENTER  TO  PLAY  AGAIN", ch * layout.winLoseY);
             break;
 
         // ==============================
@@ -78,11 +75,11 @@ function renderTextLayer(device, game)
         case gameStates.LOSE:
             if (game.lives <= 0) 
             {
-                device.centerTextOnY("SORRY YOU LOST, PRESS R TO RETRY", ch * layout.winLoseY);
+                device.centerTextOnY("SORRY  YOU  LOST,  PRESS  ENTER  TO  RETRY", ch * layout.winLoseY);
             } 
             else 
             {
-                device.centerTextOnY("SORRY YOU DIED, PRESS R TO REVIVE", ch * layout.winLoseY);
+                device.centerTextOnY("SORRY  YOU  DIED,  PRESS  ENTER  TO  REVIVE", ch * layout.winLoseY);
             }
             break;
     }

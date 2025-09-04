@@ -15,7 +15,7 @@
  */
 function checkforPause(device, game)  
 {     
-    if (device.keys.isKeyReleased(game.gameConsts.PAUSE_KEY))      
+    if (device.keys.isKeyPressed(keyTypes.PAUSE_KEY_L))     
     {         
         if (game.state === gameStates.PLAY)          
         {             
@@ -104,7 +104,7 @@ function updateNPCSprites(device, game, delta)
     {         
         const npc = game.gameSprites.getIndex(i);         
         if (typeof npc.update === "function") npc.update(device, game, delta);         
-        if (!npc.alive || npc.posY > device.canvas.height - 50)          
+        if (!npc.alive || npc.posY > device.canvas.height - (device.canvas.height * game.gameConsts.HUD_BUFFER))          
         {             
             game.gameSprites.subObject(i);        
         }     
@@ -120,17 +120,15 @@ function spawnNPC(device, game, type, width, height, speed, chance)
     const npc = new NPC(type, width, height, 0, 0, speed);
 
     // Choose a valid center X range that keeps the whole sprite on screen
-    const leftMargin  = game.gameConsts.BUFFER_1 || 0;
-    const rightMargin = game.gameConsts.BUFFER_2 || 0;
-    const minX = npc.halfWidth + leftMargin;
-    const maxX = device.canvas.width - npc.halfWidth - rightMargin;
+    const minX = npc.halfWidth ;
+    const maxX = device.canvas.width - npc.halfWidth ;
 
     // start at top
     const startY = 0 + npc.halfHeight; // center placed just inside the top
     npc.movePos(minX + Math.random() * (maxX - minX), startY);
 
     // Try a few times to avoid overlapping other NPCs
-    const attemptsMax = game.gameConsts.SPAWN_ATTEMPTS || 3;
+    const attemptsMax = game.gameConsts.SPAWN_ATTEMPTS;
     let attempts = 0;
 
     while (attempts < attemptsMax && overlapsAny(npc, game.gameSprites)) {

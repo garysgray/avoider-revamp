@@ -29,19 +29,11 @@ class GameConsts
     
     #SHIELD_TIME = 3;
 
-    #PLAY_KEY = "Space";
-    #RESET_KEY = "KeyR";
-    #PAUSE_KEY = "KeyP";
-
     #SCREEN_WIDTH = 600;
     #SCREEN_HEIGHT = 600;
 
     #AMMO_AMOUNT = 10;
     #SCORE_INCREASE = 10;
-
-    #BUFFER_1 = 10;
-    #BUFFER_2 = 20;
-    
 
     #PLAYER_SPRITE_W = 32;
     #PLAYER_SPRITE_H = 29;
@@ -60,6 +52,14 @@ class GameConsts
     #SPAWN_ATTEMPTS = 5;
 
     #BULLET_SPAWN_GAP = 0;
+
+    #HUD_BUFFER = .15;
+
+    #FONT_SETTINGS = `bold 16pt Calibri`
+
+    #FONT_COLOR = 'white'
+    
+    #GAME_LIVES_START_AMOUNT = 5;
     
 
     // ---- Getters (expose constants safely) ----
@@ -67,10 +67,6 @@ class GameConsts
     get ORB_SPEED()      { return this.#ORB_SPEED; }
     get AMMO_SPEED()      { return this.#AMMO_SPEED; }
     get SHIELD_TIME()    { return this.#SHIELD_TIME; }
-
-    get PLAY_KEY()       { return this.#PLAY_KEY; }
-    get RESET_KEY()      { return this.#RESET_KEY; }
-    get PAUSE_KEY()      { return this.#PAUSE_KEY; }
 
     get SCREEN_WIDTH()   { return this.#SCREEN_WIDTH; }
     get SCREEN_HEIGHT()  { return this.#SCREEN_HEIGHT; }
@@ -81,10 +77,7 @@ class GameConsts
     get SHOOT_COOLDOWN() { return this.#SHOOT_COOLDOWN; }
 
     get SPAWN_ATTEMPTS() { return this.#SPAWN_ATTEMPTS; }
-
-    //FIX look into getting rid or using better
-    get BUFFER_1()       { return this.#BUFFER_1; }
-    get BUFFER_2()       { return this.#BUFFER_2; }
+ 
     get ORB_SPAWN_RATIO()      { return this.#ORB_SPAWN_RATIO; }
     get AMMO_SPAWN_RATIO()      { return this.#AMMO_SPAWN_RATIO; }
 
@@ -101,7 +94,17 @@ class GameConsts
 
     get FIRE_AMMO_SPRITE_W()   { return this.#FIRE_AMMO_SPRITE_W; }
     get FIRE_AMMO_SPRITE_H()  { return this.#FIRE_AMMO_SPRITE_H; }
+
+
+    get HUD_BUFFER()  { return this.#HUD_BUFFER; }
+
+    get FONT_SETTINGS()  { return this.#FONT_SETTINGS; }
+    get FONT_COLOR()  { return this.#FONT_COLOR; }
+
+    get GAME_LIVES_START_AMOUNT()  { return this.#GAME_LIVES_START_AMOUNT; }
 }
+
+
 
 // -----------------------------
 // Enumerated Game States
@@ -136,6 +139,21 @@ const soundTypes = Object.freeze({
     SHOOT: "shoot"
 });
 
+const imageTypes = Object.freeze({
+    DIE: "die",
+    PAUSE: "pause",
+    SPLASH: "splash",
+    BACKGROUND: "background"
+});
+
+const keyTypes = Object.freeze({
+    PLAY_KEY: "Space",
+    RESET_KEY: "Space",
+    PAUSE_KEY_L: "ControlLeft"
+ 
+});
+
+
 // -----------------------------
 // Game Class
 // -----------------------------
@@ -150,6 +168,9 @@ class Game
 
     #canvasWidth;
     #canvasHeight;
+
+    #canvasHalfW;
+    #canvasHalfH
 
     #playState;
     #state;
@@ -179,12 +200,13 @@ class Game
         this.#canvasWidth  = this.#gameConsts.SCREEN_WIDTH;
         this.#canvasHeight = this.#gameConsts.SCREEN_HEIGHT;
 
-        //FIX may be part of bug when player goes to corner
-        // Player positioned near lower part of the screen
+        this.#canvasHalfW  = this.#canvasWidth * .5
+        this.#canvasHalfH = this.#canvasHeight * .5
+
         this.#player = new Player(
             this.#gameConsts.PLAYER_SPRITE_W, this.#gameConsts.PLAYER_SPRITE_H, 
-            this.#canvasWidth * .5, 
-            this.#canvasHeight - (this.#canvasHeight * .15)
+            this.#canvasHalfW, 
+            this.#canvasHeight 
         ); 
 
         // Default states
@@ -194,9 +216,9 @@ class Game
         //FIX magic numbers
         // UI/Background
         this.#backGround   = new BackDrop(600, 600, 0, 0);
-        this.#splashScreen = new BackDrop(400, 100, this.#canvasWidth * .5, this.#canvasHeight * .5);
-        this.#pauseScreen  = new BackDrop(400, 100, this.#canvasWidth * .5, this.#canvasHeight * .5);
-        this.#dieScreen    = new BackDrop(400, 100, this.#canvasWidth * .5, this.#canvasHeight * .5);
+        this.#splashScreen = new BackDrop(400, 100, this.#canvasHalfW, this.#canvasHalfH);
+        this.#pauseScreen  = new BackDrop(400, 100, this.#canvasHalfW, this.#canvasHalfH);
+        this.#dieScreen    = new BackDrop(400, 100, this.#canvasHalfW, this.#canvasHalfH);
         
         // Gameplay variables
         this.#score  = 0;
@@ -288,7 +310,7 @@ class Game
     setGame(device) 
     { 
         this.score     = 0;
-        this.lives     = 5;
+        this.lives     = this.#gameConsts.GAME_LIVES_START_AMOUNT;
         this.ammo      = 0;
         this.gameSprites.clearObjects();
 

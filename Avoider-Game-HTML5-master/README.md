@@ -76,7 +76,7 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Safer array/object handling with helper methods  
 - NPC spawning centralized in `spawnNPC()` helper (less repetitive code, overlap prevention)  
 
-## Setup / How to Run
+### Setup / How to Run
 - Clone or download the repository.  
 - Open index.html directly in a web browser.
 - Works with any modern browser (Chrome, Firefox, Edge).
