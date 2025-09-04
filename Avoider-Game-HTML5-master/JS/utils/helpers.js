@@ -60,27 +60,25 @@ class Device
 			sprite.posY = mouseEvent.clientY - canvas.offsetTop;	
 		});
 	}
+
+    renderImage(aImageOrSprite, aX = 0, aY = 0, w, h) 
+    {
+        if (!aImageOrSprite) return;
+
+        const img = aImageOrSprite.image ? aImageOrSprite.image : aImageOrSprite;
+
+        if (typeof w === "number" && typeof h === "number") 
+        {
+            // Width + height provided → scale image
+            this.#ctx.drawImage(img, aX, aY, w, h);
+        } 
+        else 
+        {
+            // Width/height not provided → draw at natural size
+            this.#ctx.drawImage(img, aX, aY);
+        }
+    }   
     
-    renderImage(aImageOrSprite, aX = 0, aY = 0, w = 0, h = 0) 
-	{
-		if (!aImageOrSprite) return;
-		if (aImageOrSprite.image) {
-			this.#ctx.drawImage(aImageOrSprite.image, aX, aY, w, h);
-		} else {
-			this.#ctx.drawImage(aImageOrSprite, aX, aY, w, h);
-		}
-	}
-
-    renderImage2(aImageOrSprite, aX = 0, aY = 0) 
-	{
-		if (!aImageOrSprite) return;
-		if (aImageOrSprite.image) {
-			this.#ctx.drawImage(aImageOrSprite.image, aX, aY);
-		} else {
-			this.#ctx.drawImage(aImageOrSprite, aX, aY);
-		}
-	}
-
     renderClip(aClip, aPosX, aPosY, aWidth, aHeight, aState)
 	{
 		this.#ctx.drawImage(
@@ -95,20 +93,15 @@ class Device
         aHeight);
 	}
     
-    centerImage(aImage, aPosX, aPosY)
+    centerImage(aImage, aPosX, aPosY) 
     {
-		const w = aImage.width ?? aImage.image.width;
-    	const h = aImage.height ?? aImage.image.height;
+        const img = aImage.image ?? aImage; // unwrap if it has .image
+        const w = img.width;
+        const h = img.height;
 
-		if (aImage.image) 
-		{
-        	this.#ctx.drawImage(aImage.image, aPosX - w  * .5, aPosY - h  * .5);
-		}
-		else
-		{
-			this.#ctx.drawImage(aImage, aPosX - w  * .5, aPosY - h  * .5);
-		}
+        this.#ctx.drawImage(img, aPosX - w * 0.5, aPosY - h * 0.5);
     }
+
 
     putText(aString, x, y)
 	{

@@ -25,11 +25,11 @@ function renderGameObjectsLayer(device, game)
         case gameStates.INIT: // Splash / Init screen
         {    
             // Show splash image, no game objects yet
-            device.centerImage(
+            device.renderImage(
                 device.images.getImage(imageTypes.SPLASH),
                 game.splashScreen.posX,
                 game.splashScreen.posY
-            );      
+            );     
         }
         break;
         
@@ -45,7 +45,7 @@ function renderGameObjectsLayer(device, game)
         case gameStates.PAUSE: // Pause overlay
         {            
             // Show pause screen, no player render
-            device.centerImage(
+            device.renderImage(
                 device.images.getImage(imageTypes.PAUSE),
                 game.pauseScreen.posX,
                 game.pauseScreen.posY
@@ -62,7 +62,7 @@ function renderGameObjectsLayer(device, game)
         case gameStates.LOSE: // Lose screen
         {	
             // Show "die" overlay and player’s final position
-            device.centerImage(
+            device.renderImage(
                 device.images.getImage(imageTypes.DIE),
                 game.dieScreen.posX,
                 game.dieScreen.posY

@@ -18,11 +18,11 @@
     --border: var(--border-width) var(--border-style) var(--color-white);
 
     /* Spacing */
-    --body-padding: clamp(10px, 3vw, 40px);
+    --body-padding: clamp(15px, 3vw, 45px);
     --menu-gap: 1.5rem;
     --menu-padding: 0.75rem 2rem;
     --link-padding: 0.5rem 1.25rem;
-    --message-padding-y: clamp(0.25rem, 1vw, 0.5rem);
+    --message-padding-y: clamp(0.05rem, 1vw, 0.1rem);
     --message-padding-x: clamp(1rem, 4vw, 2.5rem);
 
     /* Effects */
@@ -63,7 +63,15 @@ a
 
 p 
 {
-  word-spacing: 0.2em; /* or 5px */
+  word-spacing: 0.2em; 
+}
+
+/* ------------------------------------------------------------------ */
+/* Container */
+/* ------------------------------------------------------------------ */
+#container
+{
+   display: inline-block;
 }
 
 /* ------------------------------------------------------------------ */
@@ -71,7 +79,7 @@ p
 /* ------------------------------------------------------------------ */
 #top_menu 
 {
-   display: inline-block;
+   display: flex;
     justify-content: center;
     gap: var(--menu-gap);
     background: var(--glass-bg);
@@ -99,9 +107,10 @@ p
 /* ------------------------------------------------------------------ */
 /* Message */
 /* ------------------------------------------------------------------ */
-#message 
-{
-    display: inline-block;
+#message {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    align-items: center;     /* center vertically */
     background: var(--glass-bg);
     font: var(--font-format);
     color: var(--color-red);
