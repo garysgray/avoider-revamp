@@ -28,7 +28,7 @@ function renderTextLayer(device, game)
     // Switch behavior based on current game state
     switch (game.state) 
     {
-
+ 
         // ==============================
         // INIT STATE: Splash + instructions
         // ==============================
@@ -37,7 +37,7 @@ function renderTextLayer(device, game)
                 const msg = [
                     "Shoot the Orbs!!!",
                     "Catch the Fire Balls for Ammo",
-                    "Use Space-Bar or Mouse Btn to Fire",
+                    "Use Space-Bar or Mouse-Btn to Fire",
                     "Press Space-Bar to Start"
                 ][idx];
                 device.centerTextOnY(msg, ch * pct);
@@ -75,11 +75,12 @@ function renderTextLayer(device, game)
         case gameStates.LOSE:
             if (game.lives <= 0) 
             {
-                device.centerTextOnY("SORRY  YOU  LOST,  PRESS  ENTER  TO  RETRY", ch * layout.winLoseY);
+                device.centerTextOnY("YOU  LOST,  PRESS  ENTER  TO  RETRY", ch * layout.winLoseY);
             } 
             else 
             {
-                device.centerTextOnY("SORRY  YOU  DIED,  PRESS  ENTER  TO  REVIVE", ch * layout.winLoseY);
+                device.centerTextOnY("YOU  DIED,  PRESS  ENTER  TO  REVIVE", ch * layout.winLoseY);
+                
             }
             break;
     }

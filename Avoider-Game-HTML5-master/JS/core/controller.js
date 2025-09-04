@@ -41,12 +41,12 @@ class Controller
     // ------------------------------------------------------------------------
     initGame() 
     {
-        // Pass device into game for setup (canvas, input, etc.)
-        this.#game.initGame(this.#device);
-
         // Add default render layers (order defines render priority)
         this.addLayer(gameObjectsLayer);  // Sprites / world objects
         this.addLayer(textRenderLayer);   // UI text / HUD
+
+        // Pass device into game for setup (canvas, input, etc.)
+        this.#game.initGame(this.#device); 
     }
 
     // ------------------------------------------------------------------------

@@ -7,33 +7,41 @@
 
     </head>
     <body>
-		
-		<br></br>
-		<nav id = "top_menu">
-				
-				<li><a href ="https://github.com/garysgray/avoider-revamp/">Home</a></li>
-				
-		</nav>
-		<br></br>
-			
-        <canvas id="canvas"></canvas>
-        <script type="text/javascript" src="JS/render/layer.js"></script>
-        <script type="text/javascript" src="JS/render/textRenderLayer.js"></script>
-        <script type="text/javascript" src="JS/render/gameObjectsRenderLayer.js"></script>
-        <script type="text/javascript" src="JS/logic/gameLogic.js"></script>
-        <script type="text/javascript" src="JS/render/gameObjectRenderFunctions.js"></script>
-        <script type="text/javascript" src="JS/logic/inputLogic.js"></script>
-        <script type="text/javascript" src="JS/utils/helpers.js"></script>
-		<script type="text/javascript" src="JS/core/controller.js"></script>
-        <script type="text/javascript" src="JS/core/game.js"></script>
-		<script type="text/javascript" src="JS/objects/gameObjects.js"></script>
-        <script type="text/javascript" src="JS/main.js"></script>
-		<br></br>
-		
-		<div id = "message">
-			<p>Press Ctrl to Pause</p>
-		</div>
-	
+		<div id = "container">
+            
+            <nav id = "top_menu">
+                    
+                    <li><a href ="https://github.com/garysgray/avoider-revamp/">Home</a></li>
+                    
+            </nav>
+            <br></br>
+                
+            <canvas id="canvas"></canvas>
+            <script type="text/javascript" src="JS/render/layer.js"></script>
+            <script type="text/javascript" src="JS/render/textRenderLayer.js"></script>
+            <script type="text/javascript" src="JS/render/gameObjectsRenderLayer.js"></script>
+            <script type="text/javascript" src="JS/logic/gameLogic.js"></script>
+            <script type="text/javascript" src="JS/render/gameObjectRenderFunctions.js"></script>
+            <script type="text/javascript" src="JS/logic/inputLogic.js"></script>
+            <script type="text/javascript" src="JS/utils/helpers.js"></script>
+            <script type="text/javascript" src="JS/core/controller.js"></script>
+            <script type="text/javascript" src="JS/core/game.js"></script>
+            <script type="text/javascript" src="JS/objects/gameObjects.js"></script>
+            <script type="text/javascript" src="JS/main.js"></script>
+            <br></br>
+            
+            <script>
+                window.onload = function() 
+                {
+                    // Call the initialization function from main.js
+                startGame();
+                }
+            </script>
+
+            <div id = "message">
+                <p>Press Ctrl to Pause</p>
+            </div>
+        </div>
 		
     </body>
 	

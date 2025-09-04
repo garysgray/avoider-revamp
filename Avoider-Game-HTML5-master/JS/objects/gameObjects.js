@@ -115,6 +115,12 @@ class GameObject
         return Math.max(this.#halfWidth, this.#halfHeight);
     }
 
+    centerObject( screenW, screenH) 
+    {
+        this.#posX = (screenW - this.#width) / 2;
+        this.#posY = (screenH - this.#height) / 2;
+    }
+
     
 }
 
@@ -260,6 +266,7 @@ class Player extends GameObject
 // Static or decorative background object
 // Currently does nothing, but could support parallax or animation
 // --------------------------------------------
+//FIX name bullshit
 class BackDrop extends GameObject 
 {
     constructor(width, height, x, y) 

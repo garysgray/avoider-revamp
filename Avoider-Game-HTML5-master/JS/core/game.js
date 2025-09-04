@@ -100,9 +100,9 @@ class GameConsts
 
     #BULLET_SPAWN_GAP = 0;
 
-    #HUD_BUFFER = .15;
+    #HUD_BUFFER = .10;
 
-    #FONT_SETTINGS = `bold 16pt Calibri`
+    #FONT_SETTINGS = `bold 19pt Calibri`
 
     #FONT_COLOR = 'white'
     
@@ -211,11 +211,16 @@ class Game
         this.#state     = gameStates.INIT;
        
         //FIX magic numbers
-        // UI/Background
         this.#backGround   = new BackDrop(600, 600, 0, 0);
-        this.#splashScreen = new BackDrop(400, 100, this.#canvasHalfW, this.#canvasHalfH);
-        this.#pauseScreen  = new BackDrop(400, 100, this.#canvasHalfW, this.#canvasHalfH);
-        this.#dieScreen    = new BackDrop(400, 100, this.#canvasHalfW, this.#canvasHalfH);
+        this.#splashScreen = new BackDrop(400, 100, 0, 0);
+        this.#pauseScreen  = new BackDrop(400, 100, 0, 0);
+        this.#dieScreen    = new BackDrop(400, 100, 0, 0);
+
+        this.splashScreen.centerObject(this.#canvasWidth, this.#canvasHeight)
+        this.pauseScreen.centerObject(this.#canvasWidth, this.#canvasHeight)
+        this.dieScreen.centerObject(this.#canvasWidth, this.#canvasHeight)
+    
+        
         
         // Gameplay variables
         this.#score  = 0;
@@ -290,6 +295,7 @@ class Game
         ]; 
         images.forEach(img => {
             const sprite = new Sprite(img.src, img.name);
+            //have it so it loads pos data by name of image
             device.images.addObject(sprite);
         });
         
