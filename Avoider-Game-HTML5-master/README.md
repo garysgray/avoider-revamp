@@ -1,3 +1,4 @@
+
 # Avoider Game (Revamped)
 
 A rebuilt version of my original HTML5 avoider game, cleaned up, modular, and easier to expand.  
@@ -49,6 +50,8 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - All rendering functions updated to use **center-based coordinates** (`posX`, `posY` as object center, with half-width/height offsets)  
 - Added groundwork for **animation helpers** via sprite sheet clips  
 - Layers system improved: player, NPCs, projectiles, and HUD are cleanly separated  
+- Unified `renderImage()` → now automatically handles both "with width/height" and "natural size" calls  
+- Improved `centerImage()` → simpler, more efficient calculation using object dimensions  
 
 ### GameObject, Player, BackDrop
 - Private fields added for safety (`#posX`, `#posY`, `#speed`, `#width`, `#height`)  
@@ -56,7 +59,9 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - **Player**: shooting cooldown logic handled internally with `Timer`  
 - **BackDrop**: ready for scrolling or animated backgrounds  
 - Every game object now has a bool `alive` member for flagging objects to be removed in updates (life cycle)  
-- Added unified `kill()` method in `GameObject` superclass to simplify cleanup across children 
+- Added unified `kill()` method in `GameObject` superclass to simplify cleanup across children  
+- Added **`centerObject()` utility** → calculates exact centered position based on canvas width/height and object size  
+- Fix: splash, pause, and die screens now **center correctly on first load** without needing a refresh  
 
 ### Debugging & Developer Tools
 - Added **toggleable hitbox debug mode** (draws bounding boxes around objects for collision testing)  
@@ -68,6 +73,7 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Added **clamp-based padding** for responsive scaling  
 - Introduced **glass/blur background** effects for menus and messages (modernized look)  
 - Easier theming: color or layout tweaks can now be done by editing variables in one place  
+- Fixed **message alignment**: `#message` now uses `display: flex; justify-content: center; align-items: center;` so text is perfectly centered  
 
 ### General Improvements
 - Unified OOP style using private fields (`#`)  
