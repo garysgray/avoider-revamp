@@ -34,6 +34,9 @@ class GameObject
 
     #halfWidth; #halfHeight;
 
+    #holdPosX = 0;
+    #holdPosY = 0;
+
     constructor(name, width, height, posX, posY, speed) 
     {
         this.#name = name;
@@ -42,7 +45,6 @@ class GameObject
         this.#posX = posX;
         this.#posY = posY;
         this.#speed = speed;
-
         this.#state = 0;
 
         // cache half-sizes once
@@ -64,6 +66,9 @@ class GameObject
     get halfWidth() { return this.#halfWidth; }
     get halfHeight() { return this.#halfHeight; }
 
+    get holdPosX() { return this.#holdPosX; }
+    get holdPosY() { return this.#holdPosY; }
+
     // ---- Setters ----
     set name(v) { this.#name = v; }
     set width(v) { this.#width = v; }
@@ -74,6 +79,9 @@ class GameObject
 
     set state(v) { this.#state = v; }
     set alive(v) { this.#alive = Boolean(v); }
+
+    set holdPosX(v) { this.#holdPosX = v; }
+    set holdPosY(v) { this.#holdPosY = v; }
 
     kill() { this.#alive = false; }
 
@@ -114,14 +122,6 @@ class GameObject
     {
         return Math.max(this.#halfWidth, this.#halfHeight);
     }
-
-    centerObject( screenW, screenH) 
-    {
-        this.#posX = (screenW - this.#width) / 2;
-        this.#posY = (screenH - this.#height) / 2;
-    }
-
-    
 }
 
 // --------------------------------------------
@@ -160,7 +160,6 @@ class NPC extends GameObject
     constructor(name, width, height, x, y, speed)  
     {
         super(name, width, height, x, y, speed);
-        this.alive = true;
     }
 
     // Update NPC each frame
@@ -168,8 +167,9 @@ class NPC extends GameObject
     // - Marks dead if it exits screen bottom
     update(device, game, delta) 
     {
+        const hud_buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT
         this.moveDown(delta);
-        if (this.posY > device.canvas.height + 50) this.kill();
+        if (this.posY > game.gameConsts.SCREEN_HEIGHT + hud_buff) this.kill();
     }
 }
 
@@ -237,25 +237,25 @@ class Player extends GameObject
     // - Updates cooldown
     // - Enforces screen bounds
     // - Handles shooting
-    update(device, delta, game) 
+    update(device, game, delta) 
     {
         this.#shootCooldownTimer.update(delta);
-        this.enforceBounds(device);
+        this.enforceBounds(game);
         this.tryShoot(device, game);
     }
 
     // Prevents player from leaving visible play area
-    enforceBounds(device) 
+    enforceBounds(game) 
     {
-        const canvas = device.canvas;
-        const hudBuffer = 50; // Reserved space at bottom (HUD zone)
+       // const canvas = device.canvas;
+        const hudBuffer = game.gameConsts.SCREEN_HEIGHT * game.gameConsts.HUD_BUFFER;
 
         if (this.posX - this.halfWidth < 0) this.posX = this.halfWidth;
-        if (this.posX + this.halfWidth > canvas.width) this.posX = canvas.width - this.halfWidth;
+        if (this.posX + this.halfWidth > game.gameConsts.SCREEN_WIDTH) this.posX = game.gameConsts.SCREEN_WIDTH - this.halfWidth;
         if (this.posY - this.halfHeight < 0) this.posY = this.halfHeight;
-        if (this.posY + this.halfHeight > canvas.height - hudBuffer) 
+        if (this.posY + this.halfHeight > game.gameConsts.SCREEN_HEIGHT - hudBuffer) 
         {
-            this.posY = (canvas.height - hudBuffer) - this.halfHeight;
+            this.posY = (game.gameConsts.SCREEN_HEIGHT - hudBuffer) - this.halfHeight;
         }
     }
 }
@@ -269,10 +269,15 @@ class Player extends GameObject
 //FIX name bullshit
 class BackDrop extends GameObject 
 {
-    constructor(width, height, x, y) 
+    constructor(name, width, height, x, y) 
     {
-        //FIX naming stuff??
-        super("BackDrop", width, height, x, y, 0);
+        super(name, width, height, x, y, 0);
+    }
+
+    centerObjectInWorld( screenW, screenH) 
+    {
+        this.posX = (screenW - this.width) * .5
+        this.posY = (screenH - this.height) * .5;
     }
 
     update(device, delta) 

@@ -47,7 +47,7 @@ const soundTypes = Object.freeze({
     SHOOT: "shoot"
 });
 
-const imageTypes = Object.freeze({
+const backDropTypes = Object.freeze({
     DIE: "die",
     PAUSE: "pause",
     SPLASH: "splash",
@@ -67,6 +67,10 @@ const keyTypes = Object.freeze({
 class GameConsts 
 {
     // ---- Private fields ----
+    #SCREEN_WIDTH = 600;
+    #SCREEN_HEIGHT = 600;
+
+
     #BULLET_SPEED = 550;
     #ORB_SPEED = 200;
     #AMMO_SPEED = 150;
@@ -75,9 +79,6 @@ class GameConsts
     #AMMO_SPAWN_RATIO = 200
     
     #SHIELD_TIME = 3;
-
-    #SCREEN_WIDTH = 600;
-    #SCREEN_HEIGHT = 600;
 
     #AMMO_AMOUNT = 10;
     #SCORE_INCREASE = 10;
@@ -181,8 +182,8 @@ class Game
     #lives;
     #ammo;
 
-    #holdX;
-    #holdY;
+    //#holdX;
+    //#holdY;
 
     // ---- Constructor ----
     constructor() 
@@ -211,14 +212,14 @@ class Game
         this.#state     = gameStates.INIT;
        
         //FIX magic numbers
-        this.#backGround   = new BackDrop(600, 600, 0, 0);
-        this.#splashScreen = new BackDrop(400, 100, 0, 0);
-        this.#pauseScreen  = new BackDrop(400, 100, 0, 0);
-        this.#dieScreen    = new BackDrop(400, 100, 0, 0);
+        this.#backGround   = new BackDrop(backDropTypes.BACKGROUND, 600, 600, 0, 0);
+        this.#splashScreen = new BackDrop(backDropTypes.SPLASH, 400, 100, 0, 0);
+        this.#pauseScreen  = new BackDrop(backDropTypes.PAUSE, 400, 100, 0, 0);
+        this.#dieScreen    = new BackDrop(backDropTypes.DIE, 400, 100, 0, 0);
 
-        this.splashScreen.centerObject(this.#canvasWidth, this.#canvasHeight)
-        this.pauseScreen.centerObject(this.#canvasWidth, this.#canvasHeight)
-        this.dieScreen.centerObject(this.#canvasWidth, this.#canvasHeight)
+        this.splashScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
+        this.pauseScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
+        this.dieScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
     
         
         
@@ -226,8 +227,8 @@ class Game
         this.#score  = 0;
         this.#lives  = 0;
         this.#ammo   = 0;   
-        this.#holdX  = 0;
-        this.#holdY  = 0;
+        //this.#holdX  = 0;
+        //this.#holdY  = 0;
     }
     
     // -----------------------------
@@ -242,6 +243,9 @@ class Game
     get canvasWidth()  { return this.#canvasWidth; }
     get canvasHeight() { return this.#canvasHeight; }
 
+    get canvasHalfW()  { return this.#canvasHalfW; }
+    get canvasHalfH() { return this.#canvasHalfH; }
+
     get state()        { return this.#state; }
     get playState()    { return this.#playState; }
 
@@ -253,8 +257,8 @@ class Game
     get score()        { return this.#score; }
     get lives()        { return this.#lives; }
     get ammo()         { return this.#ammo; } 
-    get holdX()        { return this.#holdX; }
-    get holdY()        { return this.#holdY; }
+    //get holdX()        { return this.#holdX; }
+    //get holdY()        { return this.#holdY; }
     
     // -----------------------------
     // Mutators
@@ -262,8 +266,8 @@ class Game
     set state(v)        { this.#state = v; }
     set score(v)        { this.#score = v; }
     set playState(v)    { this.#playState = v; }
-    set holdX(v)        { this.#holdX = v; }
-    set holdY(v)        { this.#holdY = v; }
+    //set holdX(v)        { this.#holdX = v; }
+    //set holdY(v)        { this.#holdY = v; }
     set lives(v)        { this.#lives = v; }
     set ammo(v)         { this.#ammo = v; }
 

@@ -37,7 +37,7 @@ function updateGameLogic(device, game, delta)
             checkUserKeyInput(device, game);
 
             // --- Update Player ---
-            game.player.update(device, delta, game);
+            game.player.update(device, game, delta);
 
             // Shield timer (seconds-based)
             if (game.timer.active) 
@@ -55,8 +55,8 @@ function updateGameLogic(device, game, delta)
             // --- Collision Handling ---
             if (game.playState !== playStates.SHIELD) {
                 if (!check_NPC_Collision(device, game)) {
-                    game.holdX = game.player.posX;
-                    game.holdY = game.player.posY;
+                    game.player.holdPosX = game.player.posX;
+                    game.player.holdPosY = game.player.posY;
                 }
             }
         }
@@ -73,8 +73,8 @@ function updateGameLogic(device, game, delta)
             if( device.keys.isKeyPressed(keyTypes.PAUSE_KEY_L))
             {	
                 // Restore player position and grant temporary shield
-                game.player.posX = game.holdX;
-                game.player.posY = game.holdY;                
+                game.player.posX = game.player.holdPosX;
+                game.player.posY = game.player.holdPosY;                
                 game.playState = playStates.SHIELD;
                 game.timer.reset(game.gameConsts.SHIELD_TIME);
 
@@ -112,8 +112,8 @@ function updateGameLogic(device, game, delta)
         case gameStates.LOSE:
         {	
             // Freeze player at last death position
-            game.player.posX = game.holdX;
-            game.player.posY = game.holdY; 
+            game.player.posX = game.player.holdPosX;
+            game.player.posY = game.player.holdPosY; 
             
             if(game.lives <= 0)
             {                
