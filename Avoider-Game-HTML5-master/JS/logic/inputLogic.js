@@ -20,8 +20,8 @@ function checkforPause(device, game)
         if (game.state === gameStates.PLAY)          
         {             
             // Save player position so it can be restored on resume
-            game.holdX = game.player.posX;             
-            game.holdY = game.player.posY;             
+            game.player.holdPosX = game.player.posX;             
+            game.player.holdPosY = game.player.posY;             
 
             // Switch to pause mode
             game.state = gameStates.PAUSE;         
