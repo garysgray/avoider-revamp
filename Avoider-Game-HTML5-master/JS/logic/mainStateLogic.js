@@ -1,10 +1,49 @@
+// -----------------------------------------------------------------------------
+// USER INPUT HANDLERS
+// -----------------------------------------------------------------------------
+
+/**
+ * Handles pause/unpause input.
+ * - Toggles game.state between PLAY and PAUSE.
+ * - Stores player position when paused and restores state on resume.
+ */
+function checkforPause(device, game)  
+{     
+    if (device.keys.isKeyPressed(keyTypes.PAUSE_KEY_L))     
+    {         
+        if (game.state === gameStates.PLAY)          
+        {             
+            // Save player position so it can be restored on resume
+           game.player.savePos(game.player.posX, game.player.posY);
+
+            // Switch to pause mode
+            game.state = gameStates.PAUSE;         
+        }          
+        else if (game.state === gameStates.PAUSE)          
+        {             
+            // Resume play mode
+            game.state = gameStates.PLAY;         
+        }     
+    } 
+}  
+
+/**
+ * Processes all player input:
+ * - Delegates pause handling to checkforPause().
+ * - (Future) Can expand with other global input checks.
+ */
+function checkUserKeyInput(device, game) 
+{     
+    checkforPause(device, game); 
+}   
+
 //---------------------------------------------------------------
-// Update Game Logic
+// Update Game States
 // - Called each frame from the controller's update() function
 // - Handles core game logic, input responses, and state transitions
 // - Updates all game objects depending on current game state
 //---------------------------------------------------------------
-function updateGameLogic(device, game, delta)
+function updateGameStates(device, game, delta)
 {		
     switch(game.state)
     {
@@ -44,7 +83,7 @@ function updateGameLogic(device, game, delta)
             {
                 if (game.timer.update(delta)) 
                 {
-                    game.playState = playStates.AVOID;
+                    game.playState = game.savedState; 
                 }
             }
 
@@ -53,10 +92,11 @@ function updateGameLogic(device, game, delta)
             updateProjectiles(device, game, delta);
 
             // --- Collision Handling ---
-            if (game.playState !== playStates.SHIELD) {
-                if (!check_NPC_Collision(device, game)) {
-                    game.player.holdPosX = game.player.posX;
-                    game.player.holdPosY = game.player.posY;
+            if (game.playState !== playStates.SHIELD) 
+            {
+                if (!check_NPC_Collision(device, game)) 
+                {
+                    game.player.savePos(game.player.posX, game.player.posY);
                 }
             }
         }
@@ -72,9 +112,11 @@ function updateGameLogic(device, game, delta)
             // Resume game on pause key release
             if( device.keys.isKeyPressed(keyTypes.PAUSE_KEY_L))
             {	
-                // Restore player position and grant temporary shield
-                game.player.posX = game.player.holdPosX;
-                game.player.posY = game.player.holdPosY;                
+                // Restore player position and grant temporary shield 
+                game.player.restoreSavedPos();
+            
+                game.savedState = game.playState; 
+
                 game.playState = playStates.SHIELD;
                 game.timer.reset(game.gameConsts.SHIELD_TIME);
 
@@ -112,8 +154,7 @@ function updateGameLogic(device, game, delta)
         case gameStates.LOSE:
         {	
             // Freeze player at last death position
-            game.player.posX = game.player.holdPosX;
-            game.player.posY = game.player.holdPosY; 
+             game.player.savePos(game.player.posX, game.player.posY);
             
             if(game.lives <= 0)
             {                
@@ -144,3 +185,6 @@ function updateGameLogic(device, game, delta)
         break;
     }
 }
+
+
+

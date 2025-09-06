@@ -9,7 +9,7 @@
 //let DEBUG_DRAW_HITBOXES = true;
 let DEBUG_DRAW_HITBOXES = false;
 
-function startGame() {
+function startInitializationProcess() {
 
     let myController = new Controller();
 
@@ -27,7 +27,6 @@ function startGame() {
     // ---------------------------------------------------------------------------
     function gameLoop() 
     {
-        
         // Measure elapsed real time since the last frame (delta time)
         const now = performance.now();
         let frameTime = (now - lastTime) / 1000; // convert ms → seconds
@@ -51,9 +50,8 @@ function startGame() {
 
         // Optional: Debugging overlay
         // Uncomment for real-time debug text (e.g., splash screen position)
-        //myController.device.debugText(myController.game.splashScreen.posX, 150, 50);
-    
-
+        //myController.device.debugText(myController.game.savedState, 150, 50);
+        //myController.device.debugText(myController.game.state, 150, 150);
 
         // Request the next frame from the browser
         requestAnimationFrame(gameLoop);
@@ -63,6 +61,4 @@ function startGame() {
     // Start the loop
     // ---------------------------------------------------------------------------
      gameLoop();
-
-
 }

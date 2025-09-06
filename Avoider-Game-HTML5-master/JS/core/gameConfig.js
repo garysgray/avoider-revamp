@@ -67,7 +67,7 @@ const keyTypes = Object.freeze({
 class GameConsts 
 {
     // ---- Private fields ----
-    #SCREEN_WIDTH = 600;
+    #SCREEN_WIDTH = 850;
     #SCREEN_HEIGHT = 600;
 
 
@@ -75,7 +75,7 @@ class GameConsts
     #ORB_SPEED = 200;
     #AMMO_SPEED = 150;
 
-    #ORB_SPAWN_RATIO = 20;
+    #ORB_SPAWN_RATIO = 10;
     #AMMO_SPAWN_RATIO = 200
     
     #SHIELD_TIME = 3;
@@ -103,7 +103,7 @@ class GameConsts
 
     #HUD_BUFFER = .10;
 
-    #FONT_SETTINGS = `bold 19pt Calibri`
+    #FONT_SETTINGS = `bold 17pt Century Gothic`
 
     #FONT_COLOR = 'white'
     
@@ -182,8 +182,7 @@ class Game
     #lives;
     #ammo;
 
-    //#holdX;
-    //#holdY;
+    #savedState = playStates.AVOID;
 
     // ---- Constructor ----
     constructor() 
@@ -221,14 +220,10 @@ class Game
         this.pauseScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
         this.dieScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
     
-        
-        
         // Gameplay variables
         this.#score  = 0;
         this.#lives  = 0;
         this.#ammo   = 0;   
-        //this.#holdX  = 0;
-        //this.#holdY  = 0;
     }
     
     // -----------------------------
@@ -270,6 +265,11 @@ class Game
     //set holdY(v)        { this.#holdY = v; }
     set lives(v)        { this.#lives = v; }
     set ammo(v)         { this.#ammo = v; }
+
+    //FIX put in gameobject eventually
+    get savedState() { return this.#savedState; }
+    set savedState(v) { this.#savedState = v; }
+
 
     // Convenience modifiers
     emptyAmmo()         { this.#ammo = 0; }    

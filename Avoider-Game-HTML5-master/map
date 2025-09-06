@@ -14,27 +14,26 @@ Avoider-Game-HTML5-master/
 │
 ├── index.html
 │
-├── JS/
+├── js/
 │   ├── core/
-│   │   ├── controller.js
-│   │   ├── game.js
+│   │   ├── gameController.js
+│   │   ├── gameConfig.js
 │   │
 |   ├── logic/
-│   │   ├── gameLogic.js
-│   │   └── inputLogic.js
+│   │   ├── mainStateLogic.js
+│   │   └── npcLogic.js
 │   │
 │   ├── objects/
-│   │   └── gameObjects.js
+│   │   └── gameEntities.js
 │   │
 │   ├── render/
-│   │   ├── gameObjectRenderFunctions.js
+│   │   ├── renderUtilities.js
 │   │   ├── gameObjectsRenderLayer.js
-│   │   ├── layer.js
-│   │   └── textRenderLayer.js
+│   │   ├── textRenderLayer.js
+│   │   └── layer.js
 │   │   
-│   │
 │   ├── utils/
-│   │   └── helpers.js
+│   │   └── gameUtilities.js
 │   │
 │   └── main.js
 │

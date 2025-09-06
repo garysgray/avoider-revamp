@@ -9,13 +9,13 @@ function renderTextLayer(device, game)
     // Define layout positions as percentages of canvas height/width
     const layout = 
     {
-        initTextY: [0.65, 0.70, 0.75, 0.80],   // Intro screen text lines
+        initTextY: [0.57, 0.62, 0.67, 0.72],   // Intro screen text lines
         hudY: 0.95,                          // HUD vertical placement
         hudAmmoX: 0.05,                      // Left-side HUD text (Ammo)
         hudLivesX: 0.85,                     // Right-side HUD text (Lives)
-        pauseY: 0.65,                        // Pause message placement
-        winLoseY: 0.65                       // Win/Lose screen placement
-    };
+        pauseY: 0.57,                        // Pause message placement
+        winLoseY: 0.57                       // Win/Lose screen placement
+    }; 
 
     // Store canvas dimensions for positioning text
     const cw = device.canvas.width;

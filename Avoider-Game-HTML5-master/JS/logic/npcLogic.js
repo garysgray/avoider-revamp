@@ -4,45 +4,6 @@
 // Called every frame from controller.js update loop.
 // ============================================================================
 
-// -----------------------------------------------------------------------------
-// USER INPUT HANDLERS
-// -----------------------------------------------------------------------------
-
-/**
- * Handles pause/unpause input.
- * - Toggles game.state between PLAY and PAUSE.
- * - Stores player position when paused and restores state on resume.
- */
-function checkforPause(device, game)  
-{     
-    if (device.keys.isKeyPressed(keyTypes.PAUSE_KEY_L))     
-    {         
-        if (game.state === gameStates.PLAY)          
-        {             
-            // Save player position so it can be restored on resume
-            game.player.holdPosX = game.player.posX;             
-            game.player.holdPosY = game.player.posY;             
-
-            // Switch to pause mode
-            game.state = gameStates.PAUSE;         
-        }          
-        else if (game.state === gameStates.PAUSE)          
-        {             
-            // Resume play mode
-            game.state = gameStates.PLAY;         
-        }     
-    } 
-}  
-
-/**
- * Processes all player input:
- * - Delegates pause handling to checkforPause().
- * - (Future) Can expand with other global input checks.
- */
-function checkUserKeyInput(device, game) 
-{     
-    checkforPause(device, game); 
-}   
 
 
 // -----------------------------------------------------------------------------

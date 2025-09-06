@@ -133,7 +133,8 @@ class Device
     }  
 }
 
-class ObjHolder {
+class ObjHolder 
+{
 	#objects;       // main container
     #orderedList;   // keeps objects in order
 
