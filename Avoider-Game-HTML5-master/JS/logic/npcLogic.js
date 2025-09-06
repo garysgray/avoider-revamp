@@ -197,7 +197,7 @@ function check_NPC_Collision(device, game)
             npc.kill();                 
             device.audio.playSound(soundTypes.HURT);                 
             game.playState = playStates.DEATH;                 
-            game.state = gameStates.LOSE;                 
+            game.gameState = gameStates.LOSE;                 
             game.decreaseLives(1);                 
             return false;             
         }         

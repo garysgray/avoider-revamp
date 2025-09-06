@@ -26,7 +26,7 @@ function renderTextLayer(device, game)
     device.colorText(game.gameConsts.FONT_COLOR);
 
     // Switch behavior based on current game state
-    switch (game.state) 
+    switch (game.gameState) 
     {
  
         // ==============================
@@ -34,13 +34,8 @@ function renderTextLayer(device, game)
         // ==============================
         case gameStates.INIT:
             layout.initTextY.forEach((pct, idx) => {
-                const msg = [
-                    "Shoot the Orbs!!!",
-                    "Catch the Fire Balls for Ammo",
-                    "Use Space-Bar or Mouse-Btn to Fire",
-                    "Press Space-Bar to Start"
-                ][idx];
-                device.centerTextOnY(msg, ch * pct);
+                instructions = gameTexts.INIT.INSTRUCTIONS[idx];
+                device.centerTextOnY(instructions, ch * pct);
             });
             break;
 
@@ -49,9 +44,10 @@ function renderTextLayer(device, game)
         // ==============================
         case gameStates.PLAY:
             device.colorText("red");  // HUD uses red to stand out
-            device.centerTextOnY("Score: " + game.score, ch * layout.hudY);
-            device.putText("Ammo: " + game.ammo, cw * layout.hudAmmoX, ch * layout.hudY);
-            device.putText("Lives: " + game.lives, cw * layout.hudLivesX, ch * layout.hudY);
+            device.centerTextOnY(gameTexts.HUD.SCORE + game.score, ch * layout.hudY);
+            device.putText(gameTexts.HUD.AMMO + game.ammo, cw * layout.hudAmmoX, ch * layout.hudY);
+            device.putText(gameTexts.HUD.LIVES + game.lives, cw * layout.hudLivesX, ch * layout.hudY);
+
             break;
 
         // ==============================
@@ -59,14 +55,14 @@ function renderTextLayer(device, game)
         // ==============================
         case gameStates.PAUSE:
             device.colorText("white");
-            device.centerTextOnY("PRESS  CTRL  TO  RESUME  GAME", ch * layout.pauseY);
+            device.centerTextOnY(gameTexts.PAUSE.MESSAGE, ch * layout.pauseY);
             break;
 
         // ==============================
         // WIN STATE: Replay prompt
         // ==============================
         case gameStates.WIN:
-            device.centerTextOnY("PRESS  ENTER  TO  PLAY  AGAIN", ch * layout.winLoseY);
+            device.centerTextOnY(gameTexts.WIN.MESSAGE, ch * layout.winLoseY);
             break;
 
         // ==============================
@@ -75,11 +71,11 @@ function renderTextLayer(device, game)
         case gameStates.LOSE:
             if (game.lives <= 0) 
             {
-                device.centerTextOnY("YOU  LOST,  PRESS  ENTER  TO  RETRY", ch * layout.winLoseY);
+                device.centerTextOnY(gameTexts.LOSE.LOSE_MESSAGE, ch * layout.winLoseY);
             } 
             else 
             {
-                device.centerTextOnY("YOU  DIED,  PRESS  ENTER  TO  REVIVE", ch * layout.winLoseY);
+                device.centerTextOnY(gameTexts.LOSE.DIE_MESSAGE, ch * layout.winLoseY);
                 
             }
             break;
