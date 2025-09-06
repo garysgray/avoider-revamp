@@ -19,7 +19,7 @@ function renderGameObjectsLayer(device, game)
     ); 
    
     // === Render Based on Game State ===
-    switch (game.state)
+    switch (game.gameState)
     {
         case gameStates.INIT: // Splash / Init screen
         {   

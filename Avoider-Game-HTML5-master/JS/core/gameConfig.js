@@ -61,27 +61,46 @@ const keyTypes = Object.freeze({
  
 });
 
+const gameTexts = Object.freeze({
+    INIT: 
+    {
+        INSTRUCTIONS: [
+                    "Shoot the Orbs!!!",
+                    "Catch the Fire Balls for Ammo",
+                    "Use Space-Bar or Mouse-Btn to Fire",
+                    "Press Space-Bar to Start"
+                ]
+    },
+    HUD: 
+    {
+        SCORE: "Score: ",
+        AMMO: "Ammo: ",
+        LIVES: "Lives: "
+    },
+    PAUSE: 
+    {
+        MESSAGE: "PRESS  CTRL  TO  RESUME  GAME"
+    },
+    WIN: 
+    {
+        MESSAGE: "PRESS  ENTER  TO  PLAY  AGAIN"
+    },
+    LOSE: 
+    {
+        LOSE_MESSAGE: "YOU  LOST,  SPACE-BAR  TO  RETRY",
+        DIE_MESSAGE: "YOU  DIED,  SPACE-BAR  TO  REVIVE"
+    }
+});
+
 // -----------------------------
 // Global Constants
 // -----------------------------
 class GameConsts 
 {
     // ---- Private fields ----
+    //sizes
     #SCREEN_WIDTH = 850;
     #SCREEN_HEIGHT = 600;
-
-
-    #BULLET_SPEED = 550;
-    #ORB_SPEED = 200;
-    #AMMO_SPEED = 150;
-
-    #ORB_SPAWN_RATIO = 10;
-    #AMMO_SPAWN_RATIO = 200
-    
-    #SHIELD_TIME = 3;
-
-    #AMMO_AMOUNT = 10;
-    #SCORE_INCREASE = 10;
 
     #PLAYER_SPRITE_W = 32;
     #PLAYER_SPRITE_H = 29;
@@ -95,61 +114,86 @@ class GameConsts
     #FIRE_AMMO_SPRITE_W = 20;
     #FIRE_AMMO_SPRITE_H = 20;
 
+    #BACKGROUND_W = 600;
+    #BACKGROUND_H = 600;
+
+    #SPLASH_W = 400;
+    #SPLASH_H = 100;
+
+    #PAUSE_W = 400;
+    #PAUSE_H = 100;
+
+    #DIE_W = 400;
+    #DIE_H = 100;
+
+    //speeds
+    #BULLET_SPEED = 550;
+    #ORB_SPEED = 200;
+    #AMMO_SPEED = 150;
+
+    //times
+    #SHIELD_TIME = 3;
     #SHOOT_COOLDOWN = 0.2; // 200ms
 
-    #SPAWN_ATTEMPTS = 5;
+    //amounts
+    #AMMO_AMOUNT = 3;
+    #SCORE_INCREASE = 10;
+    #GAME_LIVES_START_AMOUNT = 5;
 
+    #SPAWN_ATTEMPTS = 5;
     #BULLET_SPAWN_GAP = 0;
 
-    #HUD_BUFFER = .10;
+    #ORB_SPAWN_RATIO = 10;
+    #AMMO_SPAWN_RATIO = 200
 
+    //settings
     #FONT_SETTINGS = `bold 17pt Century Gothic`
-
     #FONT_COLOR = 'white'
+    #HUD_BUFFER = .10;
     
-    #GAME_LIVES_START_AMOUNT = 5;
-    
-
     // ---- Getters (expose constants safely) ----
-    get BULLET_SPEED()   { return this.#BULLET_SPEED; }
-    get ORB_SPEED()      { return this.#ORB_SPEED; }
-    get AMMO_SPEED()      { return this.#AMMO_SPEED; }
-    get SHIELD_TIME()    { return this.#SHIELD_TIME; }
+    get SCREEN_WIDTH(){ return this.#SCREEN_WIDTH; }
+    get SCREEN_HEIGHT(){ return this.#SCREEN_HEIGHT; }
 
-    get SCREEN_WIDTH()   { return this.#SCREEN_WIDTH; }
-    get SCREEN_HEIGHT()  { return this.#SCREEN_HEIGHT; }
+    get PLAYER_SPRITE_W(){ return this.#PLAYER_SPRITE_W; }
+    get PLAYER_SPRITE_H(){ return this.#PLAYER_SPRITE_H; }
+    get ORB_SPRITE_W(){ return this.#ORB_SPRITE_W; }
+    get ORB_SPRITE_H(){ return this.#ORB_SPRITE_H; }
+    get BULLET_SPRITE_W(){ return this.#BULLET_SPRITE_W; }
+    get BULLET_SPRITE_H(){ return this.#BULLET_SPRITE_H; }
+    get FIRE_AMMO_SPRITE_W(){ return this.#FIRE_AMMO_SPRITE_W; }
+    get FIRE_AMMO_SPRITE_H(){ return this.#FIRE_AMMO_SPRITE_H; }
 
-    get AMMO_AMOUNT()    { return this.#AMMO_AMOUNT; }
-    get SCORE_INCREASE() { return this.#SCORE_INCREASE; }
+    get BACKGROUND_W(){ return this.#BACKGROUND_W; }
+    get BACKGROUND_H(){ return this.#BACKGROUND_H; }
+    get SPLASH_W(){ return this.#SPLASH_W; }
+    get SPLASH_H(){ return this.#SPLASH_H; }
+    get PAUSE_W(){ return this.#PAUSE_W; }
+    get PAUSE_H(){ return this.#PAUSE_H; }
+    get DIE_W(){ return this.#DIE_W; }
+    get DIE_H(){ return this.#DIE_H; }
 
-    get SHOOT_COOLDOWN() { return this.#SHOOT_COOLDOWN; }
+    get BULLET_SPEED(){ return this.#BULLET_SPEED; }
+    get ORB_SPEED(){ return this.#ORB_SPEED; }
+    get AMMO_SPEED(){ return this.#AMMO_SPEED; }
 
-    get SPAWN_ATTEMPTS() { return this.#SPAWN_ATTEMPTS; }
- 
-    get ORB_SPAWN_RATIO()      { return this.#ORB_SPAWN_RATIO; }
-    get AMMO_SPAWN_RATIO()      { return this.#AMMO_SPAWN_RATIO; }
+    get SHIELD_TIME(){ return this.#SHIELD_TIME; }
+    get SHOOT_COOLDOWN(){ return this.#SHOOT_COOLDOWN; }
+    
+    get AMMO_AMOUNT(){ return this.#AMMO_AMOUNT; }
+    get SCORE_INCREASE(){ return this.#SCORE_INCREASE; }
+    get GAME_LIVES_START_AMOUNT(){ return this.#GAME_LIVES_START_AMOUNT; }
 
-    get BULLET_SPAWN_GAP()      { return this.#BULLET_SPAWN_GAP; }
+    get SPAWN_ATTEMPTS(){ return this.#SPAWN_ATTEMPTS; }
+    get BULLET_SPAWN_GAP(){ return this.#BULLET_SPAWN_GAP; }
 
-    get PLAYER_SPRITE_W()   { return this.#PLAYER_SPRITE_W; }
-    get PLAYER_SPRITE_H()  { return this.#PLAYER_SPRITE_H; }
+    get ORB_SPAWN_RATIO(){ return this.#ORB_SPAWN_RATIO; }
+    get AMMO_SPAWN_RATIO(){ return this.#AMMO_SPAWN_RATIO; }
 
-    get ORB_SPRITE_W()   { return this.#ORB_SPRITE_W; }
-    get ORB_SPRITE_H()  { return this.#ORB_SPRITE_H; }
-
-    get BULLET_SPRITE_W()   { return this.#BULLET_SPRITE_W; }
-    get BULLET_SPRITE_H()  { return this.#BULLET_SPRITE_H; }
-
-    get FIRE_AMMO_SPRITE_W()   { return this.#FIRE_AMMO_SPRITE_W; }
-    get FIRE_AMMO_SPRITE_H()  { return this.#FIRE_AMMO_SPRITE_H; }
-
-
-    get HUD_BUFFER()  { return this.#HUD_BUFFER; }
-
-    get FONT_SETTINGS()  { return this.#FONT_SETTINGS; }
-    get FONT_COLOR()  { return this.#FONT_COLOR; }
-
-    get GAME_LIVES_START_AMOUNT()  { return this.#GAME_LIVES_START_AMOUNT; }
+    get FONT_SETTINGS(){ return this.#FONT_SETTINGS; }
+    get FONT_COLOR(){ return this.#FONT_COLOR; }
+    get HUD_BUFFER(){ return this.#HUD_BUFFER; }
+    
 }
 
 // -----------------------------
@@ -171,7 +215,7 @@ class Game
     #canvasHalfH
 
     #playState;
-    #state;
+    #gameState;
 
     #backGround;
     #splashScreen;
@@ -182,7 +226,7 @@ class Game
     #lives;
     #ammo;
 
-    #savedState = playStates.AVOID;
+    #savedPlayState = playStates.AVOID;
 
     // ---- Constructor ----
     constructor() 
@@ -208,13 +252,13 @@ class Game
 
         // Default states
         this.#playState = playStates.AVOID; 
-        this.#state     = gameStates.INIT;
+        this.#gameState     = gameStates.INIT;
        
         //FIX magic numbers
-        this.#backGround   = new BackDrop(backDropTypes.BACKGROUND, 600, 600, 0, 0);
-        this.#splashScreen = new BackDrop(backDropTypes.SPLASH, 400, 100, 0, 0);
-        this.#pauseScreen  = new BackDrop(backDropTypes.PAUSE, 400, 100, 0, 0);
-        this.#dieScreen    = new BackDrop(backDropTypes.DIE, 400, 100, 0, 0);
+        this.#backGround   = new BackDrop(backDropTypes.BACKGROUND, this.#gameConsts.BACKGROUND_W, this.#gameConsts.BACKGROUND_H, 0, 0);
+        this.#splashScreen = new BackDrop(backDropTypes.SPLASH, this.#gameConsts.SPLASH_W, this.#gameConsts.SPLASH_H, 0, 0);
+        this.#pauseScreen  = new BackDrop(backDropTypes.PAUSE, this.#gameConsts.PAUSE_W, this.#gameConsts.PAUSE_H, 0, 0);
+        this.#dieScreen    = new BackDrop(backDropTypes.DIE, this.#gameConsts.DIE_W, this.#gameConsts.DIE_H, 0, 0);
 
         this.splashScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
         this.pauseScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
@@ -239,9 +283,9 @@ class Game
     get canvasHeight() { return this.#canvasHeight; }
 
     get canvasHalfW()  { return this.#canvasHalfW; }
-    get canvasHalfH() { return this.#canvasHalfH; }
+    get canvasHalfH()  { return this.#canvasHalfH; }
 
-    get state()        { return this.#state; }
+    get gameState()    { return this.#gameState; }
     get playState()    { return this.#playState; }
 
     get backGround()   { return this.#backGround; }
@@ -252,23 +296,19 @@ class Game
     get score()        { return this.#score; }
     get lives()        { return this.#lives; }
     get ammo()         { return this.#ammo; } 
-    //get holdX()        { return this.#holdX; }
-    //get holdY()        { return this.#holdY; }
     
     // -----------------------------
     // Mutators
     // -----------------------------
-    set state(v)        { this.#state = v; }
+    set gameState(v)    { this.#gameState = v; }
     set score(v)        { this.#score = v; }
     set playState(v)    { this.#playState = v; }
-    //set holdX(v)        { this.#holdX = v; }
-    //set holdY(v)        { this.#holdY = v; }
+
     set lives(v)        { this.#lives = v; }
     set ammo(v)         { this.#ammo = v; }
 
-    //FIX put in gameobject eventually
-    get savedState() { return this.#savedState; }
-    set savedState(v) { this.#savedState = v; }
+    get savedPlayState() { return this.#savedPlayState; }
+    set savedPlayState(v) { this.#savedPlayState = v; }
 
 
     // Convenience modifiers
@@ -321,7 +361,7 @@ class Game
         this.ammo      = 0;
         this.gameSprites.clearObjects();
 
-        this.playState = playStates.AVOID;   
+        this.setPlayState(playStates.AVOID);
         this.setMouseToPlayer(device, this.#player);
     }
     
@@ -332,4 +372,24 @@ class Game
     {
         device.setupMouse(aPlayer, device);
     }  
+
+    savePlayState(state)
+    {
+        this.#savedPlayState = state;
+    }
+
+    restorePlayState()
+    {
+        this.#playState = this.#savedPlayState;
+    }
+
+    setGameState(state)
+    {
+        this.#gameState = state;
+    }
+
+    setPlayState(playstate)
+    {
+        this.#playState = playstate;
+    }
 }

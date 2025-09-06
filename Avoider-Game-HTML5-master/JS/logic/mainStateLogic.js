@@ -4,25 +4,25 @@
 
 /**
  * Handles pause/unpause input.
- * - Toggles game.state between PLAY and PAUSE.
+ * - Toggles game.gameState between PLAY and PAUSE.
  * - Stores player position when paused and restores state on resume.
  */
 function checkforPause(device, game)  
 {     
     if (device.keys.isKeyPressed(keyTypes.PAUSE_KEY_L))     
     {         
-        if (game.state === gameStates.PLAY)          
+        if (game.gameState === gameStates.PLAY && game.playState != playStates.SHIELD)          
         {             
             // Save player position so it can be restored on resume
            game.player.savePos(game.player.posX, game.player.posY);
 
             // Switch to pause mode
-            game.state = gameStates.PAUSE;         
+            game.setGameState(gameStates.PAUSE);        
         }          
-        else if (game.state === gameStates.PAUSE)          
+        else if (game.gameState === gameStates.PAUSE)          
         {             
             // Resume play mode
-            game.state = gameStates.PLAY;         
+            setGameState(gameStates.PLAY);
         }     
     } 
 }  
@@ -45,7 +45,7 @@ function checkUserKeyInput(device, game)
 //---------------------------------------------------------------
 function updateGameStates(device, game, delta)
 {		
-    switch(game.state)
+    switch(game.gameState)
     {
         //-------------------------------------------------------
         // INIT STATE
@@ -60,7 +60,7 @@ function updateGameStates(device, game, delta)
             // Start game when the play key (e.g., spacebar) is pressed
             if(device.keys.isKeyPressed(keyTypes.PLAY_KEY))
             {
-                game.state = gameStates.PLAY;
+                game.setGameState(gameStates.PLAY);
             }
         }
         break;
@@ -83,7 +83,7 @@ function updateGameStates(device, game, delta)
             {
                 if (game.timer.update(delta)) 
                 {
-                    game.playState = game.savedState; 
+                    game.restorePlayState(); 
                 }
             }
 
@@ -114,19 +114,17 @@ function updateGameStates(device, game, delta)
             {	
                 // Restore player position and grant temporary shield 
                 game.player.restoreSavedPos();
-            
-                game.savedState = game.playState; 
+                game.savePlayState(game.playState);
 
-                game.playState = playStates.SHIELD;
+                game.setPlayState(playStates.SHIELD);
                 game.timer.reset(game.gameConsts.SHIELD_TIME);
-
-                game.state = gameStates.PLAY;
+                game.setGameState(gameStates.PLAY);
             }
 
             // Hard reset (restart entire game)
             if(device.keys.isKeyDown(keyTypes.RESET_KEY))
             {
-                game.state = gameStates.INIT;
+                game.setGameState(gameStates.INIT);
             }
         }
         break;
@@ -140,7 +138,7 @@ function updateGameStates(device, game, delta)
         {
             if(device.keys.isKeyDown(keyTypes.RESET_KEY))
             {
-                game.state = gameStates.INIT;
+                game.setGameState(gameStates.INIT);
             }
         }
         break;
@@ -161,7 +159,7 @@ function updateGameStates(device, game, delta)
                 // No lives left → reset game on key press
                 if(device.keys.isKeyDown(keyTypes.RESET_KEY))
                 {
-                    game.state = gameStates.INIT;      
+                    game.setGameState(gameStates.INIT);      
                 }
             }
             else
@@ -171,10 +169,9 @@ function updateGameStates(device, game, delta)
                 {
                     game.emptyAmmo();                  // clear bullets
                     game.gameSprites.clearObjects();   // clear NPCs
-
-                    game.state = gameStates.PLAY;
+                    game.setGameState(gameStates.PLAY);
                     game.timer.reset(game.gameConsts.SHIELD_TIME);
-                    game.playState = playStates.SHIELD;
+                    game.setPlayState(playStates.SHIELD);
                 }
             }
         }
