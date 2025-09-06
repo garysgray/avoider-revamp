@@ -9,7 +9,6 @@
  */
 function renderGameObjectsLayer(device, game)
 {   
-    
     // === Render Static Background ===
     device.renderImage(
         device.images.getImage(backDropTypes.BACKGROUND),
@@ -18,17 +17,18 @@ function renderGameObjectsLayer(device, game)
         game.gameConsts.SCREEN_WIDTH,
         game.gameConsts.SCREEN_HEIGHT    
     ); 
-        
+   
     // === Render Based on Game State ===
     switch (game.state)
     {
         case gameStates.INIT: // Splash / Init screen
-        {    
+        {   
+            const buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
             // Show splash image, no game objects yet
             device.renderImage(
                 device.images.getImage(backDropTypes.SPLASH),
                 game.splashScreen.posX,
-                game.splashScreen.posY
+                game.splashScreen.posY - buff
             );     
         }
         break;
@@ -43,13 +43,24 @@ function renderGameObjectsLayer(device, game)
         break;
 
         case gameStates.PAUSE: // Pause overlay
-        {            
+        {   
+            const buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;         
             // Show pause screen, no player render
             device.renderImage(
                 device.images.getImage(backDropTypes.PAUSE),
                 game.pauseScreen.posX,
-                game.pauseScreen.posY
-            );            
+                game.pauseScreen.posY - buff
+            );  
+            
+            // // FIX experiment
+            // device.ctx.fillStyle = "green";
+            // device.ctx.fillRect(20, 20, 75, 50);
+            // device.ctx.globalAlpha = 0.2;
+            // device.ctx.fillStyle = "yellow";
+            // device.ctx.fillRect(50, 50, 75, 50);
+            // device.ctx.fillStyle = "red";
+            // device.ctx.fillRect(80, 80, 75, 50);
+            // device.ctx.globalAlpha = 0.0;
         }
         break;
 
@@ -62,10 +73,11 @@ function renderGameObjectsLayer(device, game)
         case gameStates.LOSE: // Lose screen
         {	
             // Show "die" overlay and player’s final position
+            const buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT; 
             device.renderImage(
                 device.images.getImage(backDropTypes.DIE),
                 game.dieScreen.posX,
-                game.dieScreen.posY
+                game.dieScreen.posY - buff
             );
             renderPlayer(device, game);
         }

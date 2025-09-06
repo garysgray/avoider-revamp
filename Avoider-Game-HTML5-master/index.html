@@ -20,13 +20,13 @@
             <script type="text/javascript" src="JS/render/layer.js"></script>
             <script type="text/javascript" src="JS/render/textRenderLayer.js"></script>
             <script type="text/javascript" src="JS/render/gameObjectsRenderLayer.js"></script>
-            <script type="text/javascript" src="JS/logic/gameLogic.js"></script>
-            <script type="text/javascript" src="JS/render/gameObjectRenderFunctions.js"></script>
-            <script type="text/javascript" src="JS/logic/inputLogic.js"></script>
-            <script type="text/javascript" src="JS/utils/helpers.js"></script>
-            <script type="text/javascript" src="JS/core/controller.js"></script>
-            <script type="text/javascript" src="JS/core/game.js"></script>
-            <script type="text/javascript" src="JS/objects/gameObjects.js"></script>
+            <script type="text/javascript" src="JS/render/renderUtilities.js"></script>
+            <script type="text/javascript" src="JS/logic/mainStateLogic.js"></script>
+            <script type="text/javascript" src="JS/logic/npcLogic.js"></script>          
+            <script type="text/javascript" src="JS/utils/gameUtilities.js"></script>
+            <script type="text/javascript" src="JS/core/gameController.js"></script>
+            <script type="text/javascript" src="JS/core/gameConfig.js"></script>
+            <script type="text/javascript" src="JS/objects/gameEntities.js"></script>
             <script type="text/javascript" src="JS/main.js"></script>
             <br></br>
             
@@ -34,7 +34,7 @@
                 window.onload = function() 
                 {
                     // Call the initialization function from main.js
-                startGame();
+                    startInitializationProcess();
                 }
             </script>
 

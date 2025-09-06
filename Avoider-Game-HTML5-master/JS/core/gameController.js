@@ -62,8 +62,8 @@ class Controller
     // ------------------------------------------------------------------------
     updateGame(delta) 
     {
-        // Update game logic first
-        updateGameLogic(this.#device, this.#game, delta);
+        // Update game states first
+        updateGameStates(this.#device, this.#game, delta);
 
         // Render each layer in order (background → text → debug, etc.)
         for (const layer of this.#layers) {

@@ -102,6 +102,19 @@ class GameObject
         this.#posY = newY;
     }
 
+    // Save player position so it can be restored on resume
+    savePos(x, y)
+    {
+         this.#holdPosX = x;             
+         this.#holdPosY = y;             
+    }
+
+    restoreSavedPos()
+    {
+         this.#posX =  this.#holdPosX; 
+         this.#posY =  this.#holdPosY ;
+    }
+
     // Return an axis-aligned hitbox for this object.
     // scale lets you make the box a bit smaller (e.g., 0.9 for friendlier hits).
     // buffer shrinks it further by pixels on each side.
@@ -184,6 +197,7 @@ class NPC extends GameObject
 class Player extends GameObject 
 {
     #shootCooldownTimer; // Timer measured in seconds
+    
 
     constructor(width, height, x, y, speed) 
     {
@@ -193,7 +207,7 @@ class Player extends GameObject
 
     // ---- Getters/Setters ----
     get shootCooldownTimer() { return this.#shootCooldownTimer; }
-
+    
     // Attempt to fire a projectile
     // - Checks play state, ammo, input, and cooldown
     tryShoot(device, game)
