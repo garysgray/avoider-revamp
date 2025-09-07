@@ -1,5 +1,5 @@
 // =======================================================
-// Game.js
+// gameConfig.js
 // -------------------------------------------------------
 // Purpose:
 // Acts as the **central data hub** for the game. 
@@ -15,193 +15,11 @@
 // =======================================================
 
 // -----------------------------
-// Enumerated Game States
-// -----------------------------
-const gameStates = Object.freeze({
-    INIT: 0,    // Pre-game setup
-    PLAY: 1,    // Actively playing
-    PAUSE: 2,   // Paused mid-game
-    WIN: 3,     // Player victory
-    LOSE: 4     // Player defeat
-});
-
-const playStates = Object.freeze({
-    AVOID: 0,   // Dodging orbs
-    SHIELD: 1,  // Shield active
-    SHOOT: 2,   // Firing bullets
-    SUPER: 3,   // Powered-up state
-    DEATH: 4    // Player destruction
-});
-
-const spriteTypes = Object.freeze({
-    PLAYER: "player",
-    ORB: "orb",
-    FIRE_AMMO: "fireAmmo",
-    BULLET: "bullet"
-});
-
-const soundTypes = Object.freeze({
-    HIT: "hit",
-    GET: "get",
-    HURT: "hurt",
-    SHOOT: "shoot"
-});
-
-const backDropTypes = Object.freeze({
-    DIE: "die",
-    PAUSE: "pause",
-    SPLASH: "splash",
-    BACKGROUND: "background"
-});
-
-const keyTypes = Object.freeze({
-    PLAY_KEY: "Space",
-    RESET_KEY: "Space",
-    PAUSE_KEY_L: "ControlLeft"
- 
-});
-
-const gameTexts = Object.freeze({
-    INIT: 
-    {
-        INSTRUCTIONS: [
-                    "Shoot the Orbs!!!",
-                    "Catch the Fire Balls for Ammo",
-                    "Use Space-Bar or Mouse-Btn to Fire",
-                    "Press Space-Bar to Start"
-                ]
-    },
-    HUD: 
-    {
-        SCORE: "Score: ",
-        AMMO: "Ammo: ",
-        LIVES: "Lives: "
-    },
-    PAUSE: 
-    {
-        MESSAGE: "PRESS  CTRL  TO  RESUME  GAME"
-    },
-    WIN: 
-    {
-        MESSAGE: "PRESS  ENTER  TO  PLAY  AGAIN"
-    },
-    LOSE: 
-    {
-        LOSE_MESSAGE: "YOU  LOST,  SPACE-BAR  TO  RETRY",
-        DIE_MESSAGE: "YOU  DIED,  SPACE-BAR  TO  REVIVE"
-    }
-});
-
-// -----------------------------
-// Global Constants
-// -----------------------------
-class GameConsts 
-{
-    // ---- Private fields ----
-    //sizes
-    #SCREEN_WIDTH = 850;
-    #SCREEN_HEIGHT = 600;
-
-    #PLAYER_SPRITE_W = 32;
-    #PLAYER_SPRITE_H = 29;
-
-    #ORB_SPRITE_W = 29;
-    #ORB_SPRITE_H = 29;
-
-    #BULLET_SPRITE_W = 12;
-    #BULLET_SPRITE_H = 12;
-
-    #FIRE_AMMO_SPRITE_W = 20;
-    #FIRE_AMMO_SPRITE_H = 20;
-
-    #BACKGROUND_W = 600;
-    #BACKGROUND_H = 600;
-
-    #SPLASH_W = 400;
-    #SPLASH_H = 100;
-
-    #PAUSE_W = 400;
-    #PAUSE_H = 100;
-
-    #DIE_W = 400;
-    #DIE_H = 100;
-
-    //speeds
-    #BULLET_SPEED = 550;
-    #ORB_SPEED = 200;
-    #AMMO_SPEED = 150;
-
-    //times
-    #SHIELD_TIME = 3;
-    #SHOOT_COOLDOWN = 0.2; // 200ms
-
-    //amounts
-    #AMMO_AMOUNT = 3;
-    #SCORE_INCREASE = 10;
-    #GAME_LIVES_START_AMOUNT = 5;
-
-    #SPAWN_ATTEMPTS = 5;
-    #BULLET_SPAWN_GAP = 0;
-
-    #ORB_SPAWN_RATIO = 10;
-    #AMMO_SPAWN_RATIO = 200
-
-    //settings
-    #FONT_SETTINGS = `bold 17pt Century Gothic`
-    #FONT_COLOR = 'white'
-    #HUD_BUFFER = .10;
-    
-    // ---- Getters (expose constants safely) ----
-    get SCREEN_WIDTH(){ return this.#SCREEN_WIDTH; }
-    get SCREEN_HEIGHT(){ return this.#SCREEN_HEIGHT; }
-
-    get PLAYER_SPRITE_W(){ return this.#PLAYER_SPRITE_W; }
-    get PLAYER_SPRITE_H(){ return this.#PLAYER_SPRITE_H; }
-    get ORB_SPRITE_W(){ return this.#ORB_SPRITE_W; }
-    get ORB_SPRITE_H(){ return this.#ORB_SPRITE_H; }
-    get BULLET_SPRITE_W(){ return this.#BULLET_SPRITE_W; }
-    get BULLET_SPRITE_H(){ return this.#BULLET_SPRITE_H; }
-    get FIRE_AMMO_SPRITE_W(){ return this.#FIRE_AMMO_SPRITE_W; }
-    get FIRE_AMMO_SPRITE_H(){ return this.#FIRE_AMMO_SPRITE_H; }
-
-    get BACKGROUND_W(){ return this.#BACKGROUND_W; }
-    get BACKGROUND_H(){ return this.#BACKGROUND_H; }
-    get SPLASH_W(){ return this.#SPLASH_W; }
-    get SPLASH_H(){ return this.#SPLASH_H; }
-    get PAUSE_W(){ return this.#PAUSE_W; }
-    get PAUSE_H(){ return this.#PAUSE_H; }
-    get DIE_W(){ return this.#DIE_W; }
-    get DIE_H(){ return this.#DIE_H; }
-
-    get BULLET_SPEED(){ return this.#BULLET_SPEED; }
-    get ORB_SPEED(){ return this.#ORB_SPEED; }
-    get AMMO_SPEED(){ return this.#AMMO_SPEED; }
-
-    get SHIELD_TIME(){ return this.#SHIELD_TIME; }
-    get SHOOT_COOLDOWN(){ return this.#SHOOT_COOLDOWN; }
-    
-    get AMMO_AMOUNT(){ return this.#AMMO_AMOUNT; }
-    get SCORE_INCREASE(){ return this.#SCORE_INCREASE; }
-    get GAME_LIVES_START_AMOUNT(){ return this.#GAME_LIVES_START_AMOUNT; }
-
-    get SPAWN_ATTEMPTS(){ return this.#SPAWN_ATTEMPTS; }
-    get BULLET_SPAWN_GAP(){ return this.#BULLET_SPAWN_GAP; }
-
-    get ORB_SPAWN_RATIO(){ return this.#ORB_SPAWN_RATIO; }
-    get AMMO_SPAWN_RATIO(){ return this.#AMMO_SPAWN_RATIO; }
-
-    get FONT_SETTINGS(){ return this.#FONT_SETTINGS; }
-    get FONT_COLOR(){ return this.#FONT_COLOR; }
-    get HUD_BUFFER(){ return this.#HUD_BUFFER; }
-    
-}
-
-// -----------------------------
 // Game Class
 // -----------------------------
 class Game 
 {
-    // ---- Private fields ----
+    // ---- Private fields ---- 
     #gameConsts;
     #projectiles;
     #gameSprites;
@@ -226,7 +44,7 @@ class Game
     #lives;
     #ammo;
 
-    #savedPlayState = playStates.AVOID;
+    #savedPlayState = GameDefs.playStates.AVOID;
 
     // ---- Constructor ----
     constructor() 
@@ -245,20 +63,20 @@ class Game
         this.#canvasHalfH = this.#canvasHeight * .5
 
         this.#player = new Player(
-            this.#gameConsts.PLAYER_SPRITE_W, this.#gameConsts.PLAYER_SPRITE_H, 
+            GameDefs.spriteTypes.PLAYER.w, GameDefs.spriteTypes.PLAYER.h, 
             this.#canvasHalfW, 
             this.#canvasHeight 
         ); 
 
         // Default states
-        this.#playState = playStates.AVOID; 
-        this.#gameState     = gameStates.INIT;
+        this.#playState = GameDefs.playStates.AVOID; 
+        this.#gameState     = GameDefs.gameStates.INIT;
        
-        //FIX magic numbers
-        this.#backGround   = new BackDrop(backDropTypes.BACKGROUND, this.#gameConsts.BACKGROUND_W, this.#gameConsts.BACKGROUND_H, 0, 0);
-        this.#splashScreen = new BackDrop(backDropTypes.SPLASH, this.#gameConsts.SPLASH_W, this.#gameConsts.SPLASH_H, 0, 0);
-        this.#pauseScreen  = new BackDrop(backDropTypes.PAUSE, this.#gameConsts.PAUSE_W, this.#gameConsts.PAUSE_H, 0, 0);
-        this.#dieScreen    = new BackDrop(backDropTypes.DIE, this.#gameConsts.DIE_W, this.#gameConsts.DIE_H, 0, 0);
+        // Game BillBoard
+        this.#backGround   = new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0);
+        this.#splashScreen = new BillBoard(GameDefs.billBoardTypes.SPLASH.type, GameDefs.billBoardTypes.SPLASH.w, GameDefs.billBoardTypes.SPLASH.h, 0, 0);
+        this.#pauseScreen  = new BillBoard(GameDefs.billBoardTypes.PAUSE.type, GameDefs.billBoardTypes.PAUSE.w, GameDefs.billBoardTypes.PAUSE.h, 0, 0);
+        this.#dieScreen    = new BillBoard(GameDefs.billBoardTypes.DIE.type, GameDefs.billBoardTypes.DIE.w, GameDefs.billBoardTypes.DIE.h, 0, 0);
 
         this.splashScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
         this.pauseScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
@@ -361,7 +179,7 @@ class Game
         this.ammo      = 0;
         this.gameSprites.clearObjects();
 
-        this.setPlayState(playStates.AVOID);
+        this.setPlayState(GameDefs.playStates.AVOID);
         this.setMouseToPlayer(device, this.#player);
     }
     

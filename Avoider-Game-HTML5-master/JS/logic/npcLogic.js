@@ -54,10 +54,10 @@ function updateProjectiles(device, game, delta)
 function updateNPCSprites(device, game, delta)  
 {     
     // spawn orb
-    spawnNPC(device, game, spriteTypes.ORB, game.gameConsts.ORB_SPRITE_W, game.gameConsts.ORB_SPRITE_H, game.gameConsts.ORB_SPEED, 1 / game.gameConsts.ORB_SPAWN_RATIO);
+    spawnNPC(device, game, GameDefs.spriteTypes.ORB.type, GameDefs.spriteTypes.ORB.w, GameDefs.spriteTypes.ORB.h, GameDefs.spriteTypes.ORB.speed, 1 / GameDefs.spriteTypes.ORB.spawnRatio);
 
     // spawn fireAmmo
-    spawnNPC(device, game, spriteTypes.FIRE_AMMO, game.gameConsts.FIRE_AMMO_SPRITE_W, game.gameConsts.FIRE_AMMO_SPRITE_H, game.gameConsts.AMMO_SPEED, 1 / game.gameConsts.AMMO_SPAWN_RATIO );
+    spawnNPC(device, game, GameDefs.spriteTypes.FIRE_AMMO.type, GameDefs.spriteTypes.FIRE_AMMO.w, GameDefs.spriteTypes.FIRE_AMMO.h, GameDefs.spriteTypes.FIRE_AMMO.speed, 1 / GameDefs.spriteTypes.FIRE_AMMO.spawnRatio );
 
 
     // Update NPCs and remove dead or off-screen
@@ -151,7 +151,7 @@ function updateProjectilesCollision(device, game)
             const npcBox = npc.getHitbox(1.0, 0);
             if (rectsCollide(projBox, npcBox))    
             {         
-                device.audio.playSound(soundTypes.HIT);         
+                device.audio.playSound(GameDefs.soundTypes.HIT);         
                 game.increaseScore(game.gameConsts.SCORE_INCREASE);  
                 npc.kill(); 
                 proj.kill();            
@@ -185,19 +185,19 @@ function check_NPC_Collision(device, game)
         if (!rectsCollide(playerBox, npcBox)) continue;
         
                     
-        if (npc.name === spriteTypes.FIRE_AMMO)             
+        if (npc.name === GameDefs.spriteTypes.FIRE_AMMO.type)             
         {                 
             npc.kill();                
-            device.audio.playSound(soundTypes.GET);                 
-            game.playState = playStates.SHOOT;                 
+            device.audio.playSound(GameDefs.soundTypes.GET);                 
+            game.playState = GameDefs.playStates.SHOOT;                 
             game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);                           
         }              
         else              
         {                 
             npc.kill();                 
-            device.audio.playSound(soundTypes.HURT);                 
-            game.playState = playStates.DEATH;                 
-            game.gameState = gameStates.LOSE;                 
+            device.audio.playSound(GameDefs.soundTypes.HURT);                 
+            game.playState = GameDefs.playStates.DEATH;                 
+            game.gameState = GameDefs.gameStates.LOSE;                 
             game.decreaseLives(1);                 
             return false;             
         }         

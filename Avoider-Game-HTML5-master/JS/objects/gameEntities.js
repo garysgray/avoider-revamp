@@ -201,7 +201,7 @@ class Player extends GameObject
 
     constructor(width, height, x, y, speed) 
     {
-        super(spriteTypes.PLAYER, width, height, x, y, speed);
+        super(GameDefs.spriteTypes.PLAYER, width, height, x, y, speed);
         this.#shootCooldownTimer = new Timer(0);
     }
 
@@ -212,28 +212,28 @@ class Player extends GameObject
     // - Checks play state, ammo, input, and cooldown
     tryShoot(device, game)
     {
-        if (game.playState !== playStates.SHOOT) return false;
+        if (game.playState !== GameDefs.playStates.SHOOT) return false;
         if (this.#shootCooldownTimer.active) return false;
 
         // Optional: add player ammo system
         if (game.ammo <= 0)
         {
-            game.playState = playStates.AVOID;
+            game.playState = GameDefs.playStates.AVOID;
             return false;
         }
 
         // Fire if mouse is down OR shoot key pressed
-        const firePressed = device.mouseDown || device.keys.isKeyPressed(keyTypes.PLAY_KEY);
+        const firePressed = device.mouseDown || device.keys.isKeyPressed(GameDefs.keyTypes.PLAY_KEY);
         if (!firePressed) return false;
         
         // Spawn projectile
         const bullet = new Projectile(
-            spriteTypes.BULLET,
-            game.gameConsts.BULLET_SPRITE_W,
-            game.gameConsts.BULLET_SPRITE_H,
+            GameDefs.spriteTypes.BULLET.type,
+            GameDefs.spriteTypes.BULLET.w,
+            GameDefs.spriteTypes.BULLET.h,
             this.posX,
-            this.posY - this.halfHeight - (game.gameConsts.BULLET_SPAWN_GAP || 0) - (game.gameConsts.BULLET_SPRITE_H * 0.5),
-            game.gameConsts.BULLET_SPEED
+            this.posY - this.halfHeight - (GameDefs.spriteTypes.BULLET.spawnGap || 0) - ( GameDefs.spriteTypes.BULLET.h * 0.5),
+            GameDefs.spriteTypes.BULLET.speed
         );
 
         game.projectiles.addObject(bullet);
@@ -243,7 +243,7 @@ class Player extends GameObject
         this.#shootCooldownTimer.reset(game.gameConsts.SHOOT_COOLDOWN);
 
         // Play sound effect
-        device.audio.playSound(soundTypes.SHOOT);
+        device.audio.playSound(GameDefs.soundTypes.SHOOT);
         return true;
     }
 
@@ -275,13 +275,13 @@ class Player extends GameObject
 }
 
 // --------------------------------------------
-// BackDrop
+// BillBoard
 // --------------------------------------------
 // Static or decorative background object
 // Currently does nothing, but could support parallax or animation
 // --------------------------------------------
 //FIX name bullshit
-class BackDrop extends GameObject 
+class BillBoard extends GameObject 
 {
     constructor(name, width, height, x, y) 
     {
@@ -296,6 +296,6 @@ class BackDrop extends GameObject
 
     update(device, delta) 
     {
-        // Optional: background scrolling/animation
+        // Optional: BillBoard scrolling/animation
     }
 }

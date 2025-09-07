@@ -1,0 +1,128 @@
+// =======================================================
+// GameDefs.js
+// -------------------------------------------------------
+// Purpose:
+// Immutable enumerations, texts, billboard & sprite configs.
+// =======================================================
+
+const GameDefs = Object.freeze({
+    gameStates: {
+        INIT: 0,
+        PLAY: 1,
+        PAUSE: 2,
+        WIN: 3,
+        LOSE: 4
+    },
+
+    playStates: {
+        AVOID: 0,
+        SHIELD: 1,
+        SHOOT: 2,
+        SUPER: 3,
+        DEATH: 4
+    },
+
+    // --- Sprite definitions ---
+    spriteTypes: {
+        PLAYER:   { type: "player",    w: 32, h: 32 },
+        ORB:      { type: "orb",       w: 24, h: 24, speed: 200, spawnRatio: 10},
+        FIRE_AMMO: { type: "fireAmmo", w: 16, h: 16, speed: 150, spawnRatio: 200 },
+        BULLET:   { type: "bullet",    w: 8,  h: 8,  speed: 550, spawnGap: 0 }
+    },
+
+    // --- Billboard definitions ---
+    billBoardTypes: {
+        BACKGROUND: { type: "background", w: 600, h: 600 },
+        SPLASH:     { type: "splash",     w: 400, h: 100 },
+        PAUSE:      { type: "pause",      w: 400, h: 100 },
+        DIE:        { type: "die",        w: 400, h: 100 }
+    },
+
+    // --- Sound identifiers ---
+    soundTypes: {
+        HIT: "hit",
+        GET: "get",
+        HURT: "hurt",
+        SHOOT: "shoot"
+    },
+
+    // --- Key bindings ---
+    keyTypes: {
+        PLAY_KEY: "Space",
+        RESET_KEY: "Space",
+        PAUSE_KEY_L: "ControlLeft"
+    },
+
+    // --- UI Text ---
+    gameTexts: {
+        INIT: {
+            INSTRUCTIONS: [
+                "Shoot the Orbs!!!",
+                "Catch the Fire Balls for Ammo",
+                "Use Space-Bar or Mouse-Btn to Fire",
+                "Press Space-Bar to Start"
+            ]
+        },
+        HUD: {
+            SCORE: "Score: ",
+            AMMO: "Ammo: ",
+            LIVES: "Lives: "
+        },
+        PAUSE: {
+            MESSAGE: "PRESS  CTRL  TO  RESUME  GAME"
+        },
+        WIN: {
+            MESSAGE: "PRESS  ENTER  TO  PLAY  AGAIN"
+        },
+        LOSE: {
+            LOSE_MESSAGE: "YOU  LOST,  SPACE-BAR  TO  RETRY",
+            DIE_MESSAGE: "YOU  DIED,  SPACE-BAR  TO  REVIVE"
+        }
+    }
+});
+
+
+// -----------------------------
+// Global Constants
+// -----------------------------
+class GameConsts 
+{
+    // ---- Private fields ----
+    //sizes
+    #SCREEN_WIDTH = 850;
+    #SCREEN_HEIGHT = 600;
+
+    //times
+    #SHIELD_TIME = 3;
+    #SHOOT_COOLDOWN = 0.2; // 200ms
+
+    //amounts
+    #AMMO_AMOUNT = 3;
+    #SCORE_INCREASE = 10;
+    #GAME_LIVES_START_AMOUNT = 5;
+
+    #SPAWN_ATTEMPTS = 5;
+
+    //settings
+    #FONT_SETTINGS = `bold 17pt Century Gothic`
+    #FONT_COLOR = 'white'
+    #HUD_BUFFER = .10;
+    
+    // ---- Getters (expose constants safely) ----
+    get SCREEN_WIDTH(){ return this.#SCREEN_WIDTH; }
+    get SCREEN_HEIGHT(){ return this.#SCREEN_HEIGHT; }
+
+    get SHIELD_TIME(){ return this.#SHIELD_TIME; }
+    get SHOOT_COOLDOWN(){ return this.#SHOOT_COOLDOWN; }
+    
+    get AMMO_AMOUNT(){ return this.#AMMO_AMOUNT; }
+    get SCORE_INCREASE(){ return this.#SCORE_INCREASE; }
+    get GAME_LIVES_START_AMOUNT(){ return this.#GAME_LIVES_START_AMOUNT; }
+
+    get SPAWN_ATTEMPTS(){ return this.#SPAWN_ATTEMPTS; }
+
+    get FONT_SETTINGS(){ return this.#FONT_SETTINGS; }
+    get FONT_COLOR(){ return this.#FONT_COLOR; }
+    get HUD_BUFFER(){ return this.#HUD_BUFFER; }
+    
+}
