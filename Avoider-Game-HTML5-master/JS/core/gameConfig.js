@@ -35,16 +35,13 @@ class Game
     #playState;
     #gameState;
 
-    #backGround;
-    #splashScreen;
-    #pauseScreen;
-    #dieScreen;
-
     #score;
     #lives;
     #ammo;
 
-    #savedPlayState = GameDefs.playStates.AVOID;
+    #savedPlayState;
+
+    #billBoards;
 
     // ---- Constructor ----
     constructor() 
@@ -52,7 +49,10 @@ class Game
         // Core systems
         this.#gameConsts   = new GameConsts();
         this.#projectiles  = new ObjHolder();
-        this.#gameSprites  = new ObjHolder();            
+        this.#gameSprites  = new ObjHolder();
+
+        this.#billBoards = new ObjHolder();
+        //FIX hard code value            
         this.#timer        = new Timer(1000);
 
         // Dimensions
@@ -70,18 +70,10 @@ class Game
 
         // Default states
         this.#playState = GameDefs.playStates.AVOID; 
-        this.#gameState     = GameDefs.gameStates.INIT;
-       
-        // Game BillBoard
-        this.#backGround   = new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0);
-        this.#splashScreen = new BillBoard(GameDefs.billBoardTypes.SPLASH.type, GameDefs.billBoardTypes.SPLASH.w, GameDefs.billBoardTypes.SPLASH.h, 0, 0);
-        this.#pauseScreen  = new BillBoard(GameDefs.billBoardTypes.PAUSE.type, GameDefs.billBoardTypes.PAUSE.w, GameDefs.billBoardTypes.PAUSE.h, 0, 0);
-        this.#dieScreen    = new BillBoard(GameDefs.billBoardTypes.DIE.type, GameDefs.billBoardTypes.DIE.w, GameDefs.billBoardTypes.DIE.h, 0, 0);
+        this.#gameState = GameDefs.gameStates.INIT;
 
-        this.splashScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
-        this.pauseScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
-        this.dieScreen.centerObjectInWorld(this.#canvasWidth, this.#canvasHeight)
-    
+        this.savedPlayState = GameDefs.playStates.AVOID;
+       
         // Gameplay variables
         this.#score  = 0;
         this.#lives  = 0;
@@ -94,6 +86,9 @@ class Game
     get gameConsts()   { return this.#gameConsts; }
     get projectiles()  { return this.#projectiles; }
     get gameSprites()  { return this.#gameSprites; }
+
+    get billBoards()  { return this.#billBoards; }
+
     get timer()        { return this.#timer; }
     get player()       { return this.#player; }
 
@@ -105,11 +100,6 @@ class Game
 
     get gameState()    { return this.#gameState; }
     get playState()    { return this.#playState; }
-
-    get backGround()   { return this.#backGround; }
-    get splashScreen() { return this.#splashScreen; }
-    get pauseScreen()  { return this.#pauseScreen; }
-    get dieScreen()    { return this.#dieScreen; }
 
     get score()        { return this.#score; }
     get lives()        { return this.#lives; }
@@ -169,7 +159,24 @@ class Game
             { src: "assets/sounds/hurt.wav",  name: "hurt" }
         ];
         sounds.forEach(snd => device.audio.addSound(snd.name, snd.src));
+
+        // load BillBoards
+        const boards = [
+            new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0),
+            new BillBoard(GameDefs.billBoardTypes.SPLASH.type, GameDefs.billBoardTypes.SPLASH.w, GameDefs.billBoardTypes.SPLASH.h, 0, 0),
+            new BillBoard(GameDefs.billBoardTypes.PAUSE.type, GameDefs.billBoardTypes.PAUSE.w, GameDefs.billBoardTypes.PAUSE.h, 0, 0),
+            new BillBoard(GameDefs.billBoardTypes.DIE.type, GameDefs.billBoardTypes.DIE.w, GameDefs.billBoardTypes.DIE.h, 0, 0),
+        ];
+        boards.forEach(board => 
+        {
+            if(board.name != GameDefs.billBoardTypes.BACKGROUND.type)
+            {
+                board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
+            }
+            this.#billBoards.addObject(board)
+        });
     }
+
     
     // Reset values each time a game starts
     setGame(device) 

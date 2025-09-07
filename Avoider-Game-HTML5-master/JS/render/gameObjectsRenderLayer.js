@@ -10,10 +10,11 @@
 function renderGameObjectsLayer(device, game)
 {   
     // === Render Static Background ===
+    board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.BACKGROUND.type);
     device.renderImage(
         device.images.getImage(GameDefs.billBoardTypes.BACKGROUND.type),
-        game.backGround.posX,
-        game.backGround.posY,
+        board.posX,
+       board.posY,
         game.gameConsts.SCREEN_WIDTH,
         game.gameConsts.SCREEN_HEIGHT    
     ); 
@@ -25,10 +26,11 @@ function renderGameObjectsLayer(device, game)
         {   
             const buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
             // Show splash image, no game objects yet
+            board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.SPLASH.type);
             device.renderImage(
                 device.images.getImage(GameDefs.billBoardTypes.SPLASH.type),
-                game.splashScreen.posX,
-                game.splashScreen.posY - buff
+                board.posX,
+                board.posY - buff
             );     
         }
         break;
@@ -46,10 +48,11 @@ function renderGameObjectsLayer(device, game)
         {   
             const buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;         
             // Show pause screen, no player render
+            board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.PAUSE.type);
             device.renderImage(
                 device.images.getImage(GameDefs.billBoardTypes.PAUSE.type),
-                game.pauseScreen.posX,
-                game.pauseScreen.posY - buff
+                board.posX,
+                board.posY - buff
             );  
             
             // // FIX experiment
@@ -74,10 +77,11 @@ function renderGameObjectsLayer(device, game)
         {	
             // Show "die" overlay and player’s final position
             const buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT; 
+            board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.DIE.type);
             device.renderImage(
                 device.images.getImage(GameDefs.billBoardTypes.DIE.type),
-                game.dieScreen.posX,
-                game.dieScreen.posY - buff
+                board.posX,
+                board.posY - buff
             );
             renderPlayer(device, game);
         }

@@ -51,7 +51,7 @@ function startInitializationProcess() {
         // Optional: Debugging overlay
         // Uncomment for real-time debug text (e.g., splash screen position)
         //myController.device.debugText(GameDefs.spriteTypes.ORB.type, 150, 50);
-        //myController.device.debugText(myController.game.state, 150, 150);
+        //myController.device.debugText(GameDefs.billBoardTypes.BACKGROUND.type, 150, 150);
 
         // Request the next frame from the browser
         requestAnimationFrame(gameLoop);
