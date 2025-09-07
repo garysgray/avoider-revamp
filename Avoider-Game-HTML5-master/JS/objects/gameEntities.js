@@ -228,7 +228,7 @@ class Player extends GameObject
         
         // Spawn projectile
         const bullet = new Projectile(
-            GameDefs.spriteTypes.BULLET.type,
+            GameDefs.spriteTypes.BULLET.name,
             GameDefs.spriteTypes.BULLET.w,
             GameDefs.spriteTypes.BULLET.h,
             this.posX,
