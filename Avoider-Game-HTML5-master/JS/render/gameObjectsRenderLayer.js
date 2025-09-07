@@ -11,7 +11,7 @@ function renderGameObjectsLayer(device, game)
 {   
     // === Render Static Background ===
     device.renderImage(
-        device.images.getImage(backDropTypes.BACKGROUND),
+        device.images.getImage(GameDefs.billBoardTypes.BACKGROUND.type),
         game.backGround.posX,
         game.backGround.posY,
         game.gameConsts.SCREEN_WIDTH,
@@ -21,19 +21,19 @@ function renderGameObjectsLayer(device, game)
     // === Render Based on Game State ===
     switch (game.gameState)
     {
-        case gameStates.INIT: // Splash / Init screen
+        case GameDefs.gameStates.INIT: // Splash / Init screen
         {   
             const buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
             // Show splash image, no game objects yet
             device.renderImage(
-                device.images.getImage(backDropTypes.SPLASH),
+                device.images.getImage(GameDefs.billBoardTypes.SPLASH.type),
                 game.splashScreen.posX,
                 game.splashScreen.posY - buff
             );     
         }
         break;
         
-        case gameStates.PLAY: // Main gameplay
+        case GameDefs.gameStates.PLAY: // Main gameplay
         {          
             // Render all active game objects
             renderNPCSprites(device, game);
@@ -42,12 +42,12 @@ function renderGameObjectsLayer(device, game)
         }
         break;
 
-        case gameStates.PAUSE: // Pause overlay
+        case GameDefs.gameStates.PAUSE: // Pause overlay
         {   
             const buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;         
             // Show pause screen, no player render
             device.renderImage(
-                device.images.getImage(backDropTypes.PAUSE),
+                device.images.getImage(GameDefs.billBoardTypes.PAUSE.type),
                 game.pauseScreen.posX,
                 game.pauseScreen.posY - buff
             );  
@@ -64,18 +64,18 @@ function renderGameObjectsLayer(device, game)
         }
         break;
 
-        case gameStates.WIN: // Win screen (future use)
+        case GameDefs.gameStates.WIN: // Win screen (future use)
         {
             // Reserved for future win state content
         }
         break;
 
-        case gameStates.LOSE: // Lose screen
+        case GameDefs.gameStates.LOSE: // Lose screen
         {	
             // Show "die" overlay and player’s final position
             const buff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT; 
             device.renderImage(
-                device.images.getImage(backDropTypes.DIE),
+                device.images.getImage(GameDefs.billBoardTypes.DIE.type),
                 game.dieScreen.posX,
                 game.dieScreen.posY - buff
             );

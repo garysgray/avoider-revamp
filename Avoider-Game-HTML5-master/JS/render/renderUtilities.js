@@ -13,8 +13,8 @@
 function renderNPCSprites(device, game)
 {
     // Preload references to images (avoid repeated lookups each frame)
-    let orbImage      = device.images.getImage(spriteTypes.ORB);
-    let fireAmmoImage = device.images.getImage(spriteTypes.FIRE_AMMO);
+    let orbImage      = device.images.getImage(GameDefs.spriteTypes.ORB.type);
+    let fireAmmoImage = device.images.getImage(GameDefs.spriteTypes.FIRE_AMMO.type);
 
     // Loop through all NPC sprites in gameSprites list
     for (let i = 0; i < game.gameSprites.getSize(); i++)
@@ -25,11 +25,11 @@ function renderNPCSprites(device, game)
         // Render sprite based on its name
         switch(tempObj.name)
         {
-            case spriteTypes.ORB:
+            case GameDefs.spriteTypes.ORB.type:
                 device.centerImage(orbImage, tempObj.posX , tempObj.posY );
             break;
 
-            case spriteTypes.FIRE_AMMO:
+            case GameDefs.spriteTypes.FIRE_AMMO.type:
                 device.centerImage(fireAmmoImage, tempObj.posX , tempObj.posY );
             break;
         }
@@ -47,7 +47,7 @@ function renderNPCSprites(device, game)
 function renderBullets(device, game)
 {
     // Preload bullet image
-    let bulletImage = device.images.getImage(spriteTypes.BULLET);
+    let bulletImage = device.images.getImage(GameDefs.spriteTypes.BULLET.type);
 
     // Loop through all active bullets in projectiles list
     for (let i = 0; i < game.projectiles.getSize(); i++)
@@ -76,17 +76,17 @@ function renderPlayer(device, game)
     // Render player based on their current playState
     switch(game.playState)
     {
-        case playStates.AVOID:
-        case playStates.SHIELD:
-        case playStates.SHOOT:
-        case playStates.SUPER:
-        case playStates.DEATH:
+        case GameDefs.playStates.AVOID:
+        case GameDefs.playStates.SHIELD:
+        case GameDefs.playStates.SHOOT:
+        case GameDefs.playStates.SUPER:
+        case GameDefs.playStates.DEATH:
             tempObj.state = game.playState;
         break;
     }
 
     device.renderClip(
-        device.images.getImage(spriteTypes.PLAYER),
+        device.images.getImage(GameDefs.spriteTypes.PLAYER.type),
         tempObj.posX ,
         tempObj.posY ,
         tempObj.width,

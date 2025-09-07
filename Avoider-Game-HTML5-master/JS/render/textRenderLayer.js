@@ -32,9 +32,9 @@ function renderTextLayer(device, game)
         // ==============================
         // INIT STATE: Splash + instructions
         // ==============================
-        case gameStates.INIT:
+        case GameDefs.gameStates.INIT:
             layout.initTextY.forEach((pct, idx) => {
-                instructions = gameTexts.INIT.INSTRUCTIONS[idx];
+                instructions = GameDefs.gameTexts.INIT.INSTRUCTIONS[idx];
                 device.centerTextOnY(instructions, ch * pct);
             });
             break;
@@ -42,40 +42,40 @@ function renderTextLayer(device, game)
         // ==============================
         // PLAY STATE: HUD elements (score, ammo, lives)
         // ==============================
-        case gameStates.PLAY:
+        case GameDefs.gameStates.PLAY:
             device.colorText("red");  // HUD uses red to stand out
-            device.centerTextOnY(gameTexts.HUD.SCORE + game.score, ch * layout.hudY);
-            device.putText(gameTexts.HUD.AMMO + game.ammo, cw * layout.hudAmmoX, ch * layout.hudY);
-            device.putText(gameTexts.HUD.LIVES + game.lives, cw * layout.hudLivesX, ch * layout.hudY);
+            device.centerTextOnY(GameDefs.gameTexts.HUD.SCORE + game.score, ch * layout.hudY);
+            device.putText(GameDefs.gameTexts.HUD.AMMO + game.ammo, cw * layout.hudAmmoX, ch * layout.hudY);
+            device.putText(GameDefs.gameTexts.HUD.LIVES + game.lives, cw * layout.hudLivesX, ch * layout.hudY);
 
             break;
 
         // ==============================
         // PAUSE STATE: Resume prompt
         // ==============================
-        case gameStates.PAUSE:
+        case GameDefs.gameStates.PAUSE:
             device.colorText("white");
-            device.centerTextOnY(gameTexts.PAUSE.MESSAGE, ch * layout.pauseY);
+            device.centerTextOnY(GameDefs.gameTexts.PAUSE.MESSAGE, ch * layout.pauseY);
             break;
 
         // ==============================
         // WIN STATE: Replay prompt
         // ==============================
-        case gameStates.WIN:
-            device.centerTextOnY(gameTexts.WIN.MESSAGE, ch * layout.winLoseY);
+        case GameDefs.gameStates.WIN:
+            device.centerTextOnY(GameDefs.gameTexts.WIN.MESSAGE, ch * layout.winLoseY);
             break;
 
         // ==============================
         // LOSE STATE: Retry/Revive prompt
         // ==============================
-        case gameStates.LOSE:
+        case GameDefs.gameStates.LOSE:
             if (game.lives <= 0) 
             {
-                device.centerTextOnY(gameTexts.LOSE.LOSE_MESSAGE, ch * layout.winLoseY);
+                device.centerTextOnY(GameDefs.gameTexts.LOSE.LOSE_MESSAGE, ch * layout.winLoseY);
             } 
             else 
             {
-                device.centerTextOnY(gameTexts.LOSE.DIE_MESSAGE, ch * layout.winLoseY);
+                device.centerTextOnY(GameDefs.gameTexts.LOSE.DIE_MESSAGE, ch * layout.winLoseY);
                 
             }
             break;
