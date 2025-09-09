@@ -1,16 +1,38 @@
 // ============================================================================
+// DEBUG/TESTING CONTROL AREA
+// ============================================================================
+
+let HIT_BOXES;
+let DEBUG_DRAW_HITBOXES = false;
+
+let DEBUG_TEXT;
+let DRAW_DEBUG = false;
+
+// Uncomment for hit boxes drawn on game objects
+//HIT_BOXES = true;
+
+// Uncomment for real-time debug text 
+// DEBUG_TEXT = true;
+
+if (HIT_BOXES)
+{
+    DEBUG_DRAW_HITBOXES = true;
+}
+
+if (DEBUG_TEXT)
+{
+    DRAW_DEBUG = true;
+}
+
+
+// ============================================================================
 // Main entry point for the Avoider game
 // This file sets up the Controller, initializes the game, and runs the main loop
 // ============================================================================
 
 // Create the main Controller instance
-// Controller is responsible for managing the game state, logic, and rendering
 
-//et DEBUG_DRAW_HITBOXES = true;
-let DEBUG_DRAW_HITBOXES = false;
-
-function startInitializationProcess() {
-
+    // Controller is responsible for managing the game state, logic, and rendering
     let myController = new Controller();
 
     // ---------------------------------------------------------------------------
@@ -49,14 +71,22 @@ function startInitializationProcess() {
         }
 
         // Optional: Debugging overlay
-        // Uncomment for real-time debug text (e.g., splash screen position)
-        //myController.device.debugText(GameDefs.spriteTypes.ORB.type, 150, 50);
-        myController.device.debugText(myController.game.stopwatch.formatted, 10, 30);
+        
+        if (DRAW_DEBUG)
+        {
+            myController.device.debugText("Clock:  " + myController.game.stopwatch.formatted, 20, 30);
+            //myController.device.debugText(GameDefs.spriteTypes.ORB.type, 150, 50);
+        }
+
+       
 
         // Request the next frame from the browser
         requestAnimationFrame(gameLoop);
     }
 
+// called from the onLoad() function in index.HTML
+function startGameLoop() 
+{
     // ---------------------------------------------------------------------------
     // Start the loop
     // ---------------------------------------------------------------------------
