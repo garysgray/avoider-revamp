@@ -78,7 +78,14 @@ const GameDefs = Object.freeze({
             LOSE_MESSAGE: "YOU  LOST,  SPACE-BAR  TO  RETRY",
             DIE_MESSAGE: "YOU  DIED,  SPACE-BAR  TO  REVIVE"
         }
+    },
+
+    // --- Timer Mode ---
+    timerModes: {
+        COUNTDOWN: "countdown",
+        COUNTUP: "countup",
     }
+
 });
 
 
@@ -107,6 +114,10 @@ class GameConsts
     #FONT_SETTINGS = `bold 17pt Century Gothic`
     #FONT_COLOR = 'white'
     #HUD_BUFFER = .10;
+
+    //sound 
+    #POOLSIZE = 5;
+    #VOLUME = 1.0;
     
     // ---- Getters (expose constants safely) ----
     get SCREEN_WIDTH(){ return this.#SCREEN_WIDTH; }
@@ -124,5 +135,8 @@ class GameConsts
     get FONT_SETTINGS(){ return this.#FONT_SETTINGS; }
     get FONT_COLOR(){ return this.#FONT_COLOR; }
     get HUD_BUFFER(){ return this.#HUD_BUFFER; }
+
+    get POOLSIZE(){ return this.#POOLSIZE; }
+    get VOLUME(){ return this.#VOLUME; }
     
 }

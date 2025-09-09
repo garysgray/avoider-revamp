@@ -24,6 +24,7 @@ class Game
     #projectiles;
     #gameSprites;
     #timer;
+    #stopwatch;
     #player;
 
     #canvasWidth;
@@ -51,9 +52,11 @@ class Game
         this.#projectiles  = new ObjHolder();
         this.#gameSprites  = new ObjHolder();
 
-        this.#billBoards = new ObjHolder();
+        this.#billBoards   = new ObjHolder();
         //FIX hard code value            
-        this.#timer        = new Timer(1000);
+        this.#timer        = new Timer(this.#gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN);
+
+        this.#stopwatch    = new Timer(0, GameDefs.timerModes.COUNTUP);
 
         // Dimensions
         this.#canvasWidth  = this.#gameConsts.SCREEN_WIDTH;
@@ -90,6 +93,7 @@ class Game
     get billBoards()  { return this.#billBoards; }
 
     get timer()        { return this.#timer; }
+    get stopwatch()    { return this.#stopwatch; }
     get player()       { return this.#player; }
 
     get canvasWidth()  { return this.#canvasWidth; }
@@ -158,7 +162,7 @@ class Game
             { src: "assets/sounds/get.wav",   name: "get" },
             { src: "assets/sounds/hurt.wav",  name: "hurt" }
         ];
-        sounds.forEach(snd => device.audio.addSound(snd.name, snd.src));
+        sounds.forEach(snd => device.audio.addSound(snd.name, snd.src, this.#gameConsts.POOLSIZE, this.#gameConsts.VOLUME));
 
         // load BillBoards
         const boards = [
@@ -187,6 +191,7 @@ class Game
 
         this.setPlayState(GameDefs.playStates.AVOID);
         this.setMouseToPlayer(device, this.#player);
+        this.stopwatch.start();
     }
     
     // -----------------------------

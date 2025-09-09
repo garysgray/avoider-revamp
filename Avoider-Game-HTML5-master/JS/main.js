@@ -6,7 +6,7 @@
 // Create the main Controller instance
 // Controller is responsible for managing the game state, logic, and rendering
 
-//let DEBUG_DRAW_HITBOXES = true;
+//et DEBUG_DRAW_HITBOXES = true;
 let DEBUG_DRAW_HITBOXES = false;
 
 function startInitializationProcess() {
@@ -20,7 +20,7 @@ function startInitializationProcess() {
     // Track time for each frame
     let lastTime = performance.now();   // Timestamp of the last frame (in ms)
     let accumulator = 0;                // Stores leftover time not yet simulated
-    const fixedStep = 1 / 60;           // Logic update step: 1/60th of a second (~16.67ms)
+    const fixedStep = 1 / 60;           // Logic update step: 1/60th of a second (~16.67ms)//
 
     // ---------------------------------------------------------------------------
     // Main game loop
@@ -51,7 +51,7 @@ function startInitializationProcess() {
         // Optional: Debugging overlay
         // Uncomment for real-time debug text (e.g., splash screen position)
         //myController.device.debugText(GameDefs.spriteTypes.ORB.type, 150, 50);
-        //myController.device.debugText(GameDefs.billBoardTypes.BACKGROUND.type, 150, 150);
+        myController.device.debugText(myController.game.stopwatch.formatted, 10, 30);
 
         // Request the next frame from the browser
         requestAnimationFrame(gameLoop);

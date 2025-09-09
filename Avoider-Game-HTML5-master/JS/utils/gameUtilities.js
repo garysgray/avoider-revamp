@@ -262,7 +262,7 @@ class Sound
     #poolSize;
 
     // FIX add  constants?
-    constructor(name, src, poolSize = 5, volume = 1.0)
+    constructor(name, src, poolSize, volume)
     {
         this.#name = name;
         this.#src = src;
@@ -323,11 +323,11 @@ class AudioPlayer
         this.#sounds = new ObjHolder();
     }
 
-    addSound(name, src)
+    addSound(name, src, poolSize, volume)
     {
         //this.#sounds[name] = new Sound(name, src);
 
-        const sound = new Sound(name, src)
+        const sound = new Sound(name, src, poolSize, volume)
         this.#sounds.addObject(sound);
         
     }
@@ -407,24 +407,44 @@ class Sprite
 
 class Timer
 {
-    #duration;   // seconds for one cycle
-    #timeLeft;   // seconds remaining
-    #active;     // is the timer running?
+    #duration;     // seconds for one cycle
+    #timeLeft;     // countdown mode: seconds remaining
+    #elapsedTime;  // countup mode: seconds elapsed
+    #active;       // is the timer running?
+    #mode;         // GameDefs.timerModes.COUNTDOWN or COUNTUP
+    #loop;         // true = auto restart after finish
 
-    constructor(durationSeconds)
+    constructor(durationSeconds = 0, mode = GameDefs.timerModes.COUNTDOWN, loop = false) 
     {
         this.#duration = durationSeconds;
         this.#timeLeft = durationSeconds;
+        this.#elapsedTime = 0;
         this.#active = false;
+        this.#mode = mode;
+        this.#loop = loop;
     }
-    
+
+    // --- Getters ---
     get active() { return this.#active; }
     get timeLeft() { return Math.max(0, this.#timeLeft); }
-    get progress() { return 1 - (this.#timeLeft / this.#duration); }
+    get elapsedTime() { return this.#elapsedTime; }
+    get progress() {
+        return this.#mode === GameDefs.timerModes.COUNTDOWN
+            ? 1 - (this.#timeLeft / (this.#duration || 1))
+            : (this.#duration ? Math.min(1, this.#elapsedTime / this.#duration) : 0);
+    }
 
+    // --- Control ---
     start() 
     {
-        this.#timeLeft = this.#duration;
+        if (this.#mode === GameDefs.timerModes.COUNTDOWN) 
+        {
+            this.#timeLeft = this.#duration;
+        } 
+        else 
+        {
+            this.#elapsedTime = 0;
+        }
         this.#active = true;
     }
 
@@ -433,24 +453,54 @@ class Timer
         this.#active = false;
     }
 
-    reset(durationSeconds = this.#duration) 
+    // reset now explicitly sets duration, mode, and loop
+    reset(durationSeconds = this.#duration, mode = this.#mode, loop = this.#loop) 
     {
         this.#duration = durationSeconds;
+        this.#mode = mode;
+        this.#loop = loop;
         this.start();
     }
-    
+
+    // update returns true on a "tick/finish" moment
     update(delta) 
     {
         if (!this.#active) return false;
 
-        this.#timeLeft -= delta;
-        if (this.#timeLeft <= 0) 
+        if (this.#mode === GameDefs.timerModes.COUNTDOWN) 
         {
-            this.#active = false;
-            return true; // signal "finished"
+            this.#timeLeft -= delta;
+            if (this.#timeLeft <= 0) {
+                if (this.#loop) 
+                {
+                    // restart but preserve slight overflow
+                    this.#timeLeft += this.#duration;
+                } else {
+                    this.#active = false;
+                }
+                return true;
+            }
+        } 
+        else 
+        { // COUNTUP
+            this.#elapsedTime += delta;
+            if (this.#loop && this.#duration > 0 && this.#elapsedTime >= this.#duration) 
+            {
+                this.#elapsedTime -= this.#duration;
+                return true;
+            }
         }
         return false;
-    } 
+    }
+
+    // Formatted MM:SS
+    get formatted() 
+    {
+        const total = Math.floor(this.elapsedTime);
+        const minutes = Math.floor(total / 60);
+        const seconds = total % 60;
+        return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    }
 }
 
 // Draw a rectangle around an object's hitbox (uses object's getHitbox())

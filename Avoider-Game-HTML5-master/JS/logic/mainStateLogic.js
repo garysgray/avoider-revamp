@@ -78,14 +78,7 @@ function updateGameStates(device, game, delta)
             // --- Update Player ---
             game.player.update(device, game, delta);
 
-            // Shield timer (seconds-based)
-            if (game.timer.active) 
-            {
-                if (game.timer.update(delta)) 
-                {
-                    game.restorePlayState(); 
-                }
-            }
+            
 
             // --- Update NPCs & Projectiles ---
             updateNPCSprites(device, game, delta);
@@ -99,6 +92,18 @@ function updateGameStates(device, game, delta)
                     game.player.savePos(game.player.posX, game.player.posY);
                 }
             }
+
+            // Shield timer (seconds-based)
+            if (game.timer.active) 
+            {
+                // has timer run out
+                if (game.timer.update(delta)) 
+                {
+                    game.restorePlayState(); 
+                }
+            }
+
+            game.stopwatch.update(delta)
         }
         break;
 
@@ -117,7 +122,7 @@ function updateGameStates(device, game, delta)
                 game.savePlayState(game.playState);
 
                 game.setPlayState(GameDefs.playStates.SHIELD);
-                game.timer.reset(game.gameConsts.SHIELD_TIME);
+                game.timer.reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
                 game.setGameState(GameDefs.gameStates.PLAY);
             }
 
@@ -152,7 +157,7 @@ function updateGameStates(device, game, delta)
         case GameDefs.gameStates.LOSE:
         {	
             // Freeze player at last death position
-             game.player.savePos(game.player.posX, game.player.posY);
+            game.player.savePos(game.player.posX, game.player.posY);
             
             if(game.lives <= 0)
             {                
@@ -170,10 +175,12 @@ function updateGameStates(device, game, delta)
                     game.emptyAmmo();                  // clear bullets
                     game.gameSprites.clearObjects();   // clear NPCs
                     game.setGameState(GameDefs.gameStates.PLAY);
-                    game.timer.reset(game.gameConsts.SHIELD_TIME);
+                    game.timer.reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
+                    
                     game.setPlayState(GameDefs.playStates.SHIELD);
                 }
             }
+            game.stopwatch.start();
         }
         break;
   
