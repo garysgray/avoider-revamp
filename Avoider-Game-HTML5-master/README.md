@@ -136,6 +136,14 @@ We overhauled the **Timer class** to be a fully reusable, robust solution for al
 - Easier theming: color or layout tweaks can now be done by editing variables in one place  
 - Fixed **message alignment**: `#message` now uses `display: flex; justify-content: center; align-items: center;` so text is perfectly centered  
 
+## Timer System Overview
+
+The game uses a unified `Timer` class for all timed mechanics:
+- **Shoot Cooldown** → prevents player from firing too quickly
+- **Shield Timer** → controls how long the shield lasts
+- **Game Clock** → tracks elapsed play time
+
+
 ### General Improvements
 - Unified OOP style using private fields (`#`)  
 - Reduced code duplication across update/render flows  
@@ -143,9 +151,3 @@ We overhauled the **Timer class** to be a fully reusable, robust solution for al
 - Safer array/object handling with helper methods  
 - NPC spawning centralized in `spawnNPC()` helper (less repetitive code, overlap prevention)  
 
-### Setup / How to Run
-- Clone or download the repository.  
-- Open the Avoider-Game-HTML-master folder
-- Click the index.html file to run it.
-- Works with any modern browser (Chrome, Firefox, Edge).
-- No build step required (pure vanilla JS).
