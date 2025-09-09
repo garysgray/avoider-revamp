@@ -102,7 +102,6 @@ class Device
         this.#ctx.drawImage(img, aPosX - w * 0.5, aPosY - h * 0.5);
     }
 
-
     putText(aString, x, y)
 	{
 		this.#ctx.fillText(aString, x, y);
@@ -279,7 +278,6 @@ class Sound
             audio.preload = "auto";
             this.#pool.push(audio);
         }
-
     }
 
     get name() { return this.#name; }
@@ -309,8 +307,7 @@ class Sound
             a.pause();
             a.currentTime = 0;
         });
-    }
-    
+    }   
 }
 
 class AudioPlayer
@@ -319,17 +316,13 @@ class AudioPlayer
 
     constructor()
     {
-        //this.#sounds = {};
         this.#sounds = new ObjHolder();
     }
 
     addSound(name, src, poolSize, volume)
     {
-        //this.#sounds[name] = new Sound(name, src);
-
         const sound = new Sound(name, src, poolSize, volume)
-        this.#sounds.addObject(sound);
-        
+        this.#sounds.addObject(sound);  
     }
 
     getSound(name)
@@ -362,8 +355,6 @@ class AudioPlayer
     }
 
  }
-
-
 
 class Sprite
  {
@@ -407,6 +398,7 @@ class Sprite
 
 class Timer
 {
+    #name
     #duration;     // seconds for one cycle
     #timeLeft;     // countdown mode: seconds remaining
     #elapsedTime;  // countup mode: seconds elapsed
@@ -414,8 +406,9 @@ class Timer
     #mode;         // GameDefs.timerModes.COUNTDOWN or COUNTUP
     #loop;         // true = auto restart after finish
 
-    constructor(durationSeconds = 0, mode = GameDefs.timerModes.COUNTDOWN, loop = false) 
+    constructor(name, durationSeconds = 0, mode = GameDefs.timerModes.COUNTDOWN, loop = false) 
     {
+        this.#name = name;
         this.#duration = durationSeconds;
         this.#timeLeft = durationSeconds;
         this.#elapsedTime = 0;
@@ -425,6 +418,7 @@ class Timer
     }
 
     // --- Getters ---
+    get name() { return this.#name; }
     get active() { return this.#active; }
     get timeLeft() { return Math.max(0, this.#timeLeft); }
     get elapsedTime() { return this.#elapsedTime; }

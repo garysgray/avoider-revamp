@@ -78,8 +78,6 @@ function updateGameStates(device, game, delta)
             // --- Update Player ---
             game.player.update(device, game, delta);
 
-            
-
             // --- Update NPCs & Projectiles ---
             updateNPCSprites(device, game, delta);
             updateProjectiles(device, game, delta);
@@ -94,16 +92,17 @@ function updateGameStates(device, game, delta)
             }
 
             // Shield timer (seconds-based)
-            if (game.timer.active) 
+            if (game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).active) 
             {
                 // has timer run out
-                if (game.timer.update(delta)) 
+                //game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER)
+                if (game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).update(delta)) 
                 {
                     game.restorePlayState(); 
                 }
             }
-
-            game.stopwatch.update(delta)
+            //game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK)
+            game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).update(delta)
         }
         break;
 
@@ -122,7 +121,7 @@ function updateGameStates(device, game, delta)
                 game.savePlayState(game.playState);
 
                 game.setPlayState(GameDefs.playStates.SHIELD);
-                game.timer.reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
+                game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
                 game.setGameState(GameDefs.gameStates.PLAY);
             }
 
@@ -175,12 +174,14 @@ function updateGameStates(device, game, delta)
                     game.emptyAmmo();                  // clear bullets
                     game.gameSprites.clearObjects();   // clear NPCs
                     game.setGameState(GameDefs.gameStates.PLAY);
-                    game.timer.reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
+                    game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
+                    //game.timer.reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
                     
                     game.setPlayState(GameDefs.playStates.SHIELD);
                 }
             }
-            game.stopwatch.start();
+            //game.stopwatch.start();
+            game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
         }
         break;
   

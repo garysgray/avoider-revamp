@@ -84,6 +84,13 @@ const GameDefs = Object.freeze({
     timerModes: {
         COUNTDOWN: "countdown",
         COUNTUP: "countup",
+    },
+
+    // --- Timer Mode ---
+    timerTypes: {
+        SHIELD_TIMER: "shieldTimer",
+        SHOOT_COOL_DOWN_TIMER: "shootCooldownTimer",
+        GAME_CLOCK: "gameClock",
     }
 
 });

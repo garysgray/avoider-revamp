@@ -23,8 +23,7 @@ class Game
     #gameConsts;
     #projectiles;
     #gameSprites;
-    #timer;
-    #stopwatch;
+  
     #player;
 
     #canvasWidth;
@@ -44,6 +43,8 @@ class Game
 
     #billBoards;
 
+    #gameTimers;
+
     // ---- Constructor ----
     constructor() 
     {
@@ -52,11 +53,9 @@ class Game
         this.#projectiles  = new ObjHolder();
         this.#gameSprites  = new ObjHolder();
 
-        this.#billBoards   = new ObjHolder();
-        //FIX hard code value            
-        this.#timer        = new Timer(this.#gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN);
+        this.#gameTimers  = new ObjHolder();
 
-        this.#stopwatch    = new Timer(0, GameDefs.timerModes.COUNTUP);
+        this.#billBoards   = new ObjHolder();
 
         // Dimensions
         this.#canvasWidth  = this.#gameConsts.SCREEN_WIDTH;
@@ -65,10 +64,12 @@ class Game
         this.#canvasHalfW  = this.#canvasWidth * .5
         this.#canvasHalfH = this.#canvasHeight * .5
 
+        
         this.#player = new Player(
             GameDefs.spriteTypes.PLAYER.w, GameDefs.spriteTypes.PLAYER.h, 
             this.#canvasHalfW, 
-            this.#canvasHeight 
+            this.#canvasHeight,
+            0, 
         ); 
 
         // Default states
@@ -91,9 +92,8 @@ class Game
     get gameSprites()  { return this.#gameSprites; }
 
     get billBoards()  { return this.#billBoards; }
+    get gameTimers()  { return this.#gameTimers; }
 
-    get timer()        { return this.#timer; }
-    get stopwatch()    { return this.#stopwatch; }
     get player()       { return this.#player; }
 
     get canvasWidth()  { return this.#canvasWidth; }
@@ -173,11 +173,21 @@ class Game
         ];
         boards.forEach(board => 
         {
-            if(board.name != GameDefs.billBoardTypes.BACKGROUND.type)
+            if (board.name != GameDefs.billBoardTypes.BACKGROUND.type)
             {
                 board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
             }
             this.#billBoards.addObject(board)
+        });
+
+        const timers = [
+            new Timer(GameDefs.timerTypes.SHIELD_TIMER, this.#gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN),
+            // initial duration 0 is fine — will be set by reset()
+            new Timer(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER, 0, GameDefs.timerModes.COUNTDOWN, false ),
+            new Timer(GameDefs.timerTypes.GAME_CLOCK, 0, GameDefs.timerModes.COUNTUP),
+        ];
+        timers.forEach(timer => {
+            this.#gameTimers.addObject(timer);
         });
     }
 
@@ -191,7 +201,8 @@ class Game
 
         this.setPlayState(GameDefs.playStates.AVOID);
         this.setMouseToPlayer(device, this.#player);
-        this.stopwatch.start();
+        this.#gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
+        //this.stopwatch.start();
     }
     
     // -----------------------------
