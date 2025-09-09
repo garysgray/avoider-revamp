@@ -63,6 +63,16 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Added **`centerObject()` utility** → calculates exact centered position based on canvas width/height and object size  
 - Fix: splash, pause, and die screens now **center correctly on first load** without needing a refresh  
 
+### Audio / Sound Manager
+- Introduced **`Sound` class** → wraps `<audio>` elements, supports clean play/stop behavior  
+- Each `play()` call **clones or resets audio** so sounds trigger reliably even under rapid fire  
+  - `audio.currentTime = 0;` ensures sounds always start from the beginning (no cut-off)  
+- Added **`AudioPlayer` manager** → central system to register and play sounds by name  
+- Supports multiple concurrent sounds (no more dropped shots or missing effects)  
+- Volume is passed optionally at playtime, defaulting to `1` for consistent behavior  
+- Shooting logic updated to call `audioPlayer.playSound('shoot')` when firing projectiles  
+- Scalable design → easy to add more effects (explosions, power-ups, UI sounds)  
+
 ### Debugging & Developer Tools
 - Added **toggleable hitbox debug mode** (draws bounding boxes around objects for collision testing)  
 - Debug drawing uses consistent styling for easy visibility without clutter  
