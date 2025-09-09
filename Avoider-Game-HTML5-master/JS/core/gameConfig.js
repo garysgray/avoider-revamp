@@ -177,7 +177,6 @@ class Game
         });
     }
 
-    
     // Reset values each time a game starts
     setGame(device) 
     { 

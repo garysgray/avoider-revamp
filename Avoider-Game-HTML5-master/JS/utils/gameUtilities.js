@@ -255,20 +255,62 @@ class KeyManager
 class Sound
 {
     #name;
-    #audio;
+    #volume
+    #src;
+    #pool;
+    #index;
+    #poolSize;
 
-    constructor(name, src)
+    // FIX add  constants?
+    constructor(name, src, poolSize = 5, volume = 1.0)
     {
         this.#name = name;
-        this.#audio = new Audio(src);
-    } 
+        this.#src = src;
+        this.#volume = volume;
+        this.#pool = [];
+        this.#index = 0;
+        this.#poolSize = Math.max(1, poolSize); // never <1
+     
+
+        // preload audio pool
+        for (let i = 0; i < poolSize; i++) 
+        {
+            const audio = new Audio(this.#src);
+            audio.preload = "auto";
+            this.#pool.push(audio);
+        }
+
+    }
 
     get name() { return this.#name; }
-    get audio() { return this.#audio; }
+    
+    play() 
+    {
+        let audio = this.#pool[this.#index];
+        
+        //if this audio is being used basiclly
+        if (!audio.paused)
+        {   
+            // Fallback: clone for guaranteed playback
+            audio = audio.cloneNode;
+        }
 
-    play() { this.#audio.play(); }
-    pause() { this.#audio.pause(); }
-    stop() { this.#audio.pause(); this.#audio.currentTime = 0; }
+        audio.volume = this.#volume;
+        // forces the audio playback position back to the start of the file before playing
+        audio.currentTime = 0;
+        audio.play();
+
+        this.#index = (this.#index + 1) % this.#poolSize;
+    }
+
+    stopAll() 
+    {
+        this.#pool.forEach(a => {
+            a.pause();
+            a.currentTime = 0;
+        });
+    }
+    
 }
 
 class AudioPlayer
@@ -277,54 +319,51 @@ class AudioPlayer
 
     constructor()
     {
+        //this.#sounds = {};
         this.#sounds = new ObjHolder();
     }
 
-    get size() { return this.#sounds.getSize(); }
-
     addSound(name, src)
     {
+        //this.#sounds[name] = new Sound(name, src);
+
         const sound = new Sound(name, src)
         this.#sounds.addObject(sound);
+        
     }
 
     getSound(name)
     {
-        return this.#sounds.getObjectByName(name);
+         return this.#sounds.getObjectByName(name);
     }
 
     playSound(name) 
     {
         const sound = this.getSound(name);
-        if (sound) sound.play();
-    }
-
-    pauseSound(name) 
-    {
-        const sound = this.getSound(name);
-        if (sound) sound.pause();
-    }
-
-    pauseAll()
-    {
-        this.#sounds.forEach(obj => obj.pause());
+        if (sound) 
+        {
+            sound.play(sound.volume);
+        } 
+        else 
+        {
+            console.warn(`Sound "${name}" not found`);
+        }
     }
 
     stopSound(name) 
     {
         const sound = this.getSound(name);
-        if (sound) sound.stop();
+        if (sound) sound.stopAll();
     }
 
     stopAll() 
     {
-        this.#sounds.forEach(s => s.stop());
+        this.#sounds.forEach(s => s.stopAll());
     }
 
-    clear() {
-        this.#sounds.clearObjects();
-    }
  }
+
+
 
 class Sprite
  {
