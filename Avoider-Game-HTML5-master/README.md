@@ -1,4 +1,3 @@
-
 # Avoider Game (Revamped)
 
 A rebuilt version of my original HTML5 avoider game, cleaned up, modular, and easier to expand.  
@@ -7,6 +6,15 @@ Still simple, still fun, but smarter under the hood.
 Built with **vanilla JS** and **Canvas**  
 Work in progress, evolving into a **mini game engine**  
 Made for learning, experimenting, and future projects
+
+---
+
+### Setup / How to Run
+- Clone or download the repository.  
+- Open the Avoider-Game-HTML-master folder
+- Click the index.html file to run it.
+- Works with any modern browser (Chrome, Firefox, Edge).
+- No build step required (pure vanilla JS).
 
 ---
 
@@ -32,11 +40,54 @@ This makes asset management consistent, rendering safer and more reliable, and t
 - Added **projectile timer** (`Timer` class instance) inside `Player` to manage shooting cooldowns cleanly  
 - `Player` now enforces **canvas bounds** internally rather than relying on external logic  
 
-### Timer Class
-- Added reusable **Timer** class with private fields (`#duration`, `#timeLeft`, `#active`)  
-- Supports `start`, `stop`, `reset`, and `update` methods  
-- Used for player shooting delay (projectile cooldown)  
-- Designed for reuse in shields, powerups, and other timed effects  
+### Timer System Refactor & Improvements
+
+We overhauled the **Timer class** to be a fully reusable, robust solution for all timed game effects. These changes impacted shields, player shooting, and any potential future timed mechanics.
+
+#### Timer Class Changes
+- Introduced **private fields** (`#duration`, `#timeLeft`, `#elapsedTime`, `#active`, `#mode`, `#loop`) for safety and encapsulation.
+- Supports **COUNTDOWN** and **COUNTUP** modes:
+  - **Countdown**: For timed events (shield duration, shoot cooldown)  
+  - **Countup**: Tracks elapsed time for effects like scoring, powerups, or animations
+- Added **looping option** to allow repeating timers without external handling.
+- Unified **start, stop, reset, and update** methods:
+  - `start()` correctly initializes timers based on mode
+  - `reset(duration, mode, loop)` fully resets the timer with optional mode and looping
+  - `update(delta)` now handles countdown and countup in one method
+- Prevented common issues:
+  - Countdown timers not triggering completion
+  - Resetting timers leaving them in the wrong mode
+  - Overwriting elapsed time or countdown accidentally
+
+#### Player & Shield Integration
+- **Player shoot cooldown timer**
+  - Now uses the Timer class in **COUNTDOWN mode**.
+  - Automatically updates each frame during `Player.update()`.
+  - `tryShoot()` checks `#shootCooldownTimer.active` before firing.
+  - `reset()` sets duration explicitly to `game.gameConsts.SHOOT_COOLDOWN`.
+- **Shield timer**
+  - Uses Timer in **COUNTDOWN mode** for shield duration.
+  - Reset explicitly when entering shield state with `game.timer.reset(game.gameConsts.SHIELD_TIME, COUNTDOWN, false)`.
+  - Automatically triggers exit from shield state when timer completes.
+  
+#### Cascading Improvements
+- Eliminated previous **bullet timing bugs** caused by countup timer interference.
+- Shooting behavior now consistently allows **multiple bullets** according to ammo count.
+- Shields expire reliably, with `restorePlayState()` called exactly when the timer finishes.
+- All timers (shoot cooldown, shield duration) now **update each frame** and are self-contained.
+- Reduced manual state checks across game logic:
+  - Player shooting no longer requires extra “bullet tick” logic.
+  - Shield timing no longer relies on manual delta subtraction in the main loop.
+- Improved **debugging**:
+  - Can log `timeLeft` or `elapsedTime` for any timer instance.
+  - Provides a clear foundation for future powerups, effects, or timed events.
+
+#### Future-Proofing
+- Timer class is now fully **plug-and-play** for:
+  - Power-ups (e.g., double score, speed boosts)
+  - NPC abilities with duration
+  - Visual effects that require a timed lifecycle
+- All timers share a **consistent API**, making additional timed mechanics trivial to add without breaking existing gameplay.
 
 ### Collision Handling
 - Identified efficiency issue: `check_NPC_Collision` iterates forward while mutating the array  
@@ -94,6 +145,7 @@ This makes asset management consistent, rendering safer and more reliable, and t
 
 ### Setup / How to Run
 - Clone or download the repository.  
-- Open index.html directly in a web browser.
+- Open the Avoider-Game-HTML-master folder
+- Click the index.html file to run it.
 - Works with any modern browser (Chrome, Firefox, Edge).
 - No build step required (pure vanilla JS).

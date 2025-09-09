@@ -202,7 +202,12 @@ class Player extends GameObject
     constructor(width, height, x, y, speed) 
     {
         super(GameDefs.spriteTypes.PLAYER, width, height, x, y, speed);
-        this.#shootCooldownTimer = new Timer(0);
+        
+        this.#shootCooldownTimer = new Timer(
+            0, // initial duration 0 is fine — will be set by reset()
+            GameDefs.timerModes.COUNTDOWN,
+            false
+        );
     }
 
     // ---- Getters/Setters ----
@@ -240,7 +245,7 @@ class Player extends GameObject
 
         // Consume ammo + trigger cooldown
         game.decreaseAmmo(1);
-        this.#shootCooldownTimer.reset(game.gameConsts.SHOOT_COOLDOWN);
+        this.#shootCooldownTimer.reset(game.gameConsts.SHOOT_COOLDOWN, GameDefs.timerModes.COUNTDOWN, false);
 
         // Play sound effect
         device.audio.playSound(GameDefs.soundTypes.SHOOT);
