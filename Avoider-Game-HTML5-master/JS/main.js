@@ -8,11 +8,9 @@ let DEBUG_DRAW_HITBOXES = false;
 let DEBUG_TEXT;
 let DRAW_DEBUG = false;
 
-// Uncomment for hit boxes drawn on game objects
-//HIT_BOXES = true;
-
-// Uncomment for real-time debug text 
-// DEBUG_TEXT = true;
+//*****----DEBUG_ENTRY_POINT-----*****
+// HIT_BOXES = true; 
+ DEBUG_TEXT = true;
 
 if (HIT_BOXES)
 {
@@ -70,26 +68,20 @@ if (DEBUG_TEXT)
             accumulator -= fixedStep;         // Remove one step from accumulator
         }
 
-        // Optional: Debugging overlay
-        
+        // Optional: Debugging overlay  
         if (DRAW_DEBUG)
         {
-            myController.device.debugText("Clock:  " + myController.game.stopwatch.formatted, 20, 30);
-            //myController.device.debugText(GameDefs.spriteTypes.ORB.type, 150, 50);
+            myController.device.debugText("Clock:  " + myController.game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).formatted, 20, 30);
+            myController.device.debugText(myController.game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER).active, 150, 50);
         }
-
-       
 
         // Request the next frame from the browser
         requestAnimationFrame(gameLoop);
     }
 
-// called from the onLoad() function in index.HTML
+// called from the window.onload() function in index.HTML
 function startGameLoop() 
 {
-    // ---------------------------------------------------------------------------
-    // Start the loop
-    // ---------------------------------------------------------------------------
      gameLoop();
 }
 

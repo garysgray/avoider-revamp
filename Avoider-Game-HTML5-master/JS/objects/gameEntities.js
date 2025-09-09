@@ -196,29 +196,18 @@ class NPC extends GameObject
 // --------------------------------------------
 class Player extends GameObject 
 {
-    #shootCooldownTimer; // Timer measured in seconds
-    
-
     constructor(width, height, x, y, speed) 
     {
         super(GameDefs.spriteTypes.PLAYER, width, height, x, y, speed);
-        
-        this.#shootCooldownTimer = new Timer(
-            0, // initial duration 0 is fine — will be set by reset()
-            GameDefs.timerModes.COUNTDOWN,
-            false
-        );
     }
 
-    // ---- Getters/Setters ----
-    get shootCooldownTimer() { return this.#shootCooldownTimer; }
-    
     // Attempt to fire a projectile
     // - Checks play state, ammo, input, and cooldown
     tryShoot(device, game)
     {
+        //const shootCooldownTimer = game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER).active;
         if (game.playState !== GameDefs.playStates.SHOOT) return false;
-        if (this.#shootCooldownTimer.active) return false;
+        if ( game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER).active) return false;
 
         // Optional: add player ammo system
         if (game.ammo <= 0)
@@ -245,7 +234,7 @@ class Player extends GameObject
 
         // Consume ammo + trigger cooldown
         game.decreaseAmmo(1);
-        this.#shootCooldownTimer.reset(game.gameConsts.SHOOT_COOLDOWN, GameDefs.timerModes.COUNTDOWN, false);
+        game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER).reset(game.gameConsts.SHOOT_COOLDOWN, GameDefs.timerModes.COUNTDOWN, false);
 
         // Play sound effect
         device.audio.playSound(GameDefs.soundTypes.SHOOT);
@@ -258,7 +247,7 @@ class Player extends GameObject
     // - Handles shooting
     update(device, game, delta) 
     {
-        this.#shootCooldownTimer.update(delta);
+        game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER).update(delta);
         this.enforceBounds(game);
         this.tryShoot(device, game);
     }
