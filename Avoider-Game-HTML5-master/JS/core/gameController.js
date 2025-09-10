@@ -26,12 +26,13 @@ class Controller
             return; // Stop further processing
         }
 
+        // Initialize Device
         try {
-            this.#device = new Device(this.#game.canvasWidth, this.#game.canvasHeight);
+            this.#device = new Device(this.#game?.canvasWidth ?? 800, this.#game?.canvasHeight ?? 600);
         } catch (error) {
             console.error("Failed to initialize Device:", error.message);
             alert("An error occurred while setting up the game environment.");
-            return; // Stop further processing
+            return;
         }
 
 
@@ -52,8 +53,8 @@ class Controller
     // ------------------------------------------------------------------------
     initGame() 
     {
-         try {
-            this.#game.initGame(this.#device); // Pass device into the game for setup
+        try {
+           this.#game?.initGame?.(this.#device);// Pass device into the game for setup
 
             // Add default render layers (order defines render priority)
             this.addLayer(gameObjectsLayer);  // Sprites / world objects
@@ -85,24 +86,31 @@ class Controller
     // ------------------------------------------------------------------------
     updateGame(delta) 
     {
-        try {
-            updateGameStates(this.#device, this.#game, delta); // Update game logic
+        // Validate delta
+        if (typeof delta !== "number" || delta <= 0) {
+            console.warn("updateGame called with invalid delta:", delta);
+            delta = 16; // fallback ~60fps
+        }
 
-            // Render each layer in order (background → text → debug, etc.)
+        try {
+            // Update core game logic
+            updateGameStates?.(this.#device, this.#game, delta);
+
+            // Render each layer safely
             for (const layer of this.#layers) {
                 try {
-                    layer.render(this.#device, this.#game);
+                    layer?.render?.(this.#device, this.#game);
                 } catch (renderError) {
-                    console.error(`Error rendering layer ${layer.name}:`, renderError.message);
-                    // Optionally, you could skip rendering this layer or handle the error
+                    console.error(`Error rendering layer ${layer?.name ?? 'unknown'}:`, renderError.message);
                 }
             }
 
-            // Clear per-frame input (prevents sticky key issues)
-            this.#device.keys.clearFrameKeys();
+            // Clear per-frame input
+            this.#device?.keys?.clearFrameKeys?.();
+
         } catch (error) {
             console.error("Game update error:", error.message);
-            alert("An error occurred during the game update. Please restart the game.");
+            alert("An error occurred during the game update. Please restart.");
         }
     }
 }
