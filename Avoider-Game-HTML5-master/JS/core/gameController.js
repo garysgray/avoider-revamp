@@ -18,11 +18,22 @@ class Controller
 
     constructor() 
     {
-        // Create the core Game instance
-        this.#game = new Game();
+        try {
+            this.#game = new Game(); // Attempt to create the Game instance
+        } catch (error) {
+            console.error("Failed to initialize Game:", error.message);
+            alert("An error occurred while initializing the game. Please try again.");
+            return; // Stop further processing
+        }
 
-        // Create the Device (canvas + input), sized to match the game
-        this.#device = new Device(this.#game.canvasWidth, this.#game.canvasHeight);
+        try {
+            this.#device = new Device(this.#game.canvasWidth, this.#game.canvasHeight);
+        } catch (error) {
+            console.error("Failed to initialize Device:", error.message);
+            alert("An error occurred while setting up the game environment.");
+            return; // Stop further processing
+        }
+
 
         // Start with an empty list of rendering layers
         this.#layers = [];
@@ -41,12 +52,16 @@ class Controller
     // ------------------------------------------------------------------------
     initGame() 
     {
-        // Add default render layers (order defines render priority)
-        this.addLayer(gameObjectsLayer);  // Sprites / world objects
-        this.addLayer(textRenderLayer);   // UI text / HUD
+         try {
+            this.#game.initGame(this.#device); // Pass device into the game for setup
 
-        // Pass device into game for setup (canvas, input, etc.)
-        this.#game.initGame(this.#device); 
+            // Add default render layers (order defines render priority)
+            this.addLayer(gameObjectsLayer);  // Sprites / world objects
+            this.addLayer(textRenderLayer);   // UI text / HUD
+        } catch (error) {
+            console.error("Failed to initialize game components:", error.message);
+            alert("An error occurred while initializing game components.");
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -54,7 +69,15 @@ class Controller
     // ------------------------------------------------------------------------
     addLayer(layer) 
     {
-        this.#layers.push(layer);
+        try {
+            if (!layer) {
+                throw new Error("Layer is undefined or null.");
+            }
+            this.#layers.push(layer);
+        } catch (error) {
+            console.error("Error adding layer:", error.message);
+            alert("An error occurred while adding a render layer.");
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -62,15 +85,25 @@ class Controller
     // ------------------------------------------------------------------------
     updateGame(delta) 
     {
-        // Update game states first
-        updateGameStates(this.#device, this.#game, delta);
+        try {
+            updateGameStates(this.#device, this.#game, delta); // Update game logic
 
-        // Render each layer in order (background → text → debug, etc.)
-        for (const layer of this.#layers) {
-            layer.render(this.#device, this.#game);
+            // Render each layer in order (background → text → debug, etc.)
+            for (const layer of this.#layers) {
+                try {
+                    layer.render(this.#device, this.#game);
+                } catch (renderError) {
+                    console.error(`Error rendering layer ${layer.name}:`, renderError.message);
+                    // Optionally, you could skip rendering this layer or handle the error
+                }
+            }
+
+            // Clear per-frame input (prevents sticky key issues)
+            this.#device.keys.clearFrameKeys();
+        } catch (error) {
+            console.error("Game update error:", error.message);
+            alert("An error occurred during the game update. Please restart the game.");
         }
-
-        // Clear per-frame input (prevents sticky key issues)
-        this.#device.keys.clearFrameKeys();
     }
 }
+
