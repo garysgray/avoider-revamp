@@ -29,7 +29,6 @@ const GameDefs = Object.freeze({
         BULLET:   { type: "bullet",    w: 8,  h: 8, speed: 550, spawnGap: 0, path: "assets/sprites/bullet.png" }
     },
 
-    // --- Billboard definitions ---
     billBoardTypes: {
         BACKGROUND: { type: "background", w: 600, h: 600, path: "assets/sprites/stars.png" },
         SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/splash.png" },
@@ -44,15 +43,12 @@ const GameDefs = Object.freeze({
         SHOOT: { name: "shoot", path: "assets/sounds/shoot.wav" }
     },
 
-
-    // --- Key bindings ---
     keyTypes: {
         PLAY_KEY: "Space",
         RESET_KEY: "Space",
         PAUSE_KEY_L: "ControlLeft"
     },
 
-    // --- UI Text ---
     gameTexts: {
         INIT: {
             INSTRUCTIONS: [
@@ -79,13 +75,11 @@ const GameDefs = Object.freeze({
         }
     },
 
-    // --- Timer Mode ---
     timerModes: {
         COUNTDOWN: "countdown",
         COUNTUP: "countup",
     },
 
-    // --- Timer Mode ---
     timerTypes: {
         SHIELD_TIMER: "shieldTimer",
         SHOOT_COOL_DOWN_TIMER: "shootCooldownTimer",

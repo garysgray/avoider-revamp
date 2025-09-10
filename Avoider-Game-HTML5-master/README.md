@@ -39,7 +39,7 @@ These helpers separate core engine tasks from game logic, making it easier to ma
 - **Audio**: `Sound` class with pooling prevents dropped sounds, and `AudioPlayer` centralizes playback.  
 - **Debug Tools**: optional hitbox rendering and debug text for testing mechanics.  
 - **Game Objects**: `GameObject` superclass with `alive` flag and `kill()` method simplifies object management.  
-- **BackDrop & Scrolling**: ready for animated or scrolling backgrounds.  
+- **BillBoard & Scrolling**: ready for animated or scrolling backgrounds.  
 - **Front-End / CSS**: CSS variables for consistent colors, borders, and responsive scaling; messages are flexbox-centered.  
 
 ---
@@ -65,11 +65,11 @@ These helpers separate core engine tasks from game logic, making it easier to ma
 - Layers separate player, NPCs, projectiles, and HUD.  
 - Sprite sheets supported for animation.
 
-### GameObject, Player, BackDrop
+### GameObject, Player, BillBoard
 - Private fields for controlled access.  
 - `kill()` method for object cleanup.  
 - Player shooting cooldown and shield timers are internal.  
-- BackDrop class prepared for scrolling/animation.
+- BillBoard class prepared for scrolling/animation.
 
 ### Audio / Sound
 - Audio pooling supports overlapping playback without drops.  
