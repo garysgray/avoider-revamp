@@ -237,7 +237,7 @@ class Player extends GameObject
         game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER).reset(game.gameConsts.SHOOT_COOLDOWN, GameDefs.timerModes.COUNTDOWN, false);
 
         // Play sound effect
-        device.audio.playSound(GameDefs.soundTypes.SHOOT);
+        device.audio.playSound(GameDefs.soundTypes.SHOOT.name);
         return true;
     }
 

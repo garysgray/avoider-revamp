@@ -1,5 +1,5 @@
 // ============================================================================
-// update-game.js
+//npcLogic.js
 // Core update logic for handling user input, projectiles, NPCs, and collisions.
 // Called every frame from controller.js update loop.
 // ============================================================================
@@ -151,7 +151,7 @@ function updateProjectilesCollision(device, game)
             const npcBox = npc.getHitbox(1.0, 0);
             if (rectsCollide(projBox, npcBox))    
             {         
-                device.audio.playSound(GameDefs.soundTypes.HIT);         
+                device.audio.playSound(GameDefs.soundTypes.HIT.name);         
                 game.increaseScore(game.gameConsts.SCORE_INCREASE);  
                 npc.kill(); 
                 proj.kill();            
@@ -188,14 +188,14 @@ function check_NPC_Collision(device, game)
         if (npc.name === GameDefs.spriteTypes.FIRE_AMMO.type)             
         {                 
             npc.kill();                
-            device.audio.playSound(GameDefs.soundTypes.GET);                 
+            device.audio.playSound(GameDefs.soundTypes.GET.name);                 
             game.playState = GameDefs.playStates.SHOOT;                 
             game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);                           
         }              
         else              
         {                 
             npc.kill();                 
-            device.audio.playSound(GameDefs.soundTypes.HURT);                 
+            device.audio.playSound(GameDefs.soundTypes.HURT.name);                 
             game.playState = GameDefs.playStates.DEATH;                 
             game.gameState = GameDefs.gameStates.LOSE;                 
             game.decreaseLives(1);                 

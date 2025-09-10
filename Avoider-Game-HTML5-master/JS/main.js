@@ -72,7 +72,7 @@ if (DEBUG_TEXT)
         if (DRAW_DEBUG)
         {
             myController.device.debugText("Clock:  " + myController.game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).formatted, 20, 30);
-            myController.device.debugText(myController.game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER).active, 150, 50);
+            //myController.device.debugText(myController.game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER).active, 150, 50);
         }
 
         // Request the next frame from the browser

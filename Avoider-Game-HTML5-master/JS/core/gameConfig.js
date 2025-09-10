@@ -138,46 +138,50 @@ class Game
         // Input
         device.keys.initKeys();
 
-        // Load sprites
-        const images = [
-            { src: "assets/sprites/bullet.png", name: "bullet" },
-            { src: "assets/sprites/orb.png",    name: "orb" },
-            { src: "assets/sprites/fire.png",   name: "fireAmmo" },
-            { src: "assets/sprites/ships.png",  name: "player" },
-            { src: "assets/sprites/stars.png",  name: "background" },
-            { src: "assets/sprites/splash.png", name: "splash" },
-            { src: "assets/sprites/pause.png",  name: "pause" },
-            { src: "assets/sprites/die.png",    name: "die" }
-        ]; 
-        images.forEach(img => {
-            const sprite = new Sprite(img.src, img.name);
-            //have it so it loads pos data by name of image
-            device.images.addObject(sprite);
+        // Load sprite assets
+        Object.values(GameDefs.spriteTypes).forEach(spriteDef => 
+        {
+            if (spriteDef.path)
+            {
+                const sprite = new Sprite(spriteDef.path, spriteDef.type);
+                device.images.addObject(sprite);
+            }
         });
-        
-        // Load sounds
-        const sounds = [
-            { src: "assets/sounds/hit.wav",   name: "hit" },
-            { src: "assets/sounds/shoot.wav", name: "shoot" },
-            { src: "assets/sounds/get.wav",   name: "get" },
-            { src: "assets/sounds/hurt.wav",  name: "hurt" }
-        ];
-        sounds.forEach(snd => device.audio.addSound(snd.name, snd.src, this.#gameConsts.POOLSIZE, this.#gameConsts.VOLUME));
 
-        // load BillBoards
+        // Load billboard assets
+        Object.values(GameDefs.billBoardTypes).forEach(boardDef => 
+        {
+            if (boardDef.path) 
+            {
+                const boardSprite = new Sprite(boardDef.path, boardDef.type);
+                device.images.addObject(boardSprite);
+            }
+        });
+
         const boards = [
             new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0),
-            new BillBoard(GameDefs.billBoardTypes.SPLASH.type, GameDefs.billBoardTypes.SPLASH.w, GameDefs.billBoardTypes.SPLASH.h, 0, 0),
-            new BillBoard(GameDefs.billBoardTypes.PAUSE.type, GameDefs.billBoardTypes.PAUSE.w, GameDefs.billBoardTypes.PAUSE.h, 0, 0),
-            new BillBoard(GameDefs.billBoardTypes.DIE.type, GameDefs.billBoardTypes.DIE.w, GameDefs.billBoardTypes.DIE.h, 0, 0),
+            new BillBoard(GameDefs.billBoardTypes.SPLASH.type,     GameDefs.billBoardTypes.SPLASH.w,     GameDefs.billBoardTypes.SPLASH.h,     0, 0),
+            new BillBoard(GameDefs.billBoardTypes.PAUSE.type,      GameDefs.billBoardTypes.PAUSE.w,      GameDefs.billBoardTypes.PAUSE.h,      0, 0),
+            new BillBoard(GameDefs.billBoardTypes.DIE.type,        GameDefs.billBoardTypes.DIE.w,        GameDefs.billBoardTypes.DIE.h,        0, 0),
         ];
+
         boards.forEach(board => 
         {
-            if (board.name != GameDefs.billBoardTypes.BACKGROUND.type)
-            {
+            if (board.name !== GameDefs.billBoardTypes.BACKGROUND.type) {
                 board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
             }
-            this.#billBoards.addObject(board)
+            this.#billBoards.addObject(board);
+            this.#gameSprites.addObject(board);   // <-- add here so renderer will draw it
+        });
+
+        Object.values(GameDefs.soundTypes).forEach(sndDef => 
+        {
+            device.audio.addSound(
+                sndDef.name,
+                sndDef.path,
+                this.gameConsts.POOLSIZE,
+                this.gameConsts.VOLUME
+            );
         });
 
         const timers = [
@@ -202,7 +206,6 @@ class Game
         this.setPlayState(GameDefs.playStates.AVOID);
         this.setMouseToPlayer(device, this.#player);
         this.#gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
-        //this.stopwatch.start();
     }
     
     // -----------------------------
