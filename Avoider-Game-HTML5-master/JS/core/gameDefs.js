@@ -22,29 +22,28 @@ const GameDefs = Object.freeze({
         DEATH: 4
     },
 
-    // --- Sprite definitions ---
     spriteTypes: {
-        PLAYER:   { type: "player",    w: 32, h: 32 },
-        ORB:      { type: "orb",       w: 24, h: 24, speed: 200, spawnRatio: 10},
-        FIRE_AMMO: { type: "fireAmmo", w: 16, h: 16, speed: 150, spawnRatio: 200 },
-        BULLET:   { type: "bullet",    w: 8,  h: 8,  speed: 550, spawnGap: 0 }
+        PLAYER:   { type: "player",    w: 32, h: 32, path: "assets/sprites/ships.png" },
+        ORB:      { type: "orb",       w: 24, h: 24, speed: 200, spawnRatio: 10, path: "assets/sprites/orb.png" },
+        FIRE_AMMO:{ type: "fireAmmo",  w: 16, h: 16, speed: 150, spawnRatio: 200, path: "assets/sprites/fire.png" },
+        BULLET:   { type: "bullet",    w: 8,  h: 8, speed: 550, spawnGap: 0, path: "assets/sprites/bullet.png" }
     },
 
     // --- Billboard definitions ---
     billBoardTypes: {
-        BACKGROUND: { type: "background", w: 600, h: 600 },
-        SPLASH:     { type: "splash",     w: 400, h: 100 },
-        PAUSE:      { type: "pause",      w: 400, h: 100 },
-        DIE:        { type: "die",        w: 400, h: 100 }
+        BACKGROUND: { type: "background", w: 600, h: 600, path: "assets/sprites/stars.png" },
+        SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/splash.png" },
+        PAUSE:      { type: "pause",      w: 400, h: 100, path: "assets/sprites/pause.png" },
+        DIE:        { type: "die",        w: 400, h: 100, path: "assets/sprites/die.png" }
     },
 
-    // --- Sound identifiers ---
     soundTypes: {
-        HIT: "hit",
-        GET: "get",
-        HURT: "hurt",
-        SHOOT: "shoot"
+        HIT:   { name: "hit",   path: "assets/sounds/hit.wav" },
+        GET:   { name: "get",   path: "assets/sounds/get.wav" },
+        HURT:  { name: "hurt",  path: "assets/sounds/hurt.wav" },
+        SHOOT: { name: "shoot", path: "assets/sounds/shoot.wav" }
     },
+
 
     // --- Key bindings ---
     keyTypes: {

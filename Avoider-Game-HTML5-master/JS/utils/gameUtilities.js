@@ -193,6 +193,11 @@ class ObjHolder
 	{
         this.#orderedList = newOrderArray.filter(obj => this.#objects.includes(obj));
     }
+
+    forEach(callback) 
+    {
+        this.#objects.forEach(callback);
+    }
 }
 
 class KeyManager 
@@ -276,6 +281,7 @@ class Sound
         {
             const audio = new Audio(this.#src);
             audio.preload = "auto";
+            audio.volume = this.#volume;
             this.#pool.push(audio);
         }
     }
@@ -283,23 +289,26 @@ class Sound
     get name() { return this.#name; }
     
     play() 
-    {
-        let audio = this.#pool[this.#index];
-        
-        //if this audio is being used basiclly
-        if (!audio.paused)
-        {   
-            // Fallback: clone for guaranteed playback
-            audio = audio.cloneNode;
-        }
+{
+    let audio = this.#pool[this.#index];
 
+    if (!audio.paused) 
+    {   
+        // Clone audio to allow overlapping playback
+        audio = audio.cloneNode(true);
         audio.volume = this.#volume;
-        // forces the audio playback position back to the start of the file before playing
         audio.currentTime = 0;
         audio.play();
-
-        this.#index = (this.#index + 1) % this.#poolSize;
+    } 
+    else 
+    {
+        audio.volume = this.#volume;
+        audio.currentTime = 0;
+        audio.play();
     }
+
+    this.#index = (this.#index + 1) % this.#poolSize;
+}
 
     stopAll() 
     {
@@ -351,7 +360,16 @@ class AudioPlayer
 
     stopAll() 
     {
-        this.#sounds.forEach(s => s.stopAll());
+        this.#sounds.forEach(s => 
+        {
+            s.stopAll();
+        })
+    }
+
+    // optional helper: check if a sound exists
+    hasSound(name) 
+    {
+        return !!this.getSound(name);
     }
 
  }
