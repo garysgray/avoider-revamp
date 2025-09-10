@@ -1,89 +1,93 @@
 // ============================================================================
 // DEBUG/TESTING CONTROL AREA
 // ============================================================================
-
-let HIT_BOXES;
+let HIT_BOXES = false;
 let DEBUG_DRAW_HITBOXES = false;
 
-let DEBUG_TEXT;
+let DEBUG_TEXT = true;
 let DRAW_DEBUG = false;
 
-//*****----DEBUG_ENTRY_POINT-----*****
-// HIT_BOXES = true; 
- DEBUG_TEXT = true;
-
-if (HIT_BOXES)
-{
-    DEBUG_DRAW_HITBOXES = true;
-}
-
-if (DEBUG_TEXT)
-{
-    DRAW_DEBUG = true;
-}
-
+if (HIT_BOXES) DEBUG_DRAW_HITBOXES = true;
+if (DEBUG_TEXT) DRAW_DEBUG = true;
 
 // ============================================================================
 // Main entry point for the Avoider game
-// This file sets up the Controller, initializes the game, and runs the main loop
 // ============================================================================
 
-// Create the main Controller instance
+let myController;
 
-    // Controller is responsible for managing the game state, logic, and rendering
-    let myController = new Controller();
-
-    // ---------------------------------------------------------------------------
-    // Fixed timestep game loop setup
-    // ---------------------------------------------------------------------------
-
-    // Track time for each frame
-    let lastTime = performance.now();   // Timestamp of the last frame (in ms)
-    let accumulator = 0;                // Stores leftover time not yet simulated
-    const fixedStep = 1 / 60;           // Logic update step: 1/60th of a second (~16.67ms)//
-
-    // ---------------------------------------------------------------------------
-    // Main game loop
-    // ---------------------------------------------------------------------------
-    function gameLoop() 
-    {
-        // Measure elapsed real time since the last frame (delta time)
-        const now = performance.now();
-        let frameTime = (now - lastTime) / 1000; // convert ms → seconds
-        lastTime = now;
-
-        // Cap frame time to avoid spiral-of-death during long lags
-        //    (e.g., if a tab is backgrounded for a few seconds)
-        if (frameTime > 0.25) frameTime = 0.25;
-
-        // Add this frame’s elapsed time to the accumulator
-        //    The accumulator decides how many fixed updates should run this frame
-        accumulator += frameTime;
-
-        // Run game updates as long as there’s enough accumulated time
-        //    Each update advances the game by exactly `fixedStep` seconds
-        while (accumulator >= fixedStep) 
-        {
-            myController.updateGame(fixedStep);  // Update logic + rendering layers
-            accumulator -= fixedStep;         // Remove one step from accumulator
-        }
-
-        // Optional: Debugging overlay  
-        if (DRAW_DEBUG)
-        {
-            myController.device.debugText("Clock:  " + myController.game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).formatted, 20, 30);
-            //myController.device.debugText(myController.game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER).active, 150, 50);
-        }
-
-        // Request the next frame from the browser
-        requestAnimationFrame(gameLoop);
-    }
-
-// called from the window.onload() function in index.HTML
-function startGameLoop() 
-{
-     gameLoop();
+try {
+    myController = new Controller();
+} catch (e) {
+    console.error("Failed to create Controller instance:", e);
 }
 
+// ---------------------------------------------------------------------------
+// Fixed timestep game loop setup
+// ---------------------------------------------------------------------------
+let lastTime = performance.now();
+let accumulator = 0;
+const fixedStep = 1 / 60;
 
-//https://garysgameapps.orgfree.com/Avoider/
+// ---------------------------------------------------------------------------
+// Main game loop with safety checks
+// ---------------------------------------------------------------------------
+function gameLoop() {
+    try {
+        if (!myController) return;
+
+        const now = performance.now();
+        let frameTime = (now - lastTime) / 1000;
+        lastTime = now;
+
+        if (frameTime > 0.25) frameTime = 0.25;
+
+        accumulator += frameTime;
+
+        while (accumulator >= fixedStep) {
+            try {
+                if (typeof myController.updateGame === "function") {
+                    myController.updateGame(fixedStep);
+                } else {
+                    console.warn("updateGame() is not a function on Controller.");
+                }
+            } catch (e) {
+                console.error("Error during updateGame():", e);
+            }
+            accumulator -= fixedStep;
+        }
+
+        if (DRAW_DEBUG) {
+            try {
+                const device = myController.device;
+                const game = myController.game;
+                const timer = game?.gameTimers?.getObjectByName?.(GameDefs.timerTypes.GAME_CLOCK);
+
+                if (device && timer) {
+                    device.debugText?.(`Clock: ${timer.formatted ?? "N/A"}`, 20, 30);
+                } else {
+                    console.warn("Debug overlay skipped: device or timer not available.");
+                }
+            } catch (e) {
+                console.error("Error during debug overlay:", e);
+            } 
+        }
+    } catch (e) {
+        console.error("Unexpected error in gameLoop:", e);
+    } finally {
+        try {
+            requestAnimationFrame(gameLoop);
+        } catch (e) {
+            console.error("Failed to request next animation frame:", e);
+        }
+    }
+}
+
+// called from window.onload() in index.html
+function startGameLoop() {
+    try {
+        gameLoop();
+    } catch (e) {
+        console.error("Failed to start game loop:", e);
+    }
+}

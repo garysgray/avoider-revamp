@@ -107,7 +107,6 @@ class GameConsts
     #AMMO_AMOUNT = 3;
     #SCORE_INCREASE = 10;
     #GAME_LIVES_START_AMOUNT = 5;
-
     #SPAWN_ATTEMPTS = 5;
 
     //settings
@@ -122,20 +121,15 @@ class GameConsts
     // ---- Getters (expose constants safely) ----
     get SCREEN_WIDTH(){ return this.#SCREEN_WIDTH; }
     get SCREEN_HEIGHT(){ return this.#SCREEN_HEIGHT; }
-
     get SHIELD_TIME(){ return this.#SHIELD_TIME; }
     get SHOOT_COOLDOWN(){ return this.#SHOOT_COOLDOWN; }
-    
     get AMMO_AMOUNT(){ return this.#AMMO_AMOUNT; }
     get SCORE_INCREASE(){ return this.#SCORE_INCREASE; }
     get GAME_LIVES_START_AMOUNT(){ return this.#GAME_LIVES_START_AMOUNT; }
-
     get SPAWN_ATTEMPTS(){ return this.#SPAWN_ATTEMPTS; }
-
     get FONT_SETTINGS(){ return this.#FONT_SETTINGS; }
     get FONT_COLOR(){ return this.#FONT_COLOR; }
     get HUD_BUFFER(){ return this.#HUD_BUFFER; }
-
     get POOLSIZE(){ return this.#POOLSIZE; }
     get VOLUME(){ return this.#VOLUME; }
     

@@ -15,6 +15,10 @@ class Layer
     // Passes in the device (canvas/audio/inputs), game state, and delta time
     render(dev, game, delta) 
     {
-        this.renderFn(dev, game, delta);
+        try {
+            this.renderFn(dev, game, delta);
+        } catch (e) {
+            console.error(`Layer '${this.name}': Error during render -`, e);
+        }
     }
 }

@@ -10,106 +10,150 @@
 //---------------------------------------------------------------
 // Render NPC Sprites (orbs, fireAmmo, etc.)
 //---------------------------------------------------------------
-function renderNPCSprites(device, game)
+function renderNPCSprites(device, game) 
 {
-    // Preload references to images (avoid repeated lookups each frame)
-    let orbImage      = device.images.getImage(GameDefs.spriteTypes.ORB.type);
-    let fireAmmoImage = device.images.getImage(GameDefs.spriteTypes.FIRE_AMMO.type);
-
-    // Loop through all NPC sprites in gameSprites list
-    for (let i = 0; i < game.gameSprites.getSize(); i++)
-    {
-        // Get reference to current sprite object
-        let tempObj = game.gameSprites.getIndex(i);
-
-        // Render sprite based on its name
-        switch(tempObj.name)
-        {
-            case GameDefs.spriteTypes.ORB.type:
-                device.centerImage(orbImage, tempObj.posX , tempObj.posY );
-            break;
-
-            case GameDefs.spriteTypes.FIRE_AMMO.type:
-                device.centerImage(fireAmmoImage, tempObj.posX , tempObj.posY );
-            break;
+    try {
+        if (!device?.images || typeof device.centerImage !== "function") {
+            console.warn("Device or centerImage function not available.");
+            return;
+        }
+        if (!game?.gameSprites || typeof game.gameSprites.getSize !== "function") {
+            console.warn("gameSprites not found or invalid.");
+            return;
         }
 
-        if (DEBUG_DRAW_HITBOXES) 
+        // Preload references to images (avoid repeated lookups each frame)
+        const orbImage      = device.images.getImage?.(GameDefs.spriteTypes.ORB.type);
+        const fireAmmoImage = device.images.getImage?.(GameDefs.spriteTypes.FIRE_AMMO.type);
+
+        for (let i = 0; i < game.gameSprites.getSize(); i++) 
         {
-             drawHitBoxs(device, tempObj);
+            const tempObj = game.gameSprites.getIndex?.(i);
+            if (!tempObj) continue;
+
+            switch(tempObj.name) 
+            {
+                case GameDefs.spriteTypes.ORB.type:
+                    if (orbImage) device.centerImage(orbImage, tempObj.posX, tempObj.posY);
+                    else console.warn("ORB image missing.");
+                break;
+
+                case GameDefs.spriteTypes.FIRE_AMMO.type:
+                    if (fireAmmoImage) device.centerImage(fireAmmoImage, tempObj.posX, tempObj.posY);
+                    else console.warn("FIRE_AMMO image missing.");
+                break;
+
+                default:
+                    console.warn("Unknown NPC type:", tempObj.name);
+            }
+
+            if (DEBUG_DRAW_HITBOXES && tempObj) drawHitBoxs(device, tempObj);
         }
+
+    } catch (e) {
+        console.error("Error in renderNPCSprites:", e);
     }
 }
 
 //---------------------------------------------------------------
 // Render Bullets (projectiles)
 //---------------------------------------------------------------
-function renderBullets(device, game)
+function renderBullets(device, game) 
 {
-    // Preload bullet image
-    let bulletImage = device.images.getImage(GameDefs.spriteTypes.BULLET.type);
-
-    // Loop through all active bullets in projectiles list
-    for (let i = 0; i < game.projectiles.getSize(); i++)
-    {
-        // Get reference to current bullet
-        let tempObj = game.projectiles.getIndex(i);
-
-        // Render bullet at its current position
-        device.centerImage(bulletImage, tempObj.posX , tempObj.posY);
-
-        if (DEBUG_DRAW_HITBOXES)
-        {
-             drawHitBoxs(device, tempObj);
+    try {
+        if (!device?.images || typeof device.centerImage !== "function") {
+            console.warn("Device or centerImage function not available.");
+            return;
         }
+        if (!game?.projectiles || typeof game.projectiles.getSize !== "function") {
+            console.warn("projectiles not found or invalid.");
+            return;
+        }
+
+        const bulletImage = device.images.getImage?.(GameDefs.spriteTypes.BULLET.type);
+        if (!bulletImage) console.warn("Bullet image missing.");
+
+        for (let i = 0; i < game.projectiles.getSize(); i++) 
+        {
+            const tempObj = game.projectiles.getIndex?.(i);
+            if (!tempObj) continue;
+
+            if (bulletImage) device.centerImage(bulletImage, tempObj.posX, tempObj.posY);
+            if (DEBUG_DRAW_HITBOXES) drawHitBoxs(device, tempObj);
+        }
+
+    } catch (e) {
+        console.error("Error in renderBullets:", e);
     }
 }
 
 //---------------------------------------------------------------
 // Render Player (different clips based on playState)
 //---------------------------------------------------------------
-function renderPlayer(device, game)
+function renderPlayer(device, game) 
 {
-    // Shortcut reference to player object
-    const tempObj = game.player;
+    try {
+        const tempObj = game?.player;
+        if (!tempObj) {
+            console.warn("Player object missing.");
+            return;
+        }
 
-    // Render player based on their current playState
-    switch(game.playState)
-    {
-        case GameDefs.playStates.AVOID:
-        case GameDefs.playStates.SHIELD:
-        case GameDefs.playStates.SHOOT:
-        case GameDefs.playStates.SUPER:
-        case GameDefs.playStates.DEATH:
-            tempObj.state = game.playState;
-        break;
-    }
+        const playerImage = device.images.getImage?.(GameDefs.spriteTypes.PLAYER.type);
+        if (!playerImage) {
+            console.warn("Player image missing.");
+        }
 
-    device.renderClip(
-        device.images.getImage(GameDefs.spriteTypes.PLAYER.type),
-        tempObj.posX ,
-        tempObj.posY ,
-        tempObj.width,
-        tempObj.height,
-        tempObj.state
-    );
+        // // Set state according to current playState safely
+        // if (game?.playState && tempObj.state !== undefined) {
+        //     const validStates = [
+        //         GameDefs.playStates.AVOID,
+        //         GameDefs.playStates.SHIELD,
+        //         GameDefs.playStates.SHOOT,
+        //         GameDefs.playStates.SUPER,
+        //         GameDefs.playStates.DEATH
+        //     ];
+        //     if (validStates.includes(game.playState)) {
+        //         tempObj.state = game.playState;
+        //     }
+        // }
 
-    if (DEBUG_DRAW_HITBOXES)
-    {
-        drawHitBoxs(device, tempObj);
+         // Always draw according to the internal state
+        if (typeof device.renderClip === "function") {
+            device.renderClip(
+                playerImage,
+                tempObj.posX,
+                tempObj.posY,
+                tempObj.width,
+                tempObj.height,
+                tempObj.state
+            );
+        }
+
+        if (DEBUG_DRAW_HITBOXES) drawHitBoxs(device, tempObj);
+
+    } catch (e) {
+        console.error("Error in renderPlayer:", e);
     }
 }
 
 //---------------------------------------------------------------
-// Render HITBOXS if the DEBUG_DRAW_HITBOXES == true
+// Render HITBOXES if DEBUG_DRAW_HITBOXES == true
 //---------------------------------------------------------------
-function drawHitBoxs(device, tempObj)
+function drawHitBoxs(device, tempObj) 
 {
-    device.ctx.strokeStyle = "lime";
-        device.ctx.strokeRect(
-            tempObj.posX - tempObj.halfWidth,
-            tempObj.posY - tempObj.halfHeight,
-            tempObj.width,
-            tempObj.height
-        );
+    try {
+        if (!device?.ctx || !tempObj) return;
+
+        const x = tempObj.posX - (tempObj.halfWidth ?? 0);
+        const y = tempObj.posY - (tempObj.halfHeight ?? 0);
+        const w = tempObj.width ?? 0;
+        const h = tempObj.height ?? 0;
+
+        device.ctx.strokeStyle = "lime";
+        device.ctx.strokeRect(x, y, w, h);
+
+    } catch (e) {
+        console.error("Error in drawHitBoxs:", e);
+    }
 }
