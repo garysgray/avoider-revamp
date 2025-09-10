@@ -41,6 +41,7 @@ These helpers separate core engine tasks from game logic, making it easier to ma
 - **Game Objects**: `GameObject` superclass with `alive` flag and `kill()` method simplifies object management.  
 - **BillBoard & Scrolling**: ready for animated or scrolling backgrounds.  
 - **Front-End / CSS**: CSS variables for consistent colors, borders, and responsive scaling; messages are flexbox-centered.  
+- **Error Handling**: defensive coding with try/catch and optional chaining prevents crashes from missing assets or states.  
 
 ---
 
@@ -49,10 +50,13 @@ These helpers separate core engine tasks from game logic, making it easier to ma
 ### Input & Player
 - Player input moved into `Player.update()` for self-contained logic.  
 - Shooting and shields now use timers internally instead of external checks.  
+- Player states now validated against allowed values before applying.  
+- Fixed **death state** so the correct skull sprite is rendered when the player dies.  
 
 ### Timer System
 - COUNTDOWN and COUNTUP modes with optional looping.  
 - Timers reduce reliance on manual delta checks and improve timing reliability.  
+- Shield and shooting cooldowns now automatically reset to correct play state (`AVOID` or `SHOOT`) after timers expire.  
 
 ### Collision Handling
 - Safe object removal while iterating.  
@@ -63,23 +67,27 @@ These helpers separate core engine tasks from game logic, making it easier to ma
 - Consistent center-based rendering.  
 - `renderImage()` supports natural and scaled sizes.  
 - Layers separate player, NPCs, projectiles, and HUD.  
-- Sprite sheets supported for animation.
+- Sprite sheets supported for animation.  
+- **Safe rendering**: added error checks for missing images, sprites, or invalid state data.  
 
 ### GameObject, Player, BillBoard
 - Private fields for controlled access.  
 - `kill()` method for object cleanup.  
 - Player shooting cooldown and shield timers are internal.  
-- BillBoard class prepared for scrolling/animation.
+- BillBoard class prepared for scrolling/animation.  
+- Player render logic now safely falls back if an image is missing.  
 
 ### Audio / Sound
 - Audio pooling supports overlapping playback without drops.  
 - Centralized playback by name via `AudioPlayer`.  
 - Volume adjustable per sound.  
+- Warnings for missing sounds instead of silent failures.  
 
 ### Debugging & Developer Tools
 - Toggleable hitbox visualization.  
 - Debug text rendering with `Device.debugText()`.  
-- Track timers and object states for easier testing.
+- Track timers and object states for easier testing.  
+- Added **console warnings** for risky operations (missing images, null sprites, invalid states).  
 
 ### Front-End / CSS
 - CSS variables centralize repeated values.  
@@ -92,6 +100,7 @@ These helpers separate core engine tasks from game logic, making it easier to ma
 - Unified `Timer` class used for shooting, shields, and game clock.  
 - Timers can loop or finish once, simplifying timed features.  
 - Consistent update method ensures reliable timing across all mechanics.  
+- Player states automatically transition back to correct defaults after timers expire.  
 
 ---
 
@@ -99,4 +108,15 @@ These helpers separate core engine tasks from game logic, making it easier to ma
 - Modular OOP design with private fields for safety.  
 - Clear separation of game logic, rendering, input, and audio.  
 - Reduced duplication and improved performance in object handling and collisions.  
-- Flexible foundation for adding new mechanics or effects.
+- Flexible foundation for adding new mechanics or effects.  
+- Defensive coding ensures errors don’t break the game loop.  
+
+---
+
+## Known Issues / Future Improvements
+- **Animations**: player and NPC sprites are currently static; animation support is scaffolded but not fully implemented.  
+- **Scrolling backgrounds**: BillBoard supports it, but smooth scrolling/animated backdrops are not yet enabled.  
+- **UI polish**: HUD text and menus are functional but minimal; styling and feedback could be improved.  
+- **More power-ups**: only shield and shooting mechanics exist; additional power-ups are planned.  
+- **Mobile controls**: touch support not yet implemented (keyboard only).  
+- **Balancing**: difficulty curve and spawn rates may need tuning for smoother gameplay.  
