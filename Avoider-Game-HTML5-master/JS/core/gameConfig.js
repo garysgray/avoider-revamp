@@ -65,12 +65,17 @@ class Game
         this.#canvasHalfH = this.#canvasHeight * .5
 
         
-        this.#player = new Player(
-            GameDefs.spriteTypes.PLAYER.w, GameDefs.spriteTypes.PLAYER.h, 
-            this.#canvasHalfW, 
-            this.#canvasHeight,
-            0, 
-        ); 
+        try {
+            this.#player = new Player(
+                GameDefs.spriteTypes.PLAYER.w,
+                GameDefs.spriteTypes.PLAYER.h,
+                this.#canvasHalfW,
+                this.#canvasHeight,
+                0
+            );
+        } catch (err) {
+            console.error("Failed to initialize player:", err);
+        }
 
         // Default states
         this.#playState = GameDefs.playStates.AVOID; 
@@ -134,65 +139,87 @@ class Game
     // Game Setup
     // -----------------------------
     initGame(device) 
-    {
-        // Input
-        device.keys.initKeys();
+    {   
+        try {
+            // Input
+            device.keys?.initKeys?.();
 
-        // Load sprite assets
-        Object.values(GameDefs.spriteTypes).forEach(spriteDef => 
-        {
-            if (spriteDef.path)
+            // Load sprite assets
+            // Load sprites
+            Object.values(GameDefs?.spriteTypes || {}).forEach(spriteDef => {
+                if (spriteDef?.path) {
+                    try {
+                        const sprite = new Sprite(spriteDef.path, spriteDef.type);
+                        device.images?.addObject(sprite);
+                    } catch (err) {
+                        console.error(`Failed to load sprite "${spriteDef?.type}":`, err);
+                    }
+                }
+            });
+
+            // Load billboard assets
+            Object.values(GameDefs?.billBoardTypes || {}).forEach(boardDef => {
+                if (boardDef?.path) {
+                    try {
+                        const boardSprite = new Sprite(boardDef.path, boardDef.type);
+                        device.images?.addObject(boardSprite);
+                    } catch (err) {
+                        console.error(`Failed to load billboard "${boardDef?.type}":`, err);
+                    }
+                }
+            });
+
+            // Initialize boards
+            const boards = [
+                new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0),
+                new BillBoard(GameDefs.billBoardTypes.SPLASH.type,     GameDefs.billBoardTypes.SPLASH.w,     GameDefs.billBoardTypes.SPLASH.h,     0, 0),
+                new BillBoard(GameDefs.billBoardTypes.PAUSE.type,      GameDefs.billBoardTypes.PAUSE.w,      GameDefs.billBoardTypes.PAUSE.h,      0, 0),
+                new BillBoard(GameDefs.billBoardTypes.DIE.type,        GameDefs.billBoardTypes.DIE.w,        GameDefs.billBoardTypes.DIE.h,        0, 0),
+            ];
+
+            boards.forEach(board => 
             {
-                const sprite = new Sprite(spriteDef.path, spriteDef.type);
-                device.images.addObject(sprite);
-            }
-        });
+                if (board.name !== GameDefs.billBoardTypes.BACKGROUND.type) {
+                    board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
+                }
+                this.#billBoards.addObject(board);
+                this.#gameSprites.addObject(board);   // <-- add here so renderer will draw it
+            });
 
-        // Load billboard assets
-        Object.values(GameDefs.billBoardTypes).forEach(boardDef => 
-        {
-            if (boardDef.path) 
+             Object.values(GameDefs?.soundTypes || {}).forEach(sndDef => 
             {
-                const boardSprite = new Sprite(boardDef.path, boardDef.type);
-                device.images.addObject(boardSprite);
-            }
-        });
+                if (sndDef?.path) {
+                    try {
+                        device.audio?.addSound(
+                            sndDef.name,
+                            sndDef.path,
+                            this.gameConsts?.POOLSIZE ?? 5,
+                            this.gameConsts?.VOLUME ?? 1
+                        );
+                    } catch (err) {
+                        console.error(`Failed to add sound "${sndDef?.name}":`, err);
+                    }
+                }
+            });
 
-        const boards = [
-            new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0),
-            new BillBoard(GameDefs.billBoardTypes.SPLASH.type,     GameDefs.billBoardTypes.SPLASH.w,     GameDefs.billBoardTypes.SPLASH.h,     0, 0),
-            new BillBoard(GameDefs.billBoardTypes.PAUSE.type,      GameDefs.billBoardTypes.PAUSE.w,      GameDefs.billBoardTypes.PAUSE.h,      0, 0),
-            new BillBoard(GameDefs.billBoardTypes.DIE.type,        GameDefs.billBoardTypes.DIE.w,        GameDefs.billBoardTypes.DIE.h,        0, 0),
-        ];
+            const timers = [
+                new Timer(GameDefs.timerTypes.SHIELD_TIMER, this.#gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN),
+                // initial duration 0 is fine — will be set by reset()
+                new Timer(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER, 0, GameDefs.timerModes.COUNTDOWN, false ),
+                new Timer(GameDefs.timerTypes.GAME_CLOCK, 0, GameDefs.timerModes.COUNTUP),
+            ];
+            timers.forEach(timer => 
+            {
+                try {
+                    this.#gameTimers.addObject(timer);
+                } catch (err) {
+                    console.error("Failed to add timer:", err);
+                }
+            });
 
-        boards.forEach(board => 
-        {
-            if (board.name !== GameDefs.billBoardTypes.BACKGROUND.type) {
-                board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
-            }
-            this.#billBoards.addObject(board);
-            this.#gameSprites.addObject(board);   // <-- add here so renderer will draw it
-        });
-
-        Object.values(GameDefs.soundTypes).forEach(sndDef => 
-        {
-            device.audio.addSound(
-                sndDef.name,
-                sndDef.path,
-                this.gameConsts.POOLSIZE,
-                this.gameConsts.VOLUME
-            );
-        });
-
-        const timers = [
-            new Timer(GameDefs.timerTypes.SHIELD_TIMER, this.#gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN),
-            // initial duration 0 is fine — will be set by reset()
-            new Timer(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER, 0, GameDefs.timerModes.COUNTDOWN, false ),
-            new Timer(GameDefs.timerTypes.GAME_CLOCK, 0, GameDefs.timerModes.COUNTUP),
-        ];
-        timers.forEach(timer => {
-            this.#gameTimers.addObject(timer);
-        });
+        } catch (err) {
+            console.error("Error initializing game:", err);
+        }
     }
 
     // Reset values each time a game starts
