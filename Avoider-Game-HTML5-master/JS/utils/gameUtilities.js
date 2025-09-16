@@ -166,11 +166,11 @@ class Device {
         catch { /* ignore */ }
     }
 
-    debugText(text, posX, posY) 
+    debugText(text, posX, posY, color = "white") 
     {
         try {
             this.setFont("24px Arial Black");
-            this.colorText("white");
+            this.colorText(color);
             this.putText(text?.toString() ?? "", posX, posY);
         } catch { /* ignore */ }
     }

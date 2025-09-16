@@ -33,9 +33,9 @@ const GameDefs = Object.freeze({
     // i think it has to do with screen width and half width and all the weird ness came with it
     billBoardTypes: {
         BACKGROUND: { type: "background", w: 600, h: 600, path: "assets/sprites/stars.png" },
-        SPLASH:     { type: "splash",     w: 445, h: 100, path: "assets/sprites/splash.png" },
-        PAUSE:      { type: "pause",      w: 445, h: 100, path: "assets/sprites/pause.png" },
-        DIE:        { type: "die",        w: 445, h: 100, path: "assets/sprites/die.png" }
+        SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/splash.png" },
+        PAUSE:      { type: "pause",      w: 400, h: 100, path: "assets/sprites/pause.png" },
+        DIE:        { type: "die",        w: 400, h: 100, path: "assets/sprites/die.png" }
     },
 
     soundTypes: {
@@ -117,6 +117,7 @@ class GameConsts
     #FONT_SETTINGS = `bold 17pt Century Gothic`
     #FONT_COLOR = 'white'
     #HUD_BUFFER = .10;
+    #BILLBOARDS_OFFSET_BUFF = .09;
 
     //sound 
     #POOLSIZE = 5;
@@ -138,5 +139,6 @@ class GameConsts
     get VOLUME(){ return this.#VOLUME; }
     get NPC_SPEED_INCREASE_INTERVALS(){ return this.#NPC_SPEED_INCREASE_INTERVALS; }
     get NPC_SPEED_INCREASE_AMOUNT(){ return this.#NPC_SPEED_INCREASE_AMOUNT; }
+    get BILLBOARDS_OFFSET_BUFF(){ return this.#BILLBOARDS_OFFSET_BUFF; }
     
 }
