@@ -17,45 +17,67 @@
 
 // ============================================================================
 
-class Device
-{
-	#canvas;
+
+// ============================================================================
+// Device Class (Testable & Runtime Ready)
+// ============================================================================
+
+class Device {
+    #canvas;
     #ctx;
     #mouseDown;
     #images;
     #audio;
     #keys;
 
-    constructor(width = 800, height = 600) {
+    constructor(width = 850, height = 600, canvasEl = null) {
         try {
-            this.#canvas = document.getElementById("canvas");
-            if (!this.#canvas) throw new Error("Canvas element with id 'canvas' not found");
-            this.#ctx = this.#canvas.getContext("2d");
+            // Use passed canvas element or fallback to document.getElementById
+            this.#canvas = canvasEl || document.getElementById("canvas");
+
+            if (!this.#canvas) {
+                console.warn("Canvas element not found; using dummy canvas for test.");
+                // dummy canvas for testing
+                this.#canvas = { width, height, getContext: () => ({ 
+                    drawImage: () => {}, fillText: () => {}, measureText: () => ({ width: 0 }), 
+                    save: () => {}, restore: () => {}, strokeRect: () => {}, fillRect: () => {} 
+                })};
+            }
+
+            this.#ctx = this.#canvas.getContext("2d") || {};
             this.#canvas.width = width;
             this.#canvas.height = height;
 
             this.#mouseDown = false;
-            this.#images = new ObjHolder();
-            this.#audio = new AudioPlayer();
-            this.#keys = new KeyManager();
+            this.#images = (typeof ObjHolder !== "undefined") ? new ObjHolder() : { addObject: () => {} };
+            this.#audio = (typeof AudioPlayer !== "undefined") ? new AudioPlayer() : { addSound: () => {} };
+            this.#keys = (typeof KeyManager !== "undefined") ? new KeyManager() : { clearFrameKeys: () => {} };
+
         } catch (err) {
             console.error("Device initialization failed:", err.message);
             throw err;
         }
     }
-    
-    //----get Functions----
+
+    // -----------------------------
+    // Getters
+    // -----------------------------
     get canvas() { return this.#canvas; }
     get ctx() { return this.#ctx; }
     get mouseDown() { return this.#mouseDown; }
     get images() { return this.#images; }
     get audio() { return this.#audio; }
     get keys() { return this.#keys; }
-    
-    //----set Functions----
-    set mouseDown(newState){this._mouseDown = newState;}
-    
-    setupMouse(sprite, aDev) 
+
+    // -----------------------------
+    // Setter
+    // -----------------------------
+    set mouseDown(newState) { this.#mouseDown = newState; }
+
+    // -----------------------------
+    // Mouse setup
+    // -----------------------------
+   setupMouse(sprite, aDev) 
     {
         if (!sprite || !this.#canvas) return;
 

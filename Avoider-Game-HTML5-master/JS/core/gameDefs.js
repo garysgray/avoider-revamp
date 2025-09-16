@@ -29,11 +29,13 @@ const GameDefs = Object.freeze({
         BULLET:   { type: "bullet",    w: 8,  h: 8, speed: 550, spawnGap: 0, path: "assets/sprites/bullet.png" }
     },
 
+    //fix the 445 does not make sense when at 400 there off, it was working
+    // i think it has to do with screen width and half width and all the weird ness came with it
     billBoardTypes: {
         BACKGROUND: { type: "background", w: 600, h: 600, path: "assets/sprites/stars.png" },
-        SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/splash.png" },
-        PAUSE:      { type: "pause",      w: 400, h: 100, path: "assets/sprites/pause.png" },
-        DIE:        { type: "die",        w: 400, h: 100, path: "assets/sprites/die.png" }
+        SPLASH:     { type: "splash",     w: 445, h: 100, path: "assets/sprites/splash.png" },
+        PAUSE:      { type: "pause",      w: 445, h: 100, path: "assets/sprites/pause.png" },
+        DIE:        { type: "die",        w: 445, h: 100, path: "assets/sprites/die.png" }
     },
 
     soundTypes: {
@@ -102,8 +104,8 @@ class GameConsts
     //times
     #SHIELD_TIME = 3;
     #SHOOT_COOLDOWN = 0.2; // 200ms
-    #NPC_SPEED_INCREASE_INTERVALS = 5;
-    #NPC_SPEED_INCREASE_AMOUNT = 0.5;
+    #NPC_SPEED_INCREASE_INTERVALS = 10;
+    #NPC_SPEED_INCREASE_AMOUNT = 0.2;
 
     //amounts
     #AMMO_AMOUNT = 3;
