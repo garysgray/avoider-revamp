@@ -2,10 +2,13 @@
 // DEBUG/TESTING CONTROL AREA
 // ============================================================================
 let HIT_BOXES = false;
-let DEBUG_DRAW_HITBOXES = false;
+let DEBUG_TEXT = false;
 
-let DEBUG_TEXT = true;
+HIT_BOXES = true;
+DEBUG_TEXT = true;
+
 let DRAW_DEBUG = false;
+let DEBUG_DRAW_HITBOXES = false;
 
 if (HIT_BOXES) DEBUG_DRAW_HITBOXES = true;
 if (DEBUG_TEXT) DRAW_DEBUG = true;
