@@ -15,7 +15,7 @@ Runs directly in modern browsers (Chrome, Firefox, Edge); no build step needed.
 
 ---
 
-### Setting Up Jasmine
+### Running tests with Jasmine
 1. Open `test` folder  and launch `index.html` to execute the Jasmine test suite.
 2. The test suite will automatically run and display results for each test case.
 
