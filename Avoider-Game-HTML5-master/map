@@ -39,6 +39,9 @@ Avoider-Game-HTML5/
 │   └── utils/
 │       └── gameUtilities.js           # Helper functions and utility classes.
 |
+├── test/
+│   └── index.html
+|
 └── spec/
     ├── playerSpec.js                  # Unit tests for Player class.
     ├── deviceSpec.js                  # Unit tests for Device class.
