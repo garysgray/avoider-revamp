@@ -102,6 +102,8 @@ class GameConsts
     //times
     #SHIELD_TIME = 3;
     #SHOOT_COOLDOWN = 0.2; // 200ms
+    #NPC_SPEED_INCREASE_INTERVALS = 5;
+    #NPC_SPEED_INCREASE_AMOUNT = 0.5;
 
     //amounts
     #AMMO_AMOUNT = 3;
@@ -132,5 +134,7 @@ class GameConsts
     get HUD_BUFFER(){ return this.#HUD_BUFFER; }
     get POOLSIZE(){ return this.#POOLSIZE; }
     get VOLUME(){ return this.#VOLUME; }
+    get NPC_SPEED_INCREASE_INTERVALS(){ return this.#NPC_SPEED_INCREASE_INTERVALS; }
+    get NPC_SPEED_INCREASE_AMOUNT(){ return this.#NPC_SPEED_INCREASE_AMOUNT; }
     
 }

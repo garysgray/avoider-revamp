@@ -187,12 +187,29 @@ class NPC extends GameObject {
     update(device, game, delta) {
         try {
             const hud_buff = game?.gameConsts?.HUD_BUFFER ? game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT : 0;
-            this.moveDown(delta);
+            this.moveDown(game, delta);
             if (this.posY > (game?.gameConsts?.SCREEN_HEIGHT ?? Infinity) + hud_buff) this.kill();
         } catch (e) {
             console.error("NPC update error:", e);
         }
     }
+
+    moveDown(game, delta) {
+        try {
+            if (game.npcSpeedMuliplyer > 0)
+            {
+                this.posY += (this.speed * game.npcSpeedMuliplyer)  * delta;
+            }
+            else
+            {
+                this.posY += this.speed  * delta;
+            }
+            
+        } catch (e) {
+            console.error(`moveDown error for ${this.name}:`, e);
+        }
+    }
+
 }
 
 // --------------------------------------------

@@ -92,13 +92,31 @@ function updateGameStates(device, game, delta)
                     }
 
                     const shieldTimer = game.gameTimers?.getObjectByName?.(GameDefs.timerTypes.SHIELD_TIMER);
-                    if (shieldTimer?.active) {
+
+                    if (shieldTimer?.active) 
+                    {
                         if (shieldTimer?.update?.(delta)) {
                             game.restorePlayState?.();
                         }
                     }
 
-                    game.gameTimers?.getObjectByName?.(GameDefs.timerTypes.GAME_CLOCK)?.update?.(delta);
+                    const gameClock = game.gameTimers?.getObjectByName?.(GameDefs.timerTypes.GAME_CLOCK);
+
+                    if (gameClock?.active)
+                    {
+                        gameClock.update?.(delta);
+
+                        const lastTime = game.npcSpeedMuliplyer;
+
+                        const speedMultiplier = 1 + Math.floor(gameClock.elapsedTime / game.gameConsts.NPC_SPEED_INCREASE_INTERVALS) * game.gameConsts.NPC_SPEED_INCREASE_AMOUNT;
+                        game.npcSpeedMuliplyer = speedMultiplier;
+                        
+                        if (lastTime != game.npcSpeedMuliplyer && lastTime != 0)
+                        {
+                            game.increaseScore(game.gameConsts.SCORE_INCREASE);   
+                        }
+                    }
+                    
 
                 } catch (e) {
                     console.error("PLAY state error:", e);
