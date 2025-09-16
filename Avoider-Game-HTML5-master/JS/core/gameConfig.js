@@ -45,6 +45,8 @@ class Game
 
     #gameTimers;
 
+    #npcSpeedMultiplyer;
+
     // ---- Constructor ----
     constructor() 
     {
@@ -86,7 +88,9 @@ class Game
         // Gameplay variables
         this.#score  = 0;
         this.#lives  = 0;
-        this.#ammo   = 0;   
+        this.#ammo   = 0;
+
+       this.#npcSpeedMultiplyer = 0;
     }
     
     // -----------------------------
@@ -113,6 +117,11 @@ class Game
     get score()        { return this.#score; }
     get lives()        { return this.#lives; }
     get ammo()         { return this.#ammo; } 
+
+    get savedPlayState() { return this.#savedPlayState; }
+
+    get npcSpeedMuliplyer() { return this.#npcSpeedMultiplyer; } 
+
     
     // -----------------------------
     // Mutators
@@ -124,8 +133,10 @@ class Game
     set lives(v)        { this.#lives = v; }
     set ammo(v)         { this.#ammo = v; }
 
-    get savedPlayState() { return this.#savedPlayState; }
     set savedPlayState(v) { this.#savedPlayState = v; }
+
+    set npcSpeedMuliplyer(v) { this.#npcSpeedMultiplyer = v; }
+
 
 
     // Convenience modifiers
