@@ -15,6 +15,12 @@ Runs directly in modern browsers (Chrome, Firefox, Edge); no build step needed.
 
 ---
 
+### Setting Up Jasmine
+1. Open `test` folder  and launch `index.html` to execute the Jasmine test suite.
+2. The test suite will automatically run and display results for each test case.
+
+---
+
 ## Helpers.js Overview
 
 Utility classes that support the game engine:
@@ -104,6 +110,20 @@ These helpers separate core engine tasks from game logic, making it easier to ma
 
 ---
 
+## Test Code
+The project includes unit tests for critical components using Jasmine. To run the tests, follow these steps:
+
+### Test Files
+The following test files have been implemented:
+- **playerSpec.js**: Tests for the `Player` class, including lifecycle (alive status), initialization, movement, shooting mechanics, and kill behavior.
+- **deviceSpec.js**: Tests for the `Device` class, checking initialization and canvas handling.
+- **gameControllerSpec.js**: Tests for the `Controller` object, verifying initialization and handling of `Device` and `Game` instances.
+
+### Testing Framework
+- Jasmine is used as the testing framework, providing a clear structure for defining and executing unit tests.
+
+---
+
 ## General Notes
 - Modular OOP design with private fields for safety.  
 - Clear separation of game logic, rendering, input, and audio.  
@@ -120,3 +140,12 @@ These helpers separate core engine tasks from game logic, making it easier to ma
 - **More power-ups**: only shield and shooting mechanics exist; additional power-ups are planned.  
 - **Mobile controls**: touch support not yet implemented (keyboard only).  
 - **Balancing**: difficulty curve and spawn rates may need tuning for smoother gameplay.  
+
+
+### Added Features or GamePlay
+- Now that a lot of the organizational clean up is finishing up, goin gto start adding on more to the gameplay
+
+- The game now has a clock that counts how much time has past and will change gameplay as it goes longer
+- As of now player will recive points and the NPC will fall at a faster rate as time goes on
+
+---

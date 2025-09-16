@@ -10,36 +10,37 @@
   - The `css` directory contains the stylesheet for styling the game's UI.
 
 
-Avoider-Game-HTML5-master/
+Avoider-Game-HTML5/
 │
-├── index.html
-│
+├── index.html                         # Main entry point for the game.
+|
+├── css/
+│   └── style.css                      # Styles for game UI.
+|
 ├── js/
 │   ├── core/
-│   │   ├── gameController.js
-│   │   ├── gameConfig.js
-│   │
-|   ├── logic/
-│   │   ├── mainStateLogic.js
-│   │   └── npcLogic.js
-│   │
-│   ├── objects/
-│   │   └── gameEntities.js
-│   │
-│   ├── render/
-│   │   ├── renderUtilities.js
-│   │   ├── gameObjectsRenderLayer.js
-│   │   ├── textRenderLayer.js
-│   │   └── layer.js
+│   │   ├── gameConfig.js              # Game configuration settings and constants.
+│   │   ├── gameController.js          # Main game logic manager.
+│   │   └── gameDefs.js                # Game state and entity definitions.
 │   │   
-│   ├── utils/
-│   │   └── gameUtilities.js
-│   │
-│   └── main.js
-│
-└── css/
-    └── style.css
-
-
-    
+│   ├── logic/
+│   │   ├── mainStateLogic.js          # Logic for managing game states.
+│   │   └── npcLogic.js                # NPC update logic.
+│   │   
+│   ├── objects/
+│   │   └── gameEntities.js            # Definitions of all game entities.
+│   │  
+│   ├── render/
+│   │   ├── renderUtilities.js         # Handles rendering functions.
+│   │   ├── gameObjectsRenderLayer.js  # Handles rendering of game visuals.
+│   │   ├── textRenderLayer.js         # Renders text elements.
+│   │   └── layer.js                   # Template for rendering layers.
+│   │   
+│   └── utils/
+│       └── gameUtilities.js           # Helper functions and utility classes.
+|
+└── spec/
+    ├── playerSpec.js                  # Unit tests for Player class.
+    ├── deviceSpec.js                  # Unit tests for Device class.
+    └── gameControllerSpec.js          # Unit tests for Controller class.   
 
