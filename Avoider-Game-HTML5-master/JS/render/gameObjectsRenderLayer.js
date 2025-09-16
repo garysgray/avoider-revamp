@@ -7,8 +7,7 @@
  * - Responsible only for drawing (no game logic here)
  * - Uses game state to decide what to render
  */
-function renderGameObjectsLayer(device, game) 
-{   
+function renderGameObjectsLayer(device, game) {   
     try {
         // === Render Static Background ===
         let board = game.billBoards.getObjectByName?.(GameDefs.billBoardTypes.BACKGROUND.type);
@@ -25,19 +24,19 @@ function renderGameObjectsLayer(device, game)
             } catch (e) {
                 console.error("Failed to render background image:", e);
             }
-        } else {
+        } else { 
             console.warn("Background board or image missing.");
         }
 
         // === Render Based on Game State ===
         switch (game.gameState) {
             case GameDefs.gameStates.INIT: {
-                const buff = (game.gameConsts?.HUD_BUFFER ?? 0) * (game.gameConsts?.SCREEN_HEIGHT ?? 0);
+                const yBuff = (game.gameConsts?.HUD_BUFFER ?? 0) * (game.gameConsts?.SCREEN_HEIGHT ?? 0);
                 board = game.billBoards.getObjectByName?.(GameDefs.billBoardTypes.SPLASH.type);
                 const splashImg = device.images.getImage?.(GameDefs.billBoardTypes.SPLASH.type);
                 if (board && splashImg) {
                     try {
-                        device.renderImage?.(splashImg, board.posX ?? 0, (board.posY ?? 0) - buff);
+                        device.renderImage?.(splashImg, (board.posX - (board.posX * game.gameConsts?.BILLBOARDS_OFFSET_BUFF)), (board.posY ?? 0) - yBuff);
                     } catch (e) {
                         console.error("Failed to render splash image:", e);
                     }
@@ -55,12 +54,12 @@ function renderGameObjectsLayer(device, game)
             } break;
 
             case GameDefs.gameStates.PAUSE: {
-                const buff = (game.gameConsts?.HUD_BUFFER ?? 0) * (game.gameConsts?.SCREEN_HEIGHT ?? 0);
+                const yBuff = (game.gameConsts?.HUD_BUFFER ?? 0) * (game.gameConsts?.SCREEN_HEIGHT ?? 0);
                 board = game.billBoards.getObjectByName?.(GameDefs.billBoardTypes.PAUSE.type);
                 const pauseImg = device.images.getImage?.(GameDefs.billBoardTypes.PAUSE.type);
                 if (board && pauseImg) {
                     try {
-                        device.renderImage?.(pauseImg, board.posX ?? 0, (board.posY ?? 0) - buff);
+                        device.renderImage?.(pauseImg, (board.posX - (board.posX * game.gameConsts?.BILLBOARDS_OFFSET_BUFF)), (board.posY ?? 0) - yBuff);
                     } catch (e) {
                         console.error("Failed to render pause screen:", e);
                     }
@@ -72,12 +71,12 @@ function renderGameObjectsLayer(device, game)
             } break;
 
             case GameDefs.gameStates.LOSE: {
-                const buff = (game.gameConsts?.HUD_BUFFER ?? 0) * (game.gameConsts?.SCREEN_HEIGHT ?? 0); 
+                const yBuff = (game.gameConsts?.HUD_BUFFER ?? 0) * (game.gameConsts?.SCREEN_HEIGHT ?? 0); 
                 board = game.billBoards.getObjectByName?.(GameDefs.billBoardTypes.DIE.type);
                 const dieImg = device.images.getImage?.(GameDefs.billBoardTypes.DIE.type);
                 if (board && dieImg) {
                     try {
-                        device.renderImage?.(dieImg, board.posX ?? 0, (board.posY ?? 0) - buff);
+                        device.renderImage?.(dieImg, (board.posX - (board.posX * game.gameConsts?.BILLBOARDS_OFFSET_BUFF)), (board.posY ?? 0) - yBuff);      
                     } catch (e) {
                         console.error("Failed to render die screen:", e);
                     }

@@ -190,8 +190,13 @@ class Game
 
             boards.forEach(board => 
             {
-                if (board.name !== GameDefs.billBoardTypes.BACKGROUND.type) {
+                if (board.name !== GameDefs.billBoardTypes.BACKGROUND.type) 
+                {
+                    console.log(this.#gameConsts.SCREEN_WIDTH);
+                    console.log(board.width);
+                    console.log("before "+board.posY);
                     board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
+                    console.log("after "+board.posY);
                 }
                 this.#billBoards.addObject(board);
                 this.#gameSprites.addObject(board);   // <-- add here so renderer will draw it

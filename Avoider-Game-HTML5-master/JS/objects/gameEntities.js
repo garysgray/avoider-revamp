@@ -346,7 +346,6 @@ class BillBoard extends GameObject
             console.error("BillBoard centerObjectInWorld error:", e);
         }
     }
-    
     update(device, delta) 
     {
         // Optional: BillBoard scrolling/animation

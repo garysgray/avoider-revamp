@@ -58,19 +58,26 @@ function gameLoop() {
         }
 
         if (DRAW_DEBUG) {
-            try {
-                const device = myController.device;
-                const game = myController.game;
-                const timer = game?.gameTimers?.getObjectByName?.(GameDefs.timerTypes.GAME_CLOCK);
+            
+            const device = myController.device;
+            const game = myController.game;
 
-                if (device && timer) {
-                    device.debugText?.(`Clock: ${timer.formatted ?? "N/A"}`, 20, 30);
-                } else {
-                    console.warn("Debug overlay skipped: device or timer not available.");
-                }
-            } catch (e) {
-                console.error("Error during debug overlay:", e);
-            } 
+            const timer = game?.gameTimers?.getObjectByName?.(GameDefs.timerTypes.GAME_CLOCK);
+
+            texts= [
+                `Clock: ${timer.formatted ?? "N/A"}`,
+            ];
+
+            posX = 20;
+            posY = 30;
+            buffY = 25
+            
+            texts.forEach(text => 
+            {
+                device.debugText?.(text, posX, posY, "yellow");
+                posY += buffY;
+            });
+  
         }
     } catch (e) {
         console.error("Unexpected error in gameLoop:", e);
