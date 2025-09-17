@@ -36,7 +36,7 @@ function renderGameObjectsLayer(device, game) {
                 const splashImg = device.images.getImage?.(GameDefs.billBoardTypes.SPLASH.type);
                 if (board && splashImg) {
                     try {
-                        device.renderImage?.(splashImg, (board.posX - (board.posX * game.gameConsts?.BILLBOARDS_OFFSET_BUFF)), (board.posY ?? 0) - yBuff);
+                        device.renderImage?.(splashImg, (board.posX ?? 0), (board.posY ?? 0) - yBuff);
                     } catch (e) {
                         console.error("Failed to render splash image:", e);
                     }
@@ -59,7 +59,7 @@ function renderGameObjectsLayer(device, game) {
                 const pauseImg = device.images.getImage?.(GameDefs.billBoardTypes.PAUSE.type);
                 if (board && pauseImg) {
                     try {
-                        device.renderImage?.(pauseImg, (board.posX - (board.posX * game.gameConsts?.BILLBOARDS_OFFSET_BUFF)), (board.posY ?? 0) - yBuff);
+                        device.renderImage?.(pauseImg, (board.posX ?? 0), (board.posY ?? 0) - yBuff);
                     } catch (e) {
                         console.error("Failed to render pause screen:", e);
                     }
@@ -76,7 +76,7 @@ function renderGameObjectsLayer(device, game) {
                 const dieImg = device.images.getImage?.(GameDefs.billBoardTypes.DIE.type);
                 if (board && dieImg) {
                     try {
-                        device.renderImage?.(dieImg, (board.posX - (board.posX * game.gameConsts?.BILLBOARDS_OFFSET_BUFF)), (board.posY ?? 0) - yBuff);      
+                        device.renderImage?.(dieImg, (board.posX ?? 0), (board.posY ?? 0) - yBuff);      
                     } catch (e) {
                         console.error("Failed to render die screen:", e);
                     }

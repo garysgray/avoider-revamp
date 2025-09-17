@@ -1,101 +1,135 @@
 // ============================================================================
+// MAIN.js  MAIN POINT oF ENTRY
+// GameLoop resides here! Was called thru index.html
+// ============================================================================
+
+
+// ============================================================================
 // DEBUG/TESTING CONTROL AREA
 // ============================================================================
 let HIT_BOXES = false;
 let DEBUG_TEXT = false;
 
 // HIT_BOXES = true;
-//DEBUG_TEXT = true;
+// DEBUG_TEXT = true;
 
-let DRAW_DEBUG = false;
-let DEBUG_DRAW_HITBOXES = false;
+let DRAW_DEBUG_TEXT = false; 
+let DRAW_DEBUG_HITBOXES = false;
 
-if (HIT_BOXES) DEBUG_DRAW_HITBOXES = true;
-if (DEBUG_TEXT) DRAW_DEBUG = true;
+if (HIT_BOXES) DRAW_DEBUG_HITBOXES = true;
+if (DEBUG_TEXT) DRAW_DEBUG_TEXT = true;
 
 // ============================================================================
 // Main entry point for the Avoider game
 // ============================================================================
-
 let myController;
 
-try {
+try 
+{
     myController = new Controller();
-} catch (e) {
+} 
+catch (e) 
+{
     console.error("Failed to create Controller instance:", e);
 }
 
 // ---------------------------------------------------------------------------
 // Fixed timestep game loop setup
 // ---------------------------------------------------------------------------
+const fixedStep = 1 / 60;
+const timeInSecs = 1000;
+const frameTimeMax = 0.25;
+
 let lastTime = performance.now();
 let accumulator = 0;
-const fixedStep = 1 / 60;
-
 // --------------------------------------------------------------------------- 
 // Main game loop with safety checks
 // ---------------------------------------------------------------------------
-function gameLoop() {
-    try {
+function gameLoop() 
+{
+    try 
+    {
         if (!myController) return;
 
         const now = performance.now();
-        let frameTime = (now - lastTime) / 1000;
+        let frameTime = (now - lastTime) / timeInSecs;
         lastTime = now;
 
-        if (frameTime > 0.25) frameTime = 0.25;
+        if (frameTime > frameTimeMax) frameTime = frameTimeMax;
 
         accumulator += frameTime;
 
-        while (accumulator >= fixedStep) {
-            try {
-                if (typeof myController.updateGame === "function") {
+        while (accumulator >= fixedStep) 
+        {
+            try
+            {
+                if (typeof myController.updateGame === "function") 
+                {
                     myController.updateGame(fixedStep);
-                } else {
+                }
+                else 
+                {
                     console.warn("updateGame() is not a function on Controller.");
                 }
-            } catch (e) {
+            }
+            catch (e)
+            {
                 console.error("Error during updateGame():", e);
             }
+
             accumulator -= fixedStep;
         }
 
-        if (DRAW_DEBUG) {
-            
-            const device = myController.device;
-            const game = myController.game;
-
+        if (DRAW_DEBUG_TEXT)
+        {            
             texts= [
-               "debug text here saying what up bitches",
+               "debug text1 here, saying what up!!!!",
+               "player posX: " + myController.game.player.posX,
+               "player posY: " + myController.game.player.posY,
             ];
 
-            posX = 20;
-            posY = 30;
-            buffY = 25
-            
-            texts.forEach(text => 
-            {
-                device.debugText?.(text, posX, posY, "yellow");
-                posY += buffY;
-            });
-  
+            renderDebugText(texts);  
         }
-    } catch (e) {
+    } 
+    catch (e) 
+    {
         console.error("Unexpected error in gameLoop:", e);
-    } finally {
-        try {
+    } 
+    finally 
+    {
+        try 
+        {
             requestAnimationFrame(gameLoop);
-        } catch (e) {
+        }
+        catch (e) 
+        {
             console.error("Failed to request next animation frame:", e);
         }
     }
 }
 
 // called from window.onload() in index.html
-function startGameLoop() {
-    try {
+function startGameLoop() 
+{
+    try 
+    {
         gameLoop();
-    } catch (e) {
+    } 
+    catch (e)
+    {
         console.error("Failed to start game loop:", e);
     }
+}
+
+function renderDebugText(texts)
+{
+    const posX  = myController.game.gameConsts.SCREEN_WIDTH   * 0.03;
+    let posY    = myController.game.gameConsts.SCREEN_HEIGHT  * 0.2;
+    const buffY = myController.game.gameConsts.SCREEN_HEIGHT  * 0.05;
+
+    texts.forEach(text => 
+    {
+        myController.device.debugText(text, posX, posY, "yellow");
+        posY += buffY;
+    });
 }
