@@ -47,7 +47,7 @@ function renderNPCSprites(device, game)
                     console.warn("Unknown NPC type:", tempObj.name);
             }
 
-            if (DEBUG_DRAW_HITBOXES && tempObj) drawHitBoxs(device, tempObj);
+            if (DRAW_DEBUG_HITBOXES && tempObj) drawHitBoxs(device, tempObj);
         }
 
     } catch (e) {
@@ -79,7 +79,7 @@ function renderBullets(device, game)
             if (!tempObj) continue;
 
             if (bulletImage) device.centerImage(bulletImage, tempObj.posX, tempObj.posY);
-            if (DEBUG_DRAW_HITBOXES) drawHitBoxs(device, tempObj);
+            if (DRAW_DEBUG_HITBOXES) drawHitBoxs(device, tempObj);
         }
 
     } catch (e) {
@@ -116,7 +116,7 @@ function renderPlayer(device, game)
             );
         }
 
-        if (DEBUG_DRAW_HITBOXES) drawHitBoxs(device, tempObj);
+        if (DRAW_DEBUG_HITBOXES) drawHitBoxs(device, tempObj);
 
     } catch (e) {
         console.error("Error in renderPlayer:", e);
@@ -124,7 +124,7 @@ function renderPlayer(device, game)
 }
 
 //---------------------------------------------------------------
-// Render HITBOXES if DEBUG_DRAW_HITBOXES == true
+// Render HITBOXES if DRAW_DEBUG_HITBOXES == true
 //---------------------------------------------------------------
 function drawHitBoxs(device, tempObj) 
 {

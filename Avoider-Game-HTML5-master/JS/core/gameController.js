@@ -3,37 +3,38 @@
 // ----------------------------------------------------------------------------
 // Works with real Game/Device or with fake/mock classes for Jasmine tests
 // ============================================================================
-
 class Controller 
 {
     #device;    // Manages canvas and input
     #game;      // Holds core game state and logic
     #layers;    // Array of Layer instances (render order matters)
 
-    /**
-     * @param {Function} GameClass - optional constructor for Game (or fake for tests)
-     * @param {Function} DeviceClass - optional constructor for Device (or fake for tests)
-     * @param {HTMLElement|null} canvasEl - optional canvas element
-     */
+    // Fake constructor with fake objects for testing
     constructor(GameClass = null, DeviceClass = null, canvasEl = null) 
     {
         // Use real classes if not provided
         const GameCtor = GameClass || (typeof Game !== 'undefined' ? Game : class { initGame() {} });
         const DeviceCtor = DeviceClass || (typeof Device !== 'undefined' ? Device : class {});
 
-        // Initialize Game
-        try {
+        // Initialize Game Object
+        try 
+        {
             this.#game = new GameCtor();
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             console.error("Failed to initialize Game:", error.message);
             alert("An error occurred while initializing the game. Please try again.");
             return;
         }
 
-        // Initialize Device
-        try {
-            this.#device = new DeviceCtor(800, 600, canvasEl);
-        } catch (error) {
+        // Initialize Device Object
+        try 
+        {
+            this.#device = new DeviceCtor(this.game.gameConsts.SCREEN_WIDTH, this.game.gameConsts.SCREEN_HEIGHT, canvasEl);
+        } 
+        catch (error) 
+        {
             console.error("Failed to initialize Device:", error.message);
             alert("An error occurred while setting up the game environment.");
             return;
@@ -42,7 +43,7 @@ class Controller
         // Initialize layers
         this.#layers = [];
 
-        // Initialize game logic
+        // Initialize the Game items
         this.initGame();
     }
 
@@ -57,14 +58,17 @@ class Controller
     // ------------------------------------------------------------------------
     initGame() 
     {
-        try {
-            this.#game?.initGame?.(this.#device);
+        try 
+        {
+            this.#game.initGame(this.#device);
 
             // Add default layers if they exist (can be null/fake for tests)
             if (typeof gameObjectsLayer !== 'undefined') this.addLayer(gameObjectsLayer);
             if (typeof textRenderLayer !== 'undefined') this.addLayer(textRenderLayer);
 
-        } catch (error) {
+        }
+        catch (error) 
+        {
             console.error("Failed to initialize game components:", error.message);
             alert("An error occurred while initializing game components.");
         }
@@ -75,10 +79,13 @@ class Controller
     // ------------------------------------------------------------------------
     addLayer(layer) 
     {
-        try {
+        try
+        {
             if (!layer) throw new Error("Layer is undefined or null.");
             this.#layers.push(layer);
-        } catch (error) {
+        } 
+        catch (error)
+        {
             console.error("Error adding layer:", error.message);
             alert("An error occurred while adding a render layer.");
         }
@@ -89,22 +96,26 @@ class Controller
     // ------------------------------------------------------------------------
     updateGame(delta) 
     {
-        if (typeof delta !== "number" || delta <= 0) delta = 16; // fallback ~60fps
+        if (typeof delta !== "number" || delta <= 0) delta = this.game.gameConsts.FALLBACK_DELTA; // fallback ~60fps
 
-        try {
+        try
+        {
             // Update game logic
-            updateGameStates?.(this.#device, this.#game, delta);
+            updateGameStates(this.#device, this.#game, delta);
 
             // Render each layer
-            for (const layer of this.#layers) {
-                try { layer?.render?.(this.#device, this.#game); } 
+            for (const layer of this.#layers) 
+            {
+                try { layer.render(this.#device, this.#game); } 
                 catch (renderError) { console.error(`Error rendering layer:`, renderError.message); }
             }
 
             // Clear per-frame input
-            this.#device?.keys?.clearFrameKeys?.();
+            this.#device.keys.clearFrameKeys();
 
-        } catch (error) {
+        } 
+        catch (error)
+        {
             console.error("Game update error:", error.message);
             alert("An error occurred during the game update. Please restart.");
         }
