@@ -314,9 +314,9 @@ class Player extends GameObject
             const hudBuffer = game?.gameConsts?.SCREEN_HEIGHT * (game?.gameConsts?.HUD_BUFFER ?? 0);
             if (this.posX - this.halfWidth < 0) this.posX = this.halfWidth;
             if (this.posX + this.halfWidth > game?.gameConsts?.SCREEN_WIDTH) this.posX = game.gameConsts.SCREEN_WIDTH - this.halfWidth;
-            if (this.posY - this.halfHeight < 0) this.posY = this.halfHeight;
-            if (this.posY + this.halfHeight > (game?.gameConsts?.SCREEN_HEIGHT ?? 0) - hudBuffer) {
-                this.posY = ((game?.gameConsts?.SCREEN_HEIGHT ?? 0) - hudBuffer) - this.halfHeight;
+            if (this.posY - this.halfHeight < 0 + hudBuffer) this.posY = this.halfHeight + hudBuffer;
+            if (this.posY + this.halfHeight > (game?.gameConsts?.SCREEN_HEIGHT ?? 0)) {
+                this.posY = ((game?.gameConsts?.SCREEN_HEIGHT ?? 0) ) - this.halfHeight;
             }
         } catch (e) {
             console.error("Player enforceBounds error:", e);

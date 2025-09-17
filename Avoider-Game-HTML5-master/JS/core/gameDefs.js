@@ -108,7 +108,7 @@ class GameConsts
     #NPC_SPEED_INCREASE_AMOUNT = 0.2;
 
     //amounts
-    #AMMO_AMOUNT = 3;
+    #AMMO_AMOUNT = 3; 
     #SCORE_INCREASE = 10;
     #GAME_LIVES_START_AMOUNT = 5;
     #SPAWN_ATTEMPTS = 5;
@@ -117,7 +117,7 @@ class GameConsts
     #FONT_SETTINGS = `bold 17pt Century Gothic`
     #FONT_COLOR = 'white'
     #HUD_BUFFER = .10;
-    #BILLBOARDS_OFFSET_BUFF = .09;
+    #BILLBOARDS_OFFSET_BUFF = .0999;
 
     //sound 
     #POOLSIZE = 5;
