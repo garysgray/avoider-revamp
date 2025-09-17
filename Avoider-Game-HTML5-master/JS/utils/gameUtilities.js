@@ -30,12 +30,15 @@ class Device {
     #audio;
     #keys;
 
-    constructor(width = 850, height = 600, canvasEl = null) {
-        try {
+    constructor(width, height, canvasEl = null) 
+    {
+        try
+        {
             // Use passed canvas element or fallback to document.getElementById
             this.#canvas = canvasEl || document.getElementById("canvas");
 
-            if (!this.#canvas) {
+            if (!this.#canvas) 
+            {
                 console.warn("Canvas element not found; using dummy canvas for test.");
                 // dummy canvas for testing
                 this.#canvas = { width, height, getContext: () => ({ 
@@ -53,7 +56,9 @@ class Device {
             this.#audio = (typeof AudioPlayer !== "undefined") ? new AudioPlayer() : { addSound: () => {} };
             this.#keys = (typeof KeyManager !== "undefined") ? new KeyManager() : { clearFrameKeys: () => {} };
 
-        } catch (err) {
+        } 
+        catch (err) 
+        {
             console.error("Device initialization failed:", err.message);
             throw err;
         }
@@ -78,10 +83,11 @@ class Device {
     // Mouse setup
     // -----------------------------
    setupMouse(sprite, aDev) 
-    {
+   {
         if (!sprite || !this.#canvas) return;
 
-        try {
+        try 
+        {
             window.addEventListener("mousedown", () => this.#mouseDown = true);
             window.addEventListener("mouseup", () => this.#mouseDown = false);
             window.addEventListener("mousemove", (e) => {
@@ -89,14 +95,17 @@ class Device {
                 sprite.posX = e.clientX - rect.left;
                 sprite.posY = e.clientY - rect.top;
             });
-        } catch (err) {
+        } 
+        catch (err) 
+        {
             console.warn("Failed to setup mouse events:", err.message);
         }
     }
 
     renderImage(aImageOrSprite, aX = 0, aY = 0, w, h) 
     {
-        try {
+        try 
+        {
             if (!aImageOrSprite) return;
             const img = aImageOrSprite.image ?? aImageOrSprite;
             if (typeof w === "number" && typeof h === "number") {
@@ -104,14 +113,17 @@ class Device {
             } else {
                 this.#ctx.drawImage(img, aX, aY);
             }
-        } catch (err) {
+        } 
+        catch (err) 
+        {
             console.warn("renderImage failed:", err.message);
         }
     }
 
     renderClip(aClip, aPosX, aPosY, aWidth, aHeight, aState = 0) 
     {
-        try {
+        try 
+        {
             this.#ctx.drawImage(
                 aClip,
                 aState * aWidth,
@@ -123,18 +135,23 @@ class Device {
                 aWidth,
                 aHeight
             );
-        } catch (err) {
+        } 
+        catch (err) 
+        {
             console.warn("renderClip failed:", err.message);
         }
     }
     
     centerImage(aImage, aPosX, aPosY) 
     {
-        try {
-            const img = aImage?.image ?? aImage;
+        try 
+        {
+            const img = aImage.image ?? aImage;
             if (!img) return;
             this.#ctx.drawImage(img, aPosX - img.width * 0.5, aPosY - img.height * 0.5);
-        } catch (err) {
+        }
+         catch (err) 
+        {
             console.warn("centerImage failed:", err.message);
         }
     }
@@ -147,11 +164,14 @@ class Device {
 
     centerTextOnY(text, posY) 
     {
-        try {
+        try 
+        {
             const textWidth = this.#ctx.measureText(text).width;
             const centerX = (this.#canvas.width - textWidth) * 0.5;
             this.#ctx.fillText(text, centerX, posY);
-        } catch { /* ignore */ }
+        } 
+        catch 
+        { /* ignore */ }
     }
 
     colorText(color) 
@@ -162,17 +182,20 @@ class Device {
 
     setFont(font) 
     {
-        try { this.#ctx.font = font?.toString() ?? "16px Arial"; } 
+        try { this.#ctx.font = font.toString() ?? "16px Arial"; } 
         catch { /* ignore */ }
     }
 
     debugText(text, posX, posY, color = "white") 
     {
-        try {
+        try 
+        {
             this.setFont("24px Arial Black");
             this.colorText(color);
-            this.putText(text?.toString() ?? "", posX, posY);
-        } catch { /* ignore */ }
+            this.putText(text.toString() ?? "", posX, posY);
+        } 
+        catch
+        { /* ignore */ }
     }
 }
 
@@ -194,29 +217,39 @@ class ObjHolder
         if (addToOrder) this.#orderedList.push(obj);
     }
 
-    subObject(index) {
-        try {
+    subObject(index) 
+    {
+        try 
+        {
             const obj = this.#objects[index];
             if (!obj) return;
             this.#objects.splice(index, 1);
             const i = this.#orderedList.indexOf(obj);
             if (i >= 0) this.#orderedList.splice(i, 1);
-        } catch (err) { console.warn("subObject failed:", err.message); }
+        } 
+        catch (err)
+        { 
+            console.warn("subObject failed:", err.message); 
+        }
     }
 
     clearObjects() { this.#objects = []; this.#orderedList = []; }
     getIndex(index) { return this.#objects[index]; }
     getSize() { return this.#objects.length; }
 
-    getObjectByName(name) { return this.#objects.find(o => o?.name === name); }
-    getImage(name) { return this.getObjectByName(name)?.image ?? null; }
+    getObjectByName(name) { return this.#objects.find(o => o.name === name); }
+    getImage(name) { return this.getObjectByName(name).image ?? null; }
 
-    setOrder(newOrderArray) {
+    setOrder(newOrderArray) 
+    {
         if (!Array.isArray(newOrderArray)) return;
         this.#orderedList = newOrderArray.filter(o => this.#objects.includes(o));
     }
 
-    forEach(cb) { if (typeof cb === "function") this.#objects.forEach(cb); }
+    forEach(cb) 
+    { 
+        if (typeof cb === "function") this.#objects.forEach(cb); 
+    }
 }
 
 class KeyManager 
@@ -234,8 +267,10 @@ class KeyManager
         this.initKeys();
     }
 
-    initKeys() {
-        try {
+    initKeys() 
+    {
+        try 
+        {
             window.addEventListener("keydown", e => {
                 if (!this.#keysDown[e.code]) this.#keysPressed[e.code] = true;
                 this.#keysDown[e.code] = true;
@@ -264,7 +299,6 @@ class Sound
     #index;
     #poolSize;
 
-    // FIX add  constants?
     constructor(name, src, poolSize, volume)
     {
         this.#name = name;
@@ -276,30 +310,42 @@ class Sound
      
 
         // preload audio pool
-        try {
-            for (let i = 0; i < this.#poolSize; i++) {
+        try 
+        {
+            for (let i = 0; i < this.#poolSize; i++) 
+            {
                 const audio = new Audio(this.#src);
                 audio.preload = "auto";
                 audio.volume = this.#volume;
                 this.#pool.push(audio);
             }
-        } catch (err) { console.warn("Sound pool creation failed:", name, err.message); }
+        } 
+        catch (err) 
+        { 
+            console.warn("Sound pool creation failed:", name, err.message); 
+        }
     }
 
     get name() { return this.#name; }
     
-    play() {
-        try {
+    play() 
+    {
+        try 
+        {
             let audio = this.#pool[this.#index];
             if (!audio.paused) audio = audio.cloneNode(true);
             audio.volume = this.#volume;
             audio.currentTime = 0;
             audio.play();
             this.#index = (this.#index + 1) % this.#poolSize;
-        } catch {}
+        } 
+        catch {}
     }
 
-    stopAll() { this.#pool.forEach(a => { try { a.pause(); a.currentTime = 0; } catch {} }); }
+    stopAll() 
+    { 
+        this.#pool.forEach(a => { try { a.pause(); a.currentTime = 0; } catch {} }); 
+    }
 }
 
 class AudioPlayer
@@ -331,7 +377,9 @@ class AudioPlayer
 
         try {
             sound.play();
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             console.error(`Failed to play sound "${name}":`, e);
         }
     }
@@ -340,9 +388,12 @@ class AudioPlayer
     {
         const sound = this.getSound(name);
         if (sound) {
-            try {
+            try 
+            {
                 sound.stopAll();
-            } catch (e) {
+            } 
+            catch (e) 
+            {
                 console.error(`Failed to stop sound "${name}":`, e);
             }
         }
@@ -351,9 +402,12 @@ class AudioPlayer
     stopAll() 
     {
         this.#sounds.forEach(sound => {
-            try {
+            try 
+            {
                 sound.stopAll();
-            } catch (e) {
+            } 
+            catch (e) 
+            {
                 console.error(`Failed to stop a sound:`, e);
             }
         });
@@ -379,7 +433,8 @@ class Sprite
         this.#posX = x;
         this.#posY = y;
 
-        try {
+        try
+        {
             this.#image = new Image();
             if(!this.#image) throw new Error("Image did not load");
             if (!src) throw new Error("Sprite source missing");
@@ -387,7 +442,11 @@ class Sprite
             if (width) this.#image.width = width;
             if (height) this.#image.height = height;
             this.#image.onload = () => this.#loaded = true;
-        } catch (err) { console.warn("Sprite init failed:", err.message); }
+        }
+        catch (err)
+        {
+             console.warn("Sprite init failed:", err.message); 
+        }
     }
 
     // --- Getters ---
@@ -508,7 +567,8 @@ class Timer
 // Draw a rectangle around an object's hitbox (uses object's getHitbox())
 function drawHitbox(device, obj, options = {}) 
 {
-    try {
+    try 
+    {
         const color = options.color || 'magenta';
         const lineWidth = options.lineWidth ?? 1;
         const fill = options.fill || false;
@@ -525,12 +585,19 @@ function drawHitbox(device, obj, options = {})
         ctx.globalAlpha = alpha;
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = color;
-        if (fill) {
+        if (fill) 
+        {
             ctx.fillStyle = color;
             ctx.fillRect(hb.left, hb.top, w, h);
-        } else {
+        } 
+        else 
+        {
             ctx.strokeRect(hb.left, hb.top, w, h);
         }
         ctx.restore();
-    }  catch (err) { console.warn("drawHitbox failed:", err.message); }
+    }  
+    catch (err) 
+    { 
+        console.warn("drawHitbox failed:", err.message); 
+    }
 }
