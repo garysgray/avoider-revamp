@@ -104,20 +104,6 @@ function renderPlayer(device, game)
             console.warn("Player image missing.");
         }
 
-        // // Set state according to current playState safely
-        // if (game?.playState && tempObj.state !== undefined) {
-        //     const validStates = [
-        //         GameDefs.playStates.AVOID,
-        //         GameDefs.playStates.SHIELD,
-        //         GameDefs.playStates.SHOOT,
-        //         GameDefs.playStates.SUPER,
-        //         GameDefs.playStates.DEATH
-        //     ];
-        //     if (validStates.includes(game.playState)) {
-        //         tempObj.state = game.playState;
-        //     }
-        // }
-
          // Always draw according to the internal state
         if (typeof device.renderClip === "function") {
             device.renderClip(

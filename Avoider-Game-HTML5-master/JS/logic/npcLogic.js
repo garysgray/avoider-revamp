@@ -65,7 +65,8 @@ function updateNPCSprites(device, game, delta)
 
             try { if (typeof npc.update === "function") npc.update(device, game, delta); } catch (e) { console.error("NPC update error:", e); }
 
-            const offscreen = (npc.posY ?? 0) > ((device?.canvas?.height ?? 0) - ((device?.canvas?.height ?? 0) * (game?.gameConsts?.HUD_BUFFER ?? 0)));
+            //const offscreen = (npc.posY ?? 0) > ((device?.canvas?.height ?? 0) - ((device?.canvas?.height ?? 0) * (game?.gameConsts?.HUD_BUFFER ?? 0)));
+            const offscreen = (npc.posY ?? 0) > ((device?.canvas?.height ?? 0));
             if (!npc.alive || offscreen) {
                 try { game.gameSprites.subObject?.(i); } catch (e) { console.error("Failed to remove NPC:", e); }
             }
@@ -84,7 +85,7 @@ function spawnNPC(device, game, type, width, height, speed, chance)
 
         const minX = npc.halfWidth ?? 0;
         const maxX = (device?.canvas?.width ?? 0) - (npc.halfWidth ?? 0);
-        const startY = npc.halfHeight ?? 0;
+        const startY = npc.halfHeight + (device?.canvas?.height * game.gameConsts.HUD_BUFFER ) ?? 0;
 
         npc.movePos?.(minX + Math.random() * (maxX - minX), startY);
 

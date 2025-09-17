@@ -23,11 +23,12 @@ function renderTextLayer(device, game)
         // Define layout positions as percentages of canvas height/width
         const layout = {
             initTextY: [0.57, 0.62, 0.67, 0.72],   // Intro screen text lines
-            hudY: 0.95,                          // HUD vertical placement
+            hudY: .05,                          // HUD vertical placement
             hudAmmoX: 0.05,                      // Left-side HUD text (Ammo)
             hudLivesX: 0.85,                     // Right-side HUD text (Lives)
             pauseY: 0.57,                        // Pause message placement
-            winLoseY: 0.57                       // Win/Lose screen placement
+            winLoseY: 0.57,                        // Win/Lose screen placement
+            hudY2: .095                     
         };
 
         // Set default font and color
@@ -64,7 +65,7 @@ function renderTextLayer(device, game)
                     device.colorText?.("red");
                     const scoreText = GameDefs?.gameTexts?.HUD?.SCORE + (game?.score ?? 0);
                     if (typeof device.centerTextOnY === "function") {
-                        device.centerTextOnY?.(scoreText, ch * layout.hudY);
+                        device.centerTextOnY?.(scoreText, ch * layout.hudY2);
                     }
 
                     const ammoText = GameDefs?.gameTexts?.HUD?.AMMO + (game?.ammo ?? 0);
@@ -74,6 +75,10 @@ function renderTextLayer(device, game)
                         device.putText?.(ammoText, cw * layout.hudAmmoX, ch * layout.hudY);
                         device.putText?.(livesText, cw * layout.hudLivesX, ch * layout.hudY);
                     }
+
+                    const timer = game?.gameTimers?.getObjectByName?.(GameDefs.timerTypes.GAME_CLOCK);
+                    device.centerTextOnY?.(`Clock: ${timer.formatted ?? "N/A"}`, (ch * layout.hudY)  );
+
                 } catch (e) {
                     console.error("Error rendering HUD text:", e);
                 }

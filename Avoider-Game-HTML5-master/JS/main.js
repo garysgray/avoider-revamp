@@ -4,8 +4,8 @@
 let HIT_BOXES = false;
 let DEBUG_TEXT = false;
 
-HIT_BOXES = true;
-DEBUG_TEXT = true;
+// HIT_BOXES = true;
+//DEBUG_TEXT = true;
 
 let DRAW_DEBUG = false;
 let DEBUG_DRAW_HITBOXES = false;
@@ -65,10 +65,8 @@ function gameLoop() {
             const device = myController.device;
             const game = myController.game;
 
-            const timer = game?.gameTimers?.getObjectByName?.(GameDefs.timerTypes.GAME_CLOCK);
-
             texts= [
-                `Clock: ${timer.formatted ?? "N/A"}`,
+               "debug text here saying what up bitches",
             ];
 
             posX = 20;

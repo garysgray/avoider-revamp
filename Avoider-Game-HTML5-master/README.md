@@ -141,10 +141,12 @@ The following test files have been implemented:
 - **Mobile controls**: touch support not yet implemented (keyboard only).  
 - **Balancing**: difficulty curve and spawn rates may need tuning for smoother gameplay.  
 
+---
 
-### Added Features or GamePlay
-- Now that a lot of the organizational clean up is finishing up, goin gto start adding on more to the gameplay
+## New GamePlay
+Now that a lot of the organizational clean up is finishing up, going to start adding more to the gameplay
 
+### Added Features 
 - The game now has a clock that counts how much time has past and will change gameplay as it goes longer
 - As of now player will recive points and the NPC will fall at a faster rate as time goes on
 
