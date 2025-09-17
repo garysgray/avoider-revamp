@@ -1,5 +1,6 @@
-// --------------------------------------------
+// ============================================================================
 // Base GameObject + Child Classes (Player, Projectile, NPC, BackDrop)
+// ============================================================================
 // --------------------------------------------
 // GameObject is the base class for all in-game entities
 // - Tracks position, size, speed, and state
@@ -39,7 +40,8 @@ class GameObject
 
     constructor(name, width, height, posX, posY, speed) 
     {
-        try {
+        try
+        {
             this.#name = name;
             this.#width = width;
             this.#height = height;
@@ -50,7 +52,9 @@ class GameObject
 
             this.#halfWidth = width * 0.5;
             this.#halfHeight = height * 0.5;
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             console.error("GameObject constructor error:", e);
         }
     }
@@ -93,19 +97,27 @@ class GameObject
     update(device, delta) {}
 
     // Move object down based on its speed
-    moveDown(delta) {
-        try {
+    moveDown(delta) 
+    {
+        try
+         {
             this.#posY += this.#speed * delta;
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             console.error(`moveDown error for ${this.#name}:`, e);
         }
     }
 
-    movePos(newX, newY) {
-        try {
+    movePos(newX, newY) 
+    {
+        try 
+        {
             this.#posX = newX;
             this.#posY = newY;
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             console.error(`movePos error for ${this.#name}:`, e);
         }
     }
@@ -129,7 +141,8 @@ class GameObject
     // Both are clamped so they can’t go negative.
     getHitbox(scale = 1.0, buffer = 0) 
     {
-        try {
+        try 
+        {
             const hw = Math.max(0, this.#halfWidth * scale - buffer);
             const hh = Math.max(0, this.#halfHeight * scale - buffer);
             return {
@@ -138,7 +151,9 @@ class GameObject
                 top: this.#posY - hh,
                 bottom: this.#posY + hh
             };
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             console.error(`getHitbox error for ${this.#name}:`, e);
             return { left: 0, right: 0, top: 0, bottom: 0 };
         }
@@ -163,11 +178,15 @@ class Projectile extends GameObject
         super(name, width, height, posX, posY, speed);
     }
 
-    update(device, game, delta) {
-        try {
+    update(device, game, delta) 
+    {
+        try 
+        {
             this.posY -= this.speed * delta;
             if (this.posY + this.halfHeight < 0) this.kill();
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             console.error("Projectile update error:", e);
         }
     }
@@ -179,23 +198,31 @@ class Projectile extends GameObject
 // Moves downward from top of screen
 // Dies if it leaves the play area
 // --------------------------------------------
-class NPC extends GameObject {
-    constructor(name, width, height, x, y, speed) {
+class NPC extends GameObject 
+{
+    constructor(name, width, height, x, y, speed) 
+    {
         super(name, width, height, x, y, speed);
     }
 
-    update(device, game, delta) {
-        try {
-            const hud_buff = game?.gameConsts?.HUD_BUFFER ? game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT : 0;
+    update(device, game, delta) 
+    {
+        try 
+        {
+            const hud_buff = game.gameConsts.HUD_BUFFER ? game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT : 0;
             this.moveDown(game, delta);
-            if (this.posY > (game?.gameConsts?.SCREEN_HEIGHT ?? Infinity) + hud_buff) this.kill();
-        } catch (e) {
+            if (this.posY > (game.gameConsts.SCREEN_HEIGHT ?? Infinity) + hud_buff) this.kill();
+        } 
+        catch (e) 
+        {
             console.error("NPC update error:", e);
         }
     }
 
-    moveDown(game, delta) {
-        try {
+    moveDown(game, delta) 
+    {
+        try 
+        {
             if (game.npcSpeedMuliplyer > 0)
             {
                 this.posY += (this.speed * game.npcSpeedMuliplyer)  * delta;
@@ -205,7 +232,9 @@ class NPC extends GameObject {
                 this.posY += this.speed  * delta;
             }
             
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             console.error(`moveDown error for ${this.name}:`, e);
         }
     }
@@ -231,40 +260,43 @@ class Player extends GameObject
     // - Checks play state, ammo, input, and cooldown
     tryShoot(device, game) 
     {
-        try {
-            if (game?.playState !== GameDefs.playStates.SHOOT) return false;
-            const shootTimer = game?.gameTimers?.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER);
-            if (shootTimer?.active) return false;
-            if (game.ammo <= 0) {
+        try 
+        {
+            if (game.playState !== GameDefs.playStates.SHOOT) return false;
+            const shootTimer = game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER);
+            if (shootTimer.active) return false;
+            if (game.ammo <= 0) 
+            {
                 game.playState = GameDefs.playStates.AVOID;
                 return false;
             }
 
-            const firePressed = device?.mouseDown || device?.keys?.isKeyPressed?.(GameDefs.keyTypes.PLAY_KEY);
+            const firePressed = device.mouseDown || device.keys.isKeyPressed(GameDefs.keyTypes.PLAY_KEY);
             if (!firePressed) return false;
 
             const bulletDef = GameDefs.spriteTypes.BULLET ?? {};
             const bullet = new Projectile(
-                bulletDef.name || "bullet",
-                bulletDef.w || 8,
-                bulletDef.h || 8,
+                bulletDef.name ||GameDefs.spriteTypes.BULLET.type,
+                bulletDef.w || GameDefs.spriteTypes.BULLET.w,
+                bulletDef.h || GameDefs.spriteTypes.BULLET.h,
                 this.posX,
-                this.posY - this.halfHeight - (bulletDef.spawnGap || 0) - ((bulletDef.h || 8) * 0.5),
-                bulletDef.speed || 300
+                this.posY - this.halfHeight - (bulletDef.spawnGap || 0) - ((bulletDef.h || GameDefs.spriteTypes.BULLET.h) * 0.5),
+                bulletDef.speed || GameDefs.spriteTypes.BULLET.speed
             );
 
-            game.projectiles?.addObject(bullet);
-            game.decreaseAmmo?.(1);
-            shootTimer?.reset?.(game.gameConsts?.SHOOT_COOLDOWN ?? 0, GameDefs.timerModes.COUNTDOWN, false);
+            game.projectiles.addObject(bullet);
+            game.decreaseAmmo(1);
+            shootTimer.reset(game.gameConsts.SHOOT_COOLDOWN ?? 0, GameDefs.timerModes.COUNTDOWN, false);
 
-            device?.audio?.playSound?.(GameDefs.soundTypes.SHOOT.name);
+            device.audio.playSound(GameDefs.soundTypes.SHOOT.name);
             return true;
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             console.error("Player tryShoot error:", e);
             return false;
         }
     }
-
 
     // Update player each frame
     // - Updates cooldown
@@ -272,16 +304,18 @@ class Player extends GameObject
     // - Handles shooting
     update(device, game, delta) 
     {
-        try {
+        try 
+        {
             // If dead, freeze state until game handles respawn/lose
-            if (game.playState === GameDefs.playStates.DEATH) {
+            if (game.playState === GameDefs.playStates.DEATH) 
+            {
                 this.state = GameDefs.playStates.DEATH;
                 return;
             }
 
             // Update cooldowns
             const shootTimer = game.gameTimers.getObjectByName(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER);
-            if (shootTimer?.update) shootTimer.update(delta);
+            if (shootTimer.update) shootTimer.update(delta);
 
             // Handle shooting
             this.tryShoot(device, game);
@@ -291,34 +325,42 @@ class Player extends GameObject
 
             // Handle shield timer: if shield expired, switch back
             const shieldTimer = game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER);
-            if (shieldTimer?.active && shieldTimer?.update) {
-                if (shieldTimer.update(delta)) {
+            if (shieldTimer.active && shieldTimer.update) 
+            {
+                if (shieldTimer.update(delta)) 
+                {
                     if (game.ammo > 0) game.playState = GameDefs.playStates.SHOOT;
                     else game.playState = GameDefs.playStates.AVOID;
                 }
             }
 
             // Sync player state with current playState
-            if (this.state !== game.playState) {
+            if (this.state !== game.playState) 
+            {
                 this.state = game.playState;
-            }
-            
-        } catch (e) {
+            }   
+        } 
+        catch (e) 
+        {
             console.error("Player update error:", e);
         }
     }
     // Prevents player from leaving visible play area
     enforceBounds(game) 
     {
-        try {
-            const hudBuffer = game?.gameConsts?.SCREEN_HEIGHT * (game?.gameConsts?.HUD_BUFFER ?? 0);
+        try 
+        {
+            const hudBuffer = game.gameConsts.SCREEN_HEIGHT * (game.gameConsts.HUD_BUFFER ?? 0);
             if (this.posX - this.halfWidth < 0) this.posX = this.halfWidth;
-            if (this.posX + this.halfWidth > game?.gameConsts?.SCREEN_WIDTH) this.posX = game.gameConsts.SCREEN_WIDTH - this.halfWidth;
+            if (this.posX + this.halfWidth > game.gameConsts.SCREEN_WIDTH) this.posX = game.gameConsts.SCREEN_WIDTH - this.halfWidth;
             if (this.posY - this.halfHeight < 0 + hudBuffer) this.posY = this.halfHeight + hudBuffer;
-            if (this.posY + this.halfHeight > (game?.gameConsts?.SCREEN_HEIGHT ?? 0)) {
-                this.posY = ((game?.gameConsts?.SCREEN_HEIGHT ?? 0) ) - this.halfHeight;
+            if (this.posY + this.halfHeight > (game.gameConsts.SCREEN_HEIGHT ?? 0)) 
+            {
+                this.posY = ((game.gameConsts.SCREEN_HEIGHT ?? 0) ) - this.halfHeight;
             }
-        } catch (e) {
+        }  
+        catch (e) 
+        {
             console.error("Player enforceBounds error:", e);
         }
     }
@@ -330,7 +372,6 @@ class Player extends GameObject
 // Static or decorative background object
 // Currently does nothing, but could support parallax or animation
 // --------------------------------------------
-//FIX name bullshit
 class BillBoard extends GameObject 
 {
     constructor(name, width, height, x, y) 
@@ -338,11 +379,15 @@ class BillBoard extends GameObject
         super(name, width, height, x, y, 0);
     }
 
-    centerObjectInWorld(screenW, screenH) {
-        try {
+    centerObjectInWorld(screenW, screenH) 
+    {
+        try 
+        {
             this.posX = (screenW - this.width) * 0.5;
             this.posY = (screenH - this.height) * 0.5;
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             console.error("BillBoard centerObjectInWorld error:", e);
         }
     }
