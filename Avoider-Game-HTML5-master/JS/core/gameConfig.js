@@ -153,29 +153,38 @@ class Game
     {   
         try {
             // Input
-            device.keys?.initKeys?.();
+            device.keys.initKeys();
 
             // Load sprite assets
             // Load sprites
-            Object.values(GameDefs?.spriteTypes || {}).forEach(spriteDef => {
-                if (spriteDef?.path) {
-                    try {
+            Object.values(GameDefs.spriteTypes || {}).forEach(spriteDef => 
+            {
+                if (spriteDef.path) 
+                {
+                    try 
+                    {
                         const sprite = new Sprite(spriteDef.path, spriteDef.type);
-                        device.images?.addObject(sprite);
-                    } catch (err) {
-                        console.error(`Failed to load sprite "${spriteDef?.type}":`, err);
+                        device.images.addObject(sprite);
+                    }
+                    catch (err) 
+                    {
+                        console.error(`Failed to load sprite "${spriteDef.type}":`, err);
                     }
                 }
             });
 
             // Load billboard assets
-            Object.values(GameDefs?.billBoardTypes || {}).forEach(boardDef => {
-                if (boardDef?.path) {
-                    try {
+            Object.values(GameDefs.billBoardTypes || {}).forEach(boardDef => 
+            {
+                if (boardDef.path) {
+                    try 
+                    {
                         const boardSprite = new Sprite(boardDef.path, boardDef.type);
-                        device.images?.addObject(boardSprite);
-                    } catch (err) {
-                        console.error(`Failed to load billboard "${boardDef?.type}":`, err);
+                        device.images.addObject(boardSprite);
+                    } 
+                    catch (err)
+                    {
+                        console.error(`Failed to load billboard "${boardDef.type}":`, err);
                     }
                 }
             });
@@ -199,21 +208,25 @@ class Game
                 this.#gameSprites.addObject(board);   // <-- add here so renderer will draw it
             });
             
+            ///FIX FIX
             let temp = new BillBoard(GameDefs.billBoardTypes.HUD.type,        GameDefs.billBoardTypes.HUD.w,        GameDefs.billBoardTypes.HUD.h,        0, 0);
             this.#billBoards.addObject(temp);
 
-             Object.values(GameDefs?.soundTypes || {}).forEach(sndDef => 
+             Object.values(GameDefs.soundTypes || {}).forEach(sndDef => 
             {
-                if (sndDef?.path) {
-                    try {
-                        device.audio?.addSound(
+                if (sndDef.path) {
+                    try 
+                    {
+                        device.audio.addSound(
                             sndDef.name,
                             sndDef.path,
-                            this.gameConsts?.POOLSIZE ?? 5,
-                            this.gameConsts?.VOLUME ?? 1
+                            this.gameConsts.POOLSIZE,
+                            this.gameConsts.VOLUME
                         );
-                    } catch (err) {
-                        console.error(`Failed to add sound "${sndDef?.name}":`, err);
+                    } 
+                    catch (err) 
+                    {
+                        console.error(`Failed to add sound "${sndDef.name}":`, err);
                     }
                 }
             });
@@ -226,14 +239,19 @@ class Game
             ];
             timers.forEach(timer => 
             {
-                try {
+                try 
+                {
                     this.#gameTimers.addObject(timer);
-                } catch (err) {
+                } 
+                catch (err) 
+                {
                     console.error("Failed to add timer:", err);
                 }
             });
 
-        } catch (err) {
+        }
+        catch (err) 
+        {
             console.error("Error initializing game:", err);
         }
     }

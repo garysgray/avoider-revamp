@@ -176,13 +176,13 @@ class Device {
 
     colorText(color) 
     {
-        try { this.#ctx.fillStyle = color?.toString() ?? "white"; } 
+        try { this.#ctx.fillStyle = color.toString(); } 
         catch { /* ignore */ }
     }
 
     setFont(font) 
     {
-        try { this.#ctx.font = font.toString() ?? "16px Arial"; } 
+        try { this.#ctx.font = font.toString(); } 
         catch { /* ignore */ }
     }
 

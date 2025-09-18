@@ -33,7 +33,7 @@ function renderGameObjectsLayer(device, game) {
         {
             case GameDefs.gameStates.INIT: 
             {
-                const yBuff = game.gameConsts?.HUD_BUFFER * game.gameConsts?.SCREEN_HEIGHT;
+                const yBuff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
                 board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.SPLASH.type);
                 const splashImg = device.images.getImage(GameDefs.billBoardTypes.SPLASH.type);
                 if (board && splashImg) 
@@ -51,8 +51,8 @@ function renderGameObjectsLayer(device, game) {
 
             case GameDefs.gameStates.PLAY: 
             {
-                board = game.billBoards.getObjectByName?.(GameDefs.billBoardTypes.HUD.type);
-                const HUDImg = device.images.getImage?.(GameDefs.billBoardTypes.HUD.type);
+                board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.HUD.type);
+                const HUDImg = device.images.getImage(GameDefs.billBoardTypes.HUD.type);
                 if (board && HUDImg) 
                 {
                     try {
@@ -65,9 +65,9 @@ function renderGameObjectsLayer(device, game) {
                 }
                 try
                 {
-                    renderNPCSprites?.(device, game);
-                    renderBullets?.(device, game);
-                    renderPlayer?.(device, game);
+                    renderNPCSprites(device, game);
+                    renderBullets(device, game);
+                    renderPlayer(device, game);
                 } 
                 catch (e) 
                 {
@@ -78,14 +78,14 @@ function renderGameObjectsLayer(device, game) {
 
             case GameDefs.gameStates.PAUSE:
             {
-                const yBuff = game.gameConsts?.HUD_BUFFER * game.gameConsts?.SCREEN_HEIGHT;
+                const yBuff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
                 board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.PAUSE.type);
                 const pauseImg = device.images.getImage(GameDefs.billBoardTypes.PAUSE.type);
                 if (board && pauseImg) 
                 {
                     try 
                     {
-                        device.renderImage?.(pauseImg, board.posX, board.posY - yBuff);
+                        device.renderImage(pauseImg, board.posX, board.posY - yBuff);
                     } 
                     catch (e) 
                     {
@@ -103,9 +103,9 @@ function renderGameObjectsLayer(device, game) {
 
             case GameDefs.gameStates.LOSE: 
             {
-                const yBuff = (game.gameConsts.HUD_BUFFER * game.gameConsts?.SCREEN_HEIGHT); 
-                board = game.billBoards.getObjectByName?.(GameDefs.billBoardTypes.DIE.type);
-                const dieImg = device.images.getImage?.(GameDefs.billBoardTypes.DIE.type);
+                const yBuff = (game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT); 
+                board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.DIE.type);
+                const dieImg = device.images.getImage(GameDefs.billBoardTypes.DIE.type);
                 if (board && dieImg) 
                 {
                     try 

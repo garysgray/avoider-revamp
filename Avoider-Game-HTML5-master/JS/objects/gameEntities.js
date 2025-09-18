@@ -209,9 +209,9 @@ class NPC extends GameObject
     {
         try 
         {
-            const hud_buff = game.gameConsts.HUD_BUFFER ? game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT : 0;
+            const hud_buff = game.gameConsts.HUD_BUFFER  * game.gameConsts.SCREEN_HEIGHT;
             this.moveDown(game, delta);
-            if (this.posY > (game.gameConsts.SCREEN_HEIGHT ?? Infinity) + hud_buff) this.kill();
+            if (this.posY > game.gameConsts.SCREEN_HEIGHT  + hud_buff) this.kill();
         } 
         catch (e) 
         {
@@ -274,19 +274,18 @@ class Player extends GameObject
             const firePressed = device.mouseDown || device.keys.isKeyPressed(GameDefs.keyTypes.PLAY_KEY);
             if (!firePressed) return false;
 
-            const bulletDef = GameDefs.spriteTypes.BULLET ?? {};
-            const bullet = new Projectile(
-                bulletDef.name ||GameDefs.spriteTypes.BULLET.type,
-                bulletDef.w || GameDefs.spriteTypes.BULLET.w,
-                bulletDef.h || GameDefs.spriteTypes.BULLET.h,
+            const bulletDef = GameDefs.spriteTypes.BULLET
+            const bullet = new Projectile(bulletDef.name,
+                bulletDef.w,
+                bulletDef.h,
                 this.posX,
-                this.posY - this.halfHeight - (bulletDef.spawnGap || 0) - ((bulletDef.h || GameDefs.spriteTypes.BULLET.h) * 0.5),
-                bulletDef.speed || GameDefs.spriteTypes.BULLET.speed
+                this.posY - this.halfHeight - bulletDef.spawnGap - (bulletDef.h  * 0.5),
+                bulletDef.speed 
             );
 
             game.projectiles.addObject(bullet);
             game.decreaseAmmo(1);
-            shootTimer.reset(game.gameConsts.SHOOT_COOLDOWN ?? 0, GameDefs.timerModes.COUNTDOWN, false);
+            shootTimer.reset(game.gameConsts.SHOOT_COOLDOWN, GameDefs.timerModes.COUNTDOWN, false);
 
             device.audio.playSound(GameDefs.soundTypes.SHOOT.name);
             return true;
