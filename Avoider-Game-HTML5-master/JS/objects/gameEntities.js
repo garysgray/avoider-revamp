@@ -350,13 +350,13 @@ class Player extends GameObject
     {
         try 
         {
-            const hudBuffer = game.gameConsts.SCREEN_HEIGHT * (game.gameConsts.HUD_BUFFER ?? 0);
+            const hudBuffer = game.gameConsts.SCREEN_HEIGHT * game.gameConsts.HUD_BUFFER;
             if (this.posX - this.halfWidth < 0) this.posX = this.halfWidth;
             if (this.posX + this.halfWidth > game.gameConsts.SCREEN_WIDTH) this.posX = game.gameConsts.SCREEN_WIDTH - this.halfWidth;
             if (this.posY - this.halfHeight < 0 + hudBuffer) this.posY = this.halfHeight + hudBuffer;
-            if (this.posY + this.halfHeight > (game.gameConsts.SCREEN_HEIGHT ?? 0)) 
+            if (this.posY + this.halfHeight > game.gameConsts.SCREEN_HEIGHT) 
             {
-                this.posY = ((game.gameConsts.SCREEN_HEIGHT ?? 0) ) - this.halfHeight;
+                this.posY = (game.gameConsts.SCREEN_HEIGHT) - this.halfHeight;
             }
         }  
         catch (e) 
