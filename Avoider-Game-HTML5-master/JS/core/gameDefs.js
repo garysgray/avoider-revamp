@@ -33,7 +33,9 @@ const GameDefs = Object.freeze({
         BACKGROUND: { type: "background", w: 600, h: 600, path: "assets/sprites/stars.png" },
         SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/splash.png" },
         PAUSE:      { type: "pause",      w: 400, h: 100, path: "assets/sprites/pause.png" },
-        DIE:        { type: "die",        w: 400, h: 100, path: "assets/sprites/die.png" }
+        DIE:        { type: "die",        w: 400, h: 100, path: "assets/sprites/die.png" },
+        HUD:        { type: "hud",        w: 850, h: 200, path: "assets/sprites/hud.png" }
+
     },
 
     soundTypes: {
@@ -96,7 +98,7 @@ class GameConsts
     // ---- Private fields ----
     //sizes
     #SCREEN_WIDTH = 850;
-    #SCREEN_HEIGHT = 600;
+    #SCREEN_HEIGHT = 650;
 
     //times
     #SHIELD_TIME = 3;
@@ -114,7 +116,7 @@ class GameConsts
     //settings
     #FONT_SETTINGS = `bold 17pt Century Gothic`
     #FONT_COLOR = 'white'
-    #HUD_BUFFER = .10;
+    #HUD_BUFFER = .12;
     #BILLBOARDS_OFFSET_BUFF = 0;
 
     //sound 

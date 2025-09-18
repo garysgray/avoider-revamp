@@ -186,17 +186,21 @@ class Game
                 new BillBoard(GameDefs.billBoardTypes.SPLASH.type,     GameDefs.billBoardTypes.SPLASH.w,     GameDefs.billBoardTypes.SPLASH.h,     0, 0),
                 new BillBoard(GameDefs.billBoardTypes.PAUSE.type,      GameDefs.billBoardTypes.PAUSE.w,      GameDefs.billBoardTypes.PAUSE.h,      0, 0),
                 new BillBoard(GameDefs.billBoardTypes.DIE.type,        GameDefs.billBoardTypes.DIE.w,        GameDefs.billBoardTypes.DIE.h,        0, 0),
+                
             ];
 
             boards.forEach(board => 
             {
-                if (board.name !== GameDefs.billBoardTypes.BACKGROUND.type) 
+                if (board.name !== GameDefs.billBoardTypes.BACKGROUND.type ) 
                 {
                     board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
                 }
                 this.#billBoards.addObject(board);
                 this.#gameSprites.addObject(board);   // <-- add here so renderer will draw it
             });
+            
+            let temp = new BillBoard(GameDefs.billBoardTypes.HUD.type,        GameDefs.billBoardTypes.HUD.w,        GameDefs.billBoardTypes.HUD.h,        0, 0);
+            this.#billBoards.addObject(temp);
 
              Object.values(GameDefs?.soundTypes || {}).forEach(sndDef => 
             {
