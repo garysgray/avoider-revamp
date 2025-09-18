@@ -4,7 +4,7 @@
 
 :root {
     /* Colors */
-    --color-white: #FFFFFF;
+    --color-white: #a244a5;
     --color-black: #000000;
     --color-red: #FF0000;
 
@@ -12,7 +12,7 @@
     --font-format: bold 20px Calibri;
  
     /* Borders & Radii */
-    --border-width: 2px;
+    --border-width: 4px;
     --border-radius: 18px;
     --border-style: solid;
     --border: var(--border-width) var(--border-style) var(--color-white);
