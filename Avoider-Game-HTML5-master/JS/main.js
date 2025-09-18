@@ -3,7 +3,6 @@
 // GameLoop resides here! Was called thru index.html
 // ============================================================================
 
-
 // ============================================================================
 // DEBUG/TESTING CONTROL AREA
 // ============================================================================
@@ -36,9 +35,6 @@ catch (e)
 // ---------------------------------------------------------------------------
 // Fixed timestep game loop setup
 // ---------------------------------------------------------------------------
-const fixedStep = 1 / 60;
-const timeInSecs = 1000;
-const frameTimeMax = 0.25;
 
 let lastTime = performance.now();
 let accumulator = 0;
@@ -47,6 +43,11 @@ let accumulator = 0;
 // ---------------------------------------------------------------------------
 function gameLoop() 
 {
+
+    const fixedStep = 1 / 60;
+    const timeInSecs = 1000;
+    const frameTimeMax = 0.25;
+
     try 
     {
         if (!myController) return;

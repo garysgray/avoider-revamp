@@ -1,31 +1,37 @@
-// -----------------------------------------------------------------------------
+// ============================================================================
 // MAIN STATE LOGIC
-// -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// Handles pause/unpause input.
+// Toggles game.gameState between PLAY and PAUSE.
+// Stores player position when paused and restores state on resume.
+// ============================================================================
 
-/**
- * Handles pause/unpause input.
- * - Toggles game.gameState between PLAY and PAUSE.
- * - Stores player position when paused and restores state on resume.
- */
 function checkforPause(device, game)  
 {     
-    try {
-        if (device?.keys?.isKeyPressed?.(GameDefs.keyTypes.PAUSE_KEY_L)) {
-            if (game?.gameState === GameDefs.gameStates.PLAY &&
-                game?.playState !== GameDefs.playStates.SHIELD) {
+    try 
+    {
+        if (device.keys.isKeyPressed(GameDefs.keyTypes.PAUSE_KEY_L)) 
+        {
+            if (game.gameState === GameDefs.gameStates.PLAY &&
+                game.playState !== GameDefs.playStates.SHIELD) 
+            {
 
                 // Save player position
-                game.player?.savePos?.(game.player?.posX ?? 0, game.player?.posY ?? 0);
+                game.player.savePos(game.player.posX, game.player.posY);
 
                 // Switch to pause mode
-                game.setGameState?.(GameDefs.gameStates.PAUSE);
+                game.setGameState(GameDefs.gameStates.PAUSE);
 
-            } else if (game?.gameState === GameDefs.gameStates.PAUSE) {
+            }
+            else if (game.gameState === GameDefs.gameStates.PAUSE) 
+            {
                 // Resume play mode
-                game.setGameState?.(GameDefs.gameStates.PLAY);
+                game.setGameState(GameDefs.gameStates.PLAY);
             }
         }
-    } catch (e) {
+    } 
+    catch (e) 
+    {
         console.error("checkforPause error:", e);
     }
 }  
@@ -37,9 +43,12 @@ function checkforPause(device, game)
  */
 function checkUserKeyInput(device, game) 
 {     
-    try {
+    try 
+    {
         checkforPause(device, game);
-    } catch (e) {
+    } 
+    catch (e) 
+    {
         console.error("checkUserKeyInput error:", e);
     }
 }   
@@ -52,22 +61,28 @@ function checkUserKeyInput(device, game)
 //---------------------------------------------------------------
 function updateGameStates(device, game, delta) 
 {
-    try {
+    try 
+    {
         if (!game || !device) return;
 
-        switch (game.gameState) {
+        switch (game.gameState) 
+        {
 
             // -------------------------------------------------------
             // INIT STATE
             // -------------------------------------------------------
             case GameDefs.gameStates.INIT:
-                try {
-                    game.setGame?.(device);
+                try 
+                {
+                    game.setGame(device);
 
-                    if (device.keys?.isKeyPressed?.(GameDefs.keyTypes.PLAY_KEY)) {
-                        game.setGameState?.(GameDefs.gameStates.PLAY);
+                    if (device.keys.isKeyPressed(GameDefs.keyTypes.PLAY_KEY)) 
+                    {
+                        game.setGameState(GameDefs.gameStates.PLAY);
                     }
-                } catch (e) {
+                } 
+                catch (e) 
+                {
                     console.error("INIT state error:", e);
                 }
                 break;
@@ -76,35 +91,39 @@ function updateGameStates(device, game, delta)
             // PLAY STATE
             // -------------------------------------------------------
             case GameDefs.gameStates.PLAY:
-                try {
+                try 
+                {
                     checkUserKeyInput(device, game);
 
-                    game.player?.update?.(device, game, delta);
+                    game.player.update(device, game, delta);
 
-                    updateNPCSprites?.(device, game, delta);
-                    updateProjectiles?.(device, game, delta);
+                    updateNPCSprites(device, game, delta);
+                    updateProjectiles(device, game, delta);
 
-                    if (game.playState !== GameDefs.playStates.SHIELD) {
-                        const collision = check_NPC_Collision?.(device, game);
-                        if (collision === false) {
-                            game.player?.savePos?.(game.player?.posX ?? 0, game.player?.posY ?? 0);
+                    if (game.playState !== GameDefs.playStates.SHIELD) 
+                    {
+                        const collision = check_NPC_Collision(device, game);
+                        if (collision === false) 
+                        {
+                            game.player.savePos(game.player.posX, game.player.posY);
                         }
                     }
 
-                    const shieldTimer = game.gameTimers?.getObjectByName?.(GameDefs.timerTypes.SHIELD_TIMER);
+                    const shieldTimer = game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER);
 
-                    if (shieldTimer?.active) 
+                    if (shieldTimer.active) 
                     {
-                        if (shieldTimer?.update?.(delta)) {
-                            game.restorePlayState?.();
+                        if (shieldTimer.update(delta)) 
+                        {
+                            game.restorePlayState();
                         }
                     }
 
-                    const gameClock = game.gameTimers?.getObjectByName?.(GameDefs.timerTypes.GAME_CLOCK);
+                    const gameClock = game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK);
 
-                    if (gameClock?.active)
+                    if (gameClock.active)
                     {
-                        gameClock.update?.(delta);
+                        gameClock.update(delta);
 
                         const lastTime = game.npcSpeedMuliplyer;
 
@@ -118,7 +137,9 @@ function updateGameStates(device, game, delta)
                     }
                     
 
-                } catch (e) {
+                } 
+                catch (e) 
+                {
                     console.error("PLAY state error:", e);
                 }
                 break;
@@ -127,23 +148,27 @@ function updateGameStates(device, game, delta)
             // PAUSE STATE
             // -------------------------------------------------------
             case GameDefs.gameStates.PAUSE:
-                try {
-                    if (device.keys?.isKeyPressed?.(GameDefs.keyTypes.PAUSE_KEY_L)) {
-                        game.player?.restoreSavedPos?.();
-                        game.savePlayState?.(game.playState);
+                try 
+                {
+                    if (device.keys.isKeyPressed(GameDefs.keyTypes.PAUSE_KEY_L)) 
+                    {
+                        game.player.restoreSavedPos();
+                        game.savePlayState(game.playState);
 
-                        game.setPlayState?.(GameDefs.playStates.SHIELD);
+                        game.setPlayState(GameDefs.playStates.SHIELD);
 
-                        game.gameTimers?.getObjectByName?.(GameDefs.timerTypes.SHIELD_TIMER)
-                            ?.reset?.(game.gameConsts?.SHIELD_TIME ?? 0, GameDefs.timerModes.COUNTDOWN, false);
+                        game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
 
-                        game.setGameState?.(GameDefs.gameStates.PLAY);
+                        game.setGameState(GameDefs.gameStates.PLAY);
                     }
 
-                    if (device.keys?.isKeyDown?.(GameDefs.keyTypes.RESET_KEY)) {
-                        game.setGameState?.(GameDefs.gameStates.INIT);
+                    if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
+                    {
+                        game.setGameState(GameDefs.gameStates.INIT);
                     }
-                } catch (e) {
+                }
+                catch (e) 
+                {
                     console.error("PAUSE state error:", e);
                 }
                 break;
@@ -152,11 +177,15 @@ function updateGameStates(device, game, delta)
             // WIN STATE
             // -------------------------------------------------------
             case GameDefs.gameStates.WIN:
-                try {
-                    if (device.keys?.isKeyDown?.(GameDefs.keyTypes.RESET_KEY)) {
-                        game.setGameState?.(GameDefs.gameStates.INIT);
+                try 
+                {
+                    if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
+                    {
+                        game.setGameState(GameDefs.gameStates.INIT);
                     }
-                } catch (e) {
+                } 
+                catch (e) 
+                {
                     console.error("WIN state error:", e);
                 }
                 break;
@@ -165,29 +194,36 @@ function updateGameStates(device, game, delta)
             // LOSE STATE
             // -------------------------------------------------------
             case GameDefs.gameStates.LOSE:
-                try {
-                    game.player?.savePos?.(game.player?.posX ?? 0, game.player?.posY ?? 0);
+                try 
+                {
+                    game.player.savePos(game.player.posX, game.player.posY);
 
-                    if ((game?.lives ?? 0) <= 0) {
-                        if (device.keys?.isKeyDown?.(GameDefs.keyTypes.RESET_KEY)) {
-                            game.setGameState?.(GameDefs.gameStates.INIT);
+                    if ((game.lives) <= 0) 
+                    {
+                        if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
+                        {
+                            game.setGameState(GameDefs.gameStates.INIT);
                         }
-                    } else {
-                        if (device.keys?.isKeyDown?.(GameDefs.keyTypes.RESET_KEY)) {
-                            game.emptyAmmo?.();
-                            game.gameSprites?.clearObjects?.();
-                            game.setGameState?.(GameDefs.gameStates.PLAY);
+                    } 
+                    else
+                    {
+                        if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
+                        {
+                            game.emptyAmmo();
+                            game.gameSprites.clearObjects();
+                            game.setGameState(GameDefs.gameStates.PLAY);
 
-                            game.gameTimers?.getObjectByName?.(GameDefs.timerTypes.SHIELD_TIMER)
-                                ?.reset?.(game.gameConsts?.SHIELD_TIME ?? 0, GameDefs.timerModes.COUNTDOWN, false);
+                            game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
 
-                            game.setPlayState?.(GameDefs.playStates.SHIELD);
+                            game.setPlayState(GameDefs.playStates.SHIELD);
                         }
                     }
 
-                    game.gameTimers?.getObjectByName?.(GameDefs.timerTypes.GAME_CLOCK)?.start?.();
+                    game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
 
-                } catch (e) {
+                } 
+                catch (e) 
+                {
                     console.error("LOSE state error:", e);
                 }
                 break;
@@ -197,7 +233,9 @@ function updateGameStates(device, game, delta)
                 break;
         }
 
-    } catch (e) {
+    } 
+    catch (e) 
+    {
         console.error("updateGameStates main error:", e);
     }
 }

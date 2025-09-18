@@ -97,8 +97,8 @@ class GameConsts
 {
     // ---- Private fields ----
     //sizes
-    #SCREEN_WIDTH = 900;
-    #SCREEN_HEIGHT = 550;
+    #SCREEN_WIDTH = 1000;
+    #SCREEN_HEIGHT = 600;
 
     //times
     #SHIELD_TIME = 3;

@@ -1,7 +1,11 @@
-//** Layer Class **
+// ============================================================================
+// Layer Class
+// ----------------------------------------------------------------------------
 // A layer is used to organize rendering in the game.  
 // Each layer has a name (for identification) and a render function that draws content.  
 // The main game loop can call each layer in order, giving structure to rendering.
+// ============================================================================
+
 class Layer
 {
     // Constructor sets the name of the layer and the rendering function to call

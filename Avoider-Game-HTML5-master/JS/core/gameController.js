@@ -106,8 +106,14 @@ class Controller
             // Render each layer
             for (const layer of this.#layers) 
             {
-                try { layer.render(this.#device, this.#game); } 
-                catch (renderError) { console.error(`Error rendering layer:`, renderError.message); }
+                try 
+                { 
+                    layer.render(this.#device, this.#game); 
+                } 
+                catch (renderError) 
+                { 
+                    console.error(`Error rendering layer:`, renderError.message); 
+                }
             }
 
             // Clear per-frame input
