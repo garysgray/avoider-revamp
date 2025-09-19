@@ -157,7 +157,7 @@ class Game
 
             // Load sprite assets
             // Load sprites
-            Object.values(GameDefs.spriteTypes || {}).forEach(spriteDef => 
+            Object.values(GameDefs.spriteTypes).forEach(spriteDef => 
             {
                 if (spriteDef.path) 
                 {
@@ -174,7 +174,7 @@ class Game
             });
 
             // Load billboard assets
-            Object.values(GameDefs.billBoardTypes || {}).forEach(boardDef => 
+            Object.values(GameDefs.billBoardTypes).forEach(boardDef => 
             {
                 if (boardDef.path) {
                     try 
@@ -189,40 +189,34 @@ class Game
                 }
             });
 
-            // Initialize boards
+            // Initialize boards   FIX MAGIC values
             const boards = [
-                new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0),
-                new BillBoard(GameDefs.billBoardTypes.SPLASH.type,     GameDefs.billBoardTypes.SPLASH.w,     GameDefs.billBoardTypes.SPLASH.h,     0, 0),
-                new BillBoard(GameDefs.billBoardTypes.PAUSE.type,      GameDefs.billBoardTypes.PAUSE.w,      GameDefs.billBoardTypes.PAUSE.h,      0, 0),
-                new BillBoard(GameDefs.billBoardTypes.DIE.type,        GameDefs.billBoardTypes.DIE.w,        GameDefs.billBoardTypes.DIE.h,        0, 0),
-                
+                new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0, 0, GameDefs.billBoardTypes.BACKGROUND.isCenter),
+                new BillBoard(GameDefs.billBoardTypes.HUD.type,        GameDefs.billBoardTypes.HUD.w,        GameDefs.billBoardTypes.HUD.h,        0, 0, 0, GameDefs.billBoardTypes.HUD.isCenter),
+                new BillBoard(GameDefs.billBoardTypes.SPLASH.type,     GameDefs.billBoardTypes.SPLASH.w,     GameDefs.billBoardTypes.SPLASH.h,     0, 0, 0, GameDefs.billBoardTypes.SPLASH.isCenter),
+                new BillBoard(GameDefs.billBoardTypes.PAUSE.type,      GameDefs.billBoardTypes.PAUSE.w,      GameDefs.billBoardTypes.PAUSE.h,      0, 0, 0, GameDefs.billBoardTypes.PAUSE.isCenter),
+                new BillBoard(GameDefs.billBoardTypes.DIE.type,        GameDefs.billBoardTypes.DIE.w,        GameDefs.billBoardTypes.DIE.h,        0, 0, 0, GameDefs.billBoardTypes.DIE.isCenter),   
             ];
 
             boards.forEach(board => 
             {
-                if (board.name !== GameDefs.billBoardTypes.BACKGROUND.type ) 
+                try 
                 {
                     board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
-                }
                 this.#billBoards.addObject(board);
-                this.#gameSprites.addObject(board);   // <-- add here so renderer will draw it
+                } 
+                catch (err) 
+                {
+                    console.error(`Failed to add board "${board.name}":`, err);
+                }
             });
-            
-            ///FIX FIX
-            let temp = new BillBoard(GameDefs.billBoardTypes.HUD.type,        GameDefs.billBoardTypes.HUD.w,        GameDefs.billBoardTypes.HUD.h,        0, 0);
-            this.#billBoards.addObject(temp);
 
-             Object.values(GameDefs.soundTypes || {}).forEach(sndDef => 
+            Object.values(GameDefs.soundTypes).forEach(sndDef => 
             {
                 if (sndDef.path) {
                     try 
                     {
-                        device.audio.addSound(
-                            sndDef.name,
-                            sndDef.path,
-                            this.gameConsts.POOLSIZE,
-                            this.gameConsts.VOLUME
-                        );
+                        device.audio.addSound(sndDef.name, sndDef.path, this.gameConsts.POOLSIZE, this.gameConsts.VOLUME);
                     } 
                     catch (err) 
                     {

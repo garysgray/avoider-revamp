@@ -56,7 +56,10 @@ function gameLoop()
         let frameTime = (now - lastTime) / timeInSecs;
         lastTime = now;
 
-        if (frameTime > frameTimeMax) frameTime = frameTimeMax;
+        if (frameTime > frameTimeMax) 
+        {
+            frameTime = frameTimeMax;
+        }
 
         accumulator += frameTime;
 
@@ -64,14 +67,7 @@ function gameLoop()
         {
             try
             {
-                if (typeof myController.updateGame === "function") 
-                {
-                    myController.updateGame(fixedStep);
-                }
-                else 
-                {
-                    console.warn("updateGame() is not a function on Controller.");
-                }
+                myController.updateGame(fixedStep);
             }
             catch (e)
             {
@@ -130,7 +126,7 @@ function renderDebugText(texts)
 
     texts.forEach(text => 
     {
-        myController.device.debugText(text, posX, posY, "yellow");
+        myController.device.debugText(text, posX, posY, myController.game.gameConsts.DEBUG_TEXT_COLOR);
         posY += buffY;
     });
 }
