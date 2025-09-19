@@ -30,12 +30,11 @@ const GameDefs = Object.freeze({
     },
 
     billBoardTypes: {
-        BACKGROUND: { type: "background", w: 600, h: 600, path: "assets/sprites/stars.png" },
-        SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/splash.png" },
-        PAUSE:      { type: "pause",      w: 400, h: 100, path: "assets/sprites/pause.png" },
-        DIE:        { type: "die",        w: 400, h: 100, path: "assets/sprites/die.png" },
-        HUD:        { type: "hud",        w: 850, h: 200, path: "assets/sprites/hud.png" }
-
+        BACKGROUND: { type: "background", w: 600, h: 600, path: "assets/sprites/stars.png", isCenter: false },
+        HUD:        { type: "hud",        w: 850, h: 200, path: "assets/sprites/hud.png" , isCenter: false },
+        SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/splash.png" , isCenter: true },
+        PAUSE:      { type: "pause",      w: 400, h: 100, path: "assets/sprites/pause.png" , isCenter: true },
+        DIE:        { type: "die",        w: 400, h: 100, path: "assets/sprites/die.png" , isCenter: true },
     },
 
     soundTypes: {
@@ -118,6 +117,7 @@ class GameConsts
     #FONT_COLOR = 'white'
     #HUD_BUFFER = .12;
     #BILLBOARDS_OFFSET_BUFF = 0;
+    #DEBUG_TEXT_COLOR = "yellow";
 
     //sound 
     #POOLSIZE = 5;
@@ -141,5 +141,6 @@ class GameConsts
     get NPC_SPEED_INCREASE_AMOUNT(){ return this.#NPC_SPEED_INCREASE_AMOUNT; }
     get BILLBOARDS_OFFSET_BUFF(){ return this.#BILLBOARDS_OFFSET_BUFF; }
     get FALLBACK_DELTA(){ return this.#FALLBACK_DELTA; }
+    get DEBUG_TEXT_COLOR(){ return this.#DEBUG_TEXT_COLOR; }
     
 }

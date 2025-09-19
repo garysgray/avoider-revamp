@@ -373,22 +373,32 @@ class Player extends GameObject
 // --------------------------------------------
 class BillBoard extends GameObject 
 {
-    constructor(name, width, height, x, y) 
+    #isCenter = true;
+
+    constructor(name, width, height, x, y, speed, isCenter = true) 
     {
-        super(name, width, height, x, y, 0);
+        super(name, width, height, x, y, speed);
+
+        this.#isCenter = isCenter;
     }
+
+    get isCenter() { return this.#isCenter; }
 
     centerObjectInWorld(screenW, screenH) 
     {
-        try 
+        if (this.#isCenter)
         {
-            this.posX = (screenW - this.width) * 0.5;
-            this.posY = (screenH - this.height) * 0.5;
-        } 
-        catch (e) 
-        {
-            console.error("BillBoard centerObjectInWorld error:", e);
+            try 
+            {
+                this.posX = (screenW - this.width) * 0.5;
+                this.posY = (screenH - this.height) * 0.5;
+            } 
+            catch (e) 
+            {
+                console.error("BillBoard centerObjectInWorld error:", e);
+            }
         }
+        
     }
     update(device, delta) 
     {
