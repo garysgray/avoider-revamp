@@ -1,79 +1,25 @@
 // ============================================================================
 // MAIN STATE LOGIC
 // ----------------------------------------------------------------------------
-// Handles pause/unpause input.
-// Toggles game.gameState between PLAY and PAUSE.
-// Stores player position when paused and restores state on resume.
-// ============================================================================
-
-function checkforPause(device, game)  
-{     
-    try 
-    {
-        if (device.keys.isKeyPressed(GameDefs.keyTypes.PAUSE_KEY_L)) 
-        {
-            if (game.gameState === GameDefs.gameStates.PLAY &&
-                game.playState !== GameDefs.playStates.SHIELD) 
-            {
-
-                // Save player position
-                game.player.savePos(game.player.posX, game.player.posY);
-
-                // Switch to pause mode
-                game.setGameState(GameDefs.gameStates.PAUSE);
-
-            }
-            else if (game.gameState === GameDefs.gameStates.PAUSE) 
-            {
-                // Resume play mode
-                game.setGameState(GameDefs.gameStates.PLAY);
-            }
-        }
-    } 
-    catch (e) 
-    {
-        console.error("checkforPause error:", e);
-    }
-}  
-
-/**
- * Processes all player input:
- * - Delegates pause handling to checkforPause().
- * - (Future) Can expand with other global input checks.
- */
-function checkUserKeyInput(device, game) 
-{     
-    try 
-    {
-        checkforPause(device, game);
-    } 
-    catch (e) 
-    {
-        console.error("checkUserKeyInput error:", e);
-    }
-}   
-
-//---------------------------------------------------------------
 // Update Game States
 // - Called each frame from the controller's update() function
-// - Handles core game logic, input responses, and state transitions
+// - Handles updates to core game logic, input responses, and state transitions
 // - Updates all game objects depending on current game state
-//---------------------------------------------------------------
+// ============================================================================
+
 function updateGameStates(device, game, delta) 
 {
     try 
     {
-        if (!game || !device) return;
-
         switch (game.gameState) 
         {
-
             // -------------------------------------------------------
             // INIT STATE
             // -------------------------------------------------------
             case GameDefs.gameStates.INIT:
                 try 
                 {
+                    // Set up all the game stuff up and then wait for player to hit "start/play" button
                     game.setGame(device);
 
                     if (device.keys.isKeyPressed(GameDefs.keyTypes.PLAY_KEY)) 
@@ -93,50 +39,49 @@ function updateGameStates(device, game, delta)
             case GameDefs.gameStates.PLAY:
                 try 
                 {
-                    checkUserKeyInput(device, game);
+                    // GAme clock that helps update when NPC's speed should incread and give player points
+                    const gameClock = game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK);
+                    // Update all Game-Play for NPC's and Player
 
-                    game.player.update(device, game, delta);
+                    game.player.update(device, game, delta);   //gameEntities.js
+                    updateNPCSprites(device, game, delta);     //npcLogic.js
+                    updateProjectiles(device, game, delta);    //npcLogic.js
 
-                    updateNPCSprites(device, game, delta);
-                    updateProjectiles(device, game, delta);
-
+                    // If player is not in SHIELD Mode then check for collision with NPC's
                     if (game.playState !== GameDefs.playStates.SHIELD) 
                     {
-                        const collision = check_NPC_Collision(device, game);
-                        if (collision === false) 
+                        const avoidcCollision = check_NPC_Collision(device, game);
+                        if (avoidcCollision === false) 
                         {
+                            // When player dies from collision we save his position to show dead player in pause menue
                             game.player.savePos(game.player.posX, game.player.posY);
                         }
                     }
 
-                    const shieldTimer = game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER);
-
-                    if (shieldTimer.active) 
-                    {
-                        if (shieldTimer.update(delta)) 
-                        {
-                            game.restorePlayState();
-                        }
-                    }
-
-                    const gameClock = game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK);
-
+                    // This is where we update the time clock and based on that we add speed to the Spawning NPCs
                     if (gameClock.active)
                     {
-                        gameClock.update(delta);
-
+                        // We save what the npcSpeedMuliplyer was last time
                         const lastTime = game.npcSpeedMuliplyer;
 
+                        // Update game time clock
+                        gameClock.update(delta);
+
+                        // We need the new speedMultiplyer
                         const speedMultiplier = 1 + Math.floor(gameClock.elapsedTime / game.gameConsts.NPC_SPEED_INCREASE_INTERVALS) * game.gameConsts.NPC_SPEED_INCREASE_AMOUNT;
+
+                        // Update the current speed now that  time has increased
                         game.npcSpeedMuliplyer = speedMultiplier;
-                        
+
+                        // If its not the very first time we check and there not equal, then key time has elasped, so we increase score
                         if (lastTime != game.npcSpeedMuliplyer && lastTime != 0)
                         {
                             game.increaseScore(game.gameConsts.SCORE_INCREASE);   
                         }
                     }
-                    
 
+                    // If player hits pause button we change game states
+                    checkforPause(device, game);                
                 } 
                 catch (e) 
                 {
@@ -150,18 +95,21 @@ function updateGameStates(device, game, delta)
             case GameDefs.gameStates.PAUSE:
                 try 
                 {
+                    // while in pause mode if player un-pauses
                     if (device.keys.isKeyPressed(GameDefs.keyTypes.PAUSE_KEY_L)) 
                     {
+                        // player is set back to where they where before pause
                         game.player.restoreSavedPos();
-                        game.savePlayState(game.playState);
 
+                        // Update states
+                        game.setGameState(GameDefs.gameStates.PLAY);
                         game.setPlayState(GameDefs.playStates.SHIELD);
 
+                        // Reset the Shield timer for when player comes out of pause
                         game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
-
-                        game.setGameState(GameDefs.gameStates.PLAY);
                     }
 
+                    // Dev hack if you want to restart game
                     if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
                     {
                         game.setGameState(GameDefs.gameStates.INIT);
@@ -174,11 +122,12 @@ function updateGameStates(device, game, delta)
                 break;
 
             // -------------------------------------------------------
-            // WIN STATE
+            // WIN STATE - currently not in use
             // -------------------------------------------------------
             case GameDefs.gameStates.WIN:
                 try 
                 {
+                    // Check for game restart and Init game if it happens  
                     if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
                     {
                         game.setGameState(GameDefs.gameStates.INIT);
@@ -196,31 +145,43 @@ function updateGameStates(device, game, delta)
             case GameDefs.gameStates.LOSE:
                 try 
                 {
+                    // Holds player position from when they died
                     game.player.savePos(game.player.posX, game.player.posY);
 
-                    if ((game.lives) <= 0) 
-                    {
+                    // Clear screen of all NPC's and bullets
+                    game.projectiles.clearObjects();
+                    game.gameSprites.clearObjects();
+
+                    // Empty players ammo from gameplay
+                    game.emptyAmmo();
+
+                    // If game over due to all lives gone
+                    if (game.lives <= 0) 
+                    {       
+                        // Check for game restart and Init game if it happens  
                         if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
                         {
                             game.setGameState(GameDefs.gameStates.INIT);
                         }
                     } 
-                    else
+                    else // If player still has lives check for level restart
                     {
                         if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
                         {
-                            game.emptyAmmo();
-                            game.gameSprites.clearObjects();
+                            // player is set back to where they where before pause
+                            game.player.restoreSavedPos();
+                            
+                            // Update states
                             game.setGameState(GameDefs.gameStates.PLAY);
-
-                            game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
-
                             game.setPlayState(GameDefs.playStates.SHIELD);
+
+                            // Reset the Shield timer for when player comes out of re-spawn
+                            game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
                         }
                     }
 
+                    // Game timer restart since player lost a life or game
                     game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
-
                 } 
                 catch (e) 
                 {
@@ -232,10 +193,38 @@ function updateGameStates(device, game, delta)
                 console.warn("Unknown game state:", game.gameState);
                 break;
         }
-
     } 
     catch (e) 
     {
         console.error("updateGameStates main error:", e);
     }
 }
+
+// Used during play state wating for player to hit pause button
+function checkforPause(device, game)  
+{     
+    try 
+    {
+        if (device.keys.isKeyPressed(GameDefs.keyTypes.PAUSE_KEY_L)) 
+        {
+            if (game.gameState === GameDefs.gameStates.PLAY &&
+                game.playState !== GameDefs.playStates.SHIELD) 
+            {
+                // Save player position
+                game.player.savePos(game.player.posX, game.player.posY);
+
+                // Switch to pause mode
+                game.setGameState(GameDefs.gameStates.PAUSE);
+            }
+            else if (game.gameState === GameDefs.gameStates.PAUSE) 
+            {
+                // Resume play mode
+                game.setGameState(GameDefs.gameStates.PLAY);
+            }
+        }
+    } 
+    catch (e) 
+    {
+        console.error("checkforPause error:", e);
+    }
+}  
