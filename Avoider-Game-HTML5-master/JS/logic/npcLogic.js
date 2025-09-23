@@ -1,54 +1,10 @@
 // ============================================================================
 // npcLogic.js
 // -----------------------------------------------------------------------------
-// Core update logic for projectiles, NPCs, and collisions.
+// Core update logic for NPCs and collisions.
 // Called every frame from controller.js update loop.
 // -----------------------------------------------------------------------------
-// PROJECTILE UPDATES
-// Moves each projectile via its own update().
-// Removes projectiles when off-screen or marked dead.
-// Runs centralized collision check against NPCs.
 // ============================================================================
-
-function updateProjectiles(device, game, delta)  
-{     
-    try 
-    {
-        for (let i = game.projectiles.getSize() - 1; i >= 0; i--) 
-        {
-            const proj = game.projectiles.getIndex(i);
-            try 
-            { 
-                proj.update(device, game, delta); 
-            } 
-            catch (e) 
-            { 
-                console.error("Projectile update error:", e); 
-            }
-            
-            const offscreen = proj.posY + proj.halfHeight < game.gameConsts.SCREEN_HEIGHT * game.gameConsts.HUD_BUFFER;
-            const dead = proj.alive === false;
-
-            if (offscreen || dead)
-            {
-                try
-                { 
-                    game.projectiles.subObject(i); 
-                } 
-                catch (e) 
-                { 
-                    console.error("Failed to remove projectile:", e); 
-                }
-            }
-        }
-
-        updateProjectilesCollision(device, game, delta);
-    } 
-    catch (e) 
-    {
-        console.error("updateProjectiles error:", e);
-    }
-}  
 
 // -----------------------------------------------------------------------------
 // NPC UPDATES
@@ -183,52 +139,6 @@ function overlapsAny(npc, holder)
 // -----------------------------------------------------------------------------
 
 /**-----------------------------------------------------------------------------
- * Checks projectile collisions with NPCs:
- * - Removes both projectile and NPC on hit.
- * - Plays "hit" sound effect.
- * - Increases score.
- */
-// -----------------------------------------------------------------------------
-
-// This is for checking the collision for the bullets shot from the players ship
-// to see if they hit any NPC's
-function updateProjectilesCollision(device, game)  
-{   
-    try 
-    {
-        const spritesCount = game.gameSprites.getSize();
-        const projsCount = game.projectiles.getSize();
-
-        for (let i = projsCount - 1; i >= 0; i--) 
-        {
-            const proj = game.projectiles.getIndex(i);
-            const projBox = proj.getHitbox(1.0, 0);     
-
-            for (let j = spritesCount - 1; j >= 0; j--) 
-            {
-                const npc = game.gameSprites.getIndex(j);
-                const npcBox = npc.getHitbox(1.0, 0);  
-
-                // If they hit, then a sound will be generated, player score increased, bullet and NPC should be killed and removed from game
-                if (rectsCollide(projBox, npcBox)) 
-                {
-                    try { device.audio.playSound(GameDefs.soundTypes.HIT.name); } catch (e) { console.warn("Failed to play hit sound:", e); }
-                    try { game.increaseScore(game.gameConsts.SCORE_INCREASE); } catch (e) { console.warn("Failed to increase score:", e); }
-
-                    npc.kill();
-                    proj.kill();
-                    break;
-                }
-            }
-        }
-    }
-    catch (e)
-    {
-        console.error("updateProjectilesCollision error:", e);
-    }
-}   
-
-/**-----------------------------------------------------------------------------
  * Checks player collisions with NPCs:
  * - fireAmmo → gives ammo, switches to SHOOT state.
  * - orb/others → causes damage, reduces life, sets DEATH/LOSE state.
@@ -245,18 +155,29 @@ function check_NPC_Collision(device, game)
         {
             const npc = game.gameSprites.getIndex(i);
 
+            // If we are not close enough then move on to next sprite
             if (!roughNear(player, npc)) continue;
 
+            // We hit the NPC
+            npc.kill();
+
+            // Depending on the NPC (enemy orb, fire ammo) type we have dif actions
             if (npc.name === GameDefs.spriteTypes.FIRE_AMMO.type) 
-            {
-                npc.kill();
-                device.audio.playSound(GameDefs.soundTypes.GET.name);
+            {    
+               try 
+                {
+                    device.audio.playSound(GameDefs.soundTypes.GET.name);
+                } 
+                catch(e) 
+                {
+                    console.warn("Could not play get sound:", e);
+                }
+                
                 game.playState = GameDefs.playStates.SHOOT;
                 game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);
             } 
             else 
             {  
-                npc.kill();
                 try 
                 {
                     device.audio.playSound(GameDefs.soundTypes.HURT.name);
@@ -266,24 +187,19 @@ function check_NPC_Collision(device, game)
                     console.warn("Could not play hurt sound:", e);
                 }
 
+                // Transition to lose state as before
                 // Tell the GAME that the playstates is Death
                 game.playState = GameDefs.playStates.DEATH;
+                game.gameState = GameDefs.gameStates.LOSE;
+
                 if (game.player) 
                 {
-                    try 
-                    {
-                        // Tell the PLAYER state that the playstates is Death
-                        game.player.state = GameDefs.playStates.DEATH; // force visual state immediately
-                    } 
-                    catch (e) 
-                    {
-                        console.warn("Could not set player.state to DEATH:", e);
-                    }
+                    // Tell the PLAYER state that the playstates is Death
+                    game.player.state = GameDefs.playStates.DEATH; // force visual state immediately   
                 }
 
-                // Transition to lose state as before
-                game.gameState = GameDefs.gameStates.LOSE;
                 game.decreaseLives(1);
+
                 return false;
             }
         }
@@ -294,33 +210,3 @@ function check_NPC_Collision(device, game)
     }
     return true;
 } 
-
-
-// -----------------------------------------------------------------------------
-// COLLISION UTILS
-// -----------------------------------------------------------------------------
-function rectsCollide(a, b) {
-    if (!a || !b) return false;
-    return !(
-        a.right  < b.left  ||
-        a.left   > b.right ||
-        a.bottom < b.top   ||
-        a.top    > b.bottom
-    );
-}
-
-function roughNear(a, b, pad = 0) {
-    try 
-    {
-        if (!a || !b) return false;
-        const dx = a.posX - b.posX;
-        const dy = a.posY - b.posY;
-        const r  = a.getRoughRadius()  + b.getRoughRadius() + pad;
-        return (dx * dx + dy * dy) <= (r * r);
-    } 
-    catch (e) 
-    {
-        console.error("roughNear error:", e);
-        return false;
-    }
-}

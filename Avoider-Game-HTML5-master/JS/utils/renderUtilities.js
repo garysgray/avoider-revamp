@@ -58,7 +58,7 @@ function renderNPCSprites(device, game)
 //---------------------------------------------------------------
 // Render Bullets (projectiles)
 //---------------------------------------------------------------
-function renderBullets(device, game) 
+function renderProjectiles(device, game) 
 {
     try {
         if (!device?.images || typeof device.centerImage !== "function") {
@@ -83,7 +83,7 @@ function renderBullets(device, game)
         }
 
     } catch (e) {
-        console.error("Error in renderBullets:", e);
+        console.error("Error in renderProjectiles:", e);
     }
 }
 

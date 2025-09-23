@@ -23,74 +23,61 @@ class Game
     #gameConsts;
     #projectiles;
     #gameSprites;
-  
-    #player;
-
+    #billBoards;
+    #gameTimers;
     #canvasWidth;
     #canvasHeight;
-
     #canvasHalfW;
     #canvasHalfH
-
     #playState;
     #gameState;
-
     #score;
     #lives;
     #ammo;
-
     #savedPlayState;
-
-    #billBoards;
-
-    #gameTimers;
-
     #npcSpeedMultiplyer;
+    #player;
 
     // ---- Constructor ----
     constructor() 
     {
         // Core systems
-        this.#gameConsts   = new GameConsts();
-        this.#projectiles  = new ObjHolder();
-        this.#gameSprites  = new ObjHolder();
-
-        this.#gameTimers  = new ObjHolder();
-
-        this.#billBoards   = new ObjHolder();
+        try 
+        {
+            this.#gameConsts   = new GameConsts();
+            this.#projectiles  = new ObjHolder();
+            this.#gameSprites  = new ObjHolder();
+            this.#billBoards   = new ObjHolder();
+            this.#gameTimers   = new ObjHolder();
+        }
+        catch (err) 
+        {
+            console.error("Failed to initialize object holders:", err);
+        }
 
         // Dimensions
         this.#canvasWidth  = this.#gameConsts.SCREEN_WIDTH;
         this.#canvasHeight = this.#gameConsts.SCREEN_HEIGHT;
-
         this.#canvasHalfW  = this.#canvasWidth * .5
-        this.#canvasHalfH = this.#canvasHeight * .5
-
-        
-        try {
-            this.#player = new Player(
-                GameDefs.spriteTypes.PLAYER.w,
-                GameDefs.spriteTypes.PLAYER.h,
-                this.#canvasHalfW,
-                this.#canvasHeight,
-                0
-            );
-        } catch (err) {
-            console.error("Failed to initialize player:", err);
-        }
-
+        this.#canvasHalfH  = this.#canvasHeight * .5
         // Default states
         this.#playState = GameDefs.playStates.AVOID; 
         this.#gameState = GameDefs.gameStates.INIT;
-
         this.savedPlayState = GameDefs.playStates.AVOID;
-       
         // Gameplay variables
         this.#score  = 0;
         this.#lives  = 0;
         this.#ammo   = 0;
+        this.#npcSpeedMultiplyer = 0;
 
-       this.#npcSpeedMultiplyer = 0;
+        try 
+        {
+            this.#player = new Player(GameDefs.spriteTypes.PLAYER.w, GameDefs.spriteTypes.PLAYER.h, this.#canvasHalfW, this.#canvasHeight, 0);
+        }
+        catch (err) 
+        {
+            console.error("Failed to initialize player:", err);
+        }
     }
     
     // -----------------------------
@@ -99,29 +86,20 @@ class Game
     get gameConsts()   { return this.#gameConsts; }
     get projectiles()  { return this.#projectiles; }
     get gameSprites()  { return this.#gameSprites; }
-
     get billBoards()  { return this.#billBoards; }
     get gameTimers()  { return this.#gameTimers; }
-
-    get player()       { return this.#player; }
-
     get canvasWidth()  { return this.#canvasWidth; }
     get canvasHeight() { return this.#canvasHeight; }
-
     get canvasHalfW()  { return this.#canvasHalfW; }
     get canvasHalfH()  { return this.#canvasHalfH; }
-
     get gameState()    { return this.#gameState; }
     get playState()    { return this.#playState; }
-
     get score()        { return this.#score; }
     get lives()        { return this.#lives; }
     get ammo()         { return this.#ammo; } 
-
     get savedPlayState() { return this.#savedPlayState; }
-
     get npcSpeedMuliplyer() { return this.#npcSpeedMultiplyer; } 
-
+    get player()       { return this.#player; }
     
     // -----------------------------
     // Mutators
@@ -129,15 +107,10 @@ class Game
     set gameState(v)    { this.#gameState = v; }
     set score(v)        { this.#score = v; }
     set playState(v)    { this.#playState = v; }
-
     set lives(v)        { this.#lives = v; }
     set ammo(v)         { this.#ammo = v; }
-
     set savedPlayState(v) { this.#savedPlayState = v; }
-
     set npcSpeedMuliplyer(v) { this.#npcSpeedMultiplyer = v; }
-
-
 
     // Convenience modifiers
     emptyAmmo()         { this.#ammo = 0; }    
@@ -145,6 +118,12 @@ class Game
     decreaseAmmo(a)     { this.#ammo -= a; }
     decreaseLives(a)    { this.#lives -= a; }
     increaseScore(a)    { this.#score += a; }
+
+    // Functions to set Game and Play states
+    savePlayState(state)    { this.#savedPlayState = state; }
+    restorePlayState()      { this.#playState = this.#savedPlayState; }
+    setGameState(state)     { this.#gameState = state; }
+    setPlayState(playstate) { this.#playState = playstate; }
     
     // -----------------------------
     // Game Setup
@@ -155,8 +134,7 @@ class Game
             // Input
             device.keys.initKeys();
 
-            // Load sprite assets
-            // Load sprites
+            // Load game object sprite assets into device images
             Object.values(GameDefs.spriteTypes).forEach(spriteDef => 
             {
                 if (spriteDef.path) 
@@ -173,7 +151,7 @@ class Game
                 }
             });
 
-            // Load billboard assets
+            // Load billboard sprite assets into device images
             Object.values(GameDefs.billBoardTypes).forEach(boardDef => 
             {
                 if (boardDef.path) {
@@ -189,7 +167,7 @@ class Game
                 }
             });
 
-            // Initialize boards   FIX MAGIC values
+            // Initialize boards into an array using definitions 
             const boards = [
                 new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0, 0, GameDefs.billBoardTypes.BACKGROUND.isCenter),
                 new BillBoard(GameDefs.billBoardTypes.HUD.type,        GameDefs.billBoardTypes.HUD.w,        GameDefs.billBoardTypes.HUD.h,        0, 0, 0, GameDefs.billBoardTypes.HUD.isCenter),
@@ -198,12 +176,15 @@ class Game
                 new BillBoard(GameDefs.billBoardTypes.DIE.type,        GameDefs.billBoardTypes.DIE.w,        GameDefs.billBoardTypes.DIE.h,        0, 0, 0, GameDefs.billBoardTypes.DIE.isCenter),   
             ];
 
+            // Some billboards are ment to be centered in play screen so we set the positions here (billboards have a bool to see if there centered)
+            // then it gets added to the billboards obj holder
             boards.forEach(board => 
             {
                 try 
                 {
+
                     board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
-                this.#billBoards.addObject(board);
+                    this.#billBoards.addObject(board);
                 } 
                 catch (err) 
                 {
@@ -211,6 +192,7 @@ class Game
                 }
             });
 
+            // Initialize sounds into device audio
             Object.values(GameDefs.soundTypes).forEach(sndDef => 
             {
                 if (sndDef.path) {
@@ -225,6 +207,7 @@ class Game
                 }
             });
 
+            // Initialize all game related timers and load into gameTimers
             const timers = [
                 new Timer(GameDefs.timerTypes.SHIELD_TIMER, this.#gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN),
                 // initial duration 0 is fine — will be set by reset()
@@ -257,6 +240,7 @@ class Game
         this.lives     = this.#gameConsts.GAME_LIVES_START_AMOUNT;
         this.ammo      = 0;
         this.gameSprites.clearObjects();
+        this.projectiles.clearObjects();
 
         this.setPlayState(GameDefs.playStates.AVOID);
         this.setMouseToPlayer(device, this.#player);
@@ -264,30 +248,12 @@ class Game
     }
     
     // -----------------------------
-    // Player Input Binding
+    // Player Mouse Input Binding
     // -----------------------------
     setMouseToPlayer(device, aPlayer) 
     {
         device.setupMouse(aPlayer, device);
     }  
 
-    savePlayState(state)
-    {
-        this.#savedPlayState = state;
-    }
-
-    restorePlayState()
-    {
-        this.#playState = this.#savedPlayState;
-    }
-
-    setGameState(state)
-    {
-        this.#gameState = state;
-    }
-
-    setPlayState(playstate)
-    {
-        this.#playState = playstate;
-    }
+    
 }
