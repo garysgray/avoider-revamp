@@ -10,40 +10,44 @@
   - The `css` directory contains the stylesheet for styling the game's UI.
 
 
-Avoider-Game-HTML5/
-│
-├── index.html                         # Main entry point for the game.
+Avoider-Game-HTML5-master/
+├── index.html                     // Main HTML file for the game
 |
 ├── css/
-│   └── style.css                      # Styles for game UI.
+│   └── style.css                 // CSS file for styling the game
 |
 ├── js/
 │   ├── core/
-│   │   ├── gameConfig.js              # Game configuration settings and constants.
-│   │   ├── gameController.js          # Main game logic manager.
-│   │   └── gameDefs.js                # Game state and entity definitions.
-│   │   
+│   │   ├── gameConfig.js         // Configuration constants for the game
+│   │   ├── gameController.js      // Controller class for managing game state
+│   │   ├── gameDefs.js            // Enumerations and definitions used across the game
+│   │   └── gameEntities.js        // Definitions for game objects (Player, NPC, etc.)
+|   |
 │   ├── logic/
-│   │   ├── mainStateLogic.js          # Logic for managing game states.
-│   │   └── npcLogic.js                # NPC update logic.
-│   │   
-│   ├── objects/
-│   │   └── gameEntities.js            # Definitions of all game entities.
-│   │  
+│   │   ├── mainStateLogic.js      // Logic handling game states and transitions
+│   │   ├── npcLogic.js            // Logic for Non-Playable Characters (NPCs)
+│   │   └── projectileLogic.js      // Logic for projectile updates and collisions
+│   │
 │   ├── render/
-│   │   ├── renderUtilities.js         # Handles rendering functions.
-│   │   ├── gameObjectsRenderLayer.js  # Handles rendering of game visuals.
-│   │   ├── textRenderLayer.js         # Renders text elements.
-│   │   └── layer.js                   # Template for rendering layers.
-│   │   
-│   └── utils/
-│       └── gameUtilities.js           # Helper functions and utility classes.
-|
+│   │   ├── gameObjectsRenderLayer.js // Rendering logic for game objects
+│   │   ├── hudRenderLayer.js      // Rendering logic for the Heads-Up Display (HUD)
+│   │   ├── layer.js               // Class definition for managing rendering layers
+│   │   ├── renderBillBoardsLayer.js // Logic for rendering backgrounds and UI overlays
+│   │   └── textRenderLayer.js     // Rendering logic for text messages on screen
+│   │
+│   ├── utils/
+│   │   ├── collisionUtilities.js   // Utility functions for collision detection
+│   │   ├── gameUtilities.js        // Utility classes for rendering, input, timers, etc.
+│   │   └── renderUtilities.js      // Rendering utilities for sprites, hitboxes, etc.
+│   │
+│   └── main.js                    // Main entry point for the game execution
+│   │
+├── spec/
+│   ├── deviceSpec.js              // Unit tests for the Device class
+│   ├── gameControllerSpec.js       // Unit tests for the Controller class
+│   └── playerSpec.js               // Unit tests for the Player class
+│   │
 ├── test/
-│   └── index.html
+│   └── index.html                  // Test HTML file for running Jasmine tests
 |
-└── spec/
-    ├── playerSpec.js                  # Unit tests for Player class.
-    ├── deviceSpec.js                  # Unit tests for Device class.
-    └── gameControllerSpec.js          # Unit tests for Controller class.   
-
+└── README.md                      // Documentation and instructions for the project
