@@ -4,7 +4,7 @@
 // Update Game States
 // - Called each frame from the controller's update() function
 // - Handles updates to core game logic, input responses, and state transitions
-// - Updates all game objects depending on current game state
+// - Calls for all game objects updates depending on current game state
 // ============================================================================
 
 function updateGameStates(device, game, delta) 
@@ -50,8 +50,8 @@ function updateGameStates(device, game, delta)
                     // If player is not in SHIELD Mode then check for collision with NPC's
                     if (game.playState !== GameDefs.playStates.SHIELD) 
                     {
-                        const avoidcCollision = check_NPC_Collision(device, game);
-                        if (avoidcCollision === false) 
+                        const avoidedCollision = check_NPC_Collision(device, game);
+                        if (avoidedCollision === false) 
                         {
                             // When player dies from collision we save his position to show dead player in pause menue
                             game.player.savePos(game.player.posX, game.player.posY);
@@ -109,7 +109,7 @@ function updateGameStates(device, game, delta)
                         game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
                     }
 
-                    // Dev hack if you want to restart game
+                    // Dev hack if you want to restart game quickly
                     if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
                     {
                         game.setGameState(GameDefs.gameStates.INIT);
@@ -207,6 +207,7 @@ function checkforPause(device, game)
     {
         if (device.keys.isKeyPressed(GameDefs.keyTypes.PAUSE_KEY_L)) 
         {
+            // if we are in play mode and not shielded
             if (game.gameState === GameDefs.gameStates.PLAY &&
                 game.playState !== GameDefs.playStates.SHIELD) 
             {

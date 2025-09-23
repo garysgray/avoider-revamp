@@ -10,63 +10,21 @@
 function renderGameObjectsLayer(device, game) {   
     try 
     {
-        let board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.BACKGROUND.type);
-        const bgImage = device.images.getImage?.(GameDefs.billBoardTypes.BACKGROUND.type);
-        if (board && bgImage) 
-        {
-            try 
-            {
-                device.renderImage(bgImage, board.posX, board.posY, game.gameConsts.SCREEN_WIDTH , game.gameConsts.SCREEN_HEIGHT);
-            } 
-            catch (e) 
-            {
-                console.error("Failed to render background image:", e);
-            }      
-        } 
-        else
-        { 
-            console.warn("Background board or image missing.");
-        }
-
         // === Render Based on Game State ===
         switch (game.gameState) 
         {
             case GameDefs.gameStates.INIT: 
             {
-                const yBuff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
-                board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.SPLASH.type);
-                const splashImg = device.images.getImage(GameDefs.billBoardTypes.SPLASH.type);
-                if (board && splashImg) 
-                {
-                    try {
-                        device.renderImage(splashImg, board.posX, board.posY - yBuff);
-                    } 
-                    catch (e) 
-                    {
-                        console.error("Failed to render splash image:", e);
-                    }
-                }
+                
             } 
             break;
 
             case GameDefs.gameStates.PLAY: 
             {
-                board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.HUD.type);
-                const HUDImg = device.images.getImage(GameDefs.billBoardTypes.HUD.type);
-                if (board && HUDImg) 
-                {
-                    try {
-                        device.renderImage(HUDImg, board.posX, board.posY, game.gameConsts.SCREEN_WIDTH, game.gameConsts.SCREEN_HEIGHT * game.gameConsts.HUD_BUFFER);
-                    } 
-                    catch (e) 
-                    {
-                        console.error("Failed to render HUDImg:", e);
-                    }
-                }
                 try
                 {
                     renderNPCSprites(device, game);
-                    renderBullets(device, game);
+                    renderProjectiles(device, game);
                     renderPlayer(device, game);
                 } 
                 catch (e) 
@@ -78,20 +36,7 @@ function renderGameObjectsLayer(device, game) {
 
             case GameDefs.gameStates.PAUSE:
             {
-                const yBuff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
-                board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.PAUSE.type);
-                const pauseImg = device.images.getImage(GameDefs.billBoardTypes.PAUSE.type);
-                if (board && pauseImg) 
-                {
-                    try 
-                    {
-                        device.renderImage(pauseImg, board.posX, board.posY - yBuff);
-                    } 
-                    catch (e) 
-                    {
-                        console.error("Failed to render pause screen:", e);
-                    }
-                }
+                
             } 
             break;
 
@@ -103,20 +48,6 @@ function renderGameObjectsLayer(device, game) {
 
             case GameDefs.gameStates.LOSE: 
             {
-                const yBuff = (game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT); 
-                board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.DIE.type);
-                const dieImg = device.images.getImage(GameDefs.billBoardTypes.DIE.type);
-                if (board && dieImg) 
-                {
-                    try 
-                    {
-                        device.renderImage(dieImg, board.posX, board.posY- yBuff);      
-                    } 
-                    catch (e) 
-                    {
-                        console.error("Failed to render die screen:", e);
-                    }
-                }
                 try 
                 {
                     renderPlayer(device, game);
