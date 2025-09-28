@@ -10,7 +10,7 @@
 // Runs centralized collision check against NPCs.
 // ============================================================================
 
-function updateProjectiles(device, game, delta)  
+function updateProjectilesSprites(device, game, delta)  
 {     
     try 
     {

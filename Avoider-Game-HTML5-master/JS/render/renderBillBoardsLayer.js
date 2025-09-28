@@ -7,19 +7,19 @@
 // Uses game state to decide what to render
 // ============================================================================
 
-function renderBillBoardsLayer(device, game) {   
+function renderBillBoardsLayer(device, game) 
+{   
     try 
     {
         const yBuff = (game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT); 
-        
+
         const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.BACKGROUND.type);
-        const bgImage = device.images.getImage?.(GameDefs.billBoardTypes.BACKGROUND.type);
+        const bgImage = device.images.getImage(GameDefs.billBoardTypes.BACKGROUND.type);
         if (board && bgImage) 
         {
             try 
             {
-                //device.renderImage(bgImage, board.posX, board.posY, game.gameConsts.SCREEN_WIDTH , game.gameConsts.SCREEN_HEIGHT);
-                 board.render(device, game, bgImage)
+                board.render(device, game, bgImage);
             } 
             catch (e) 
             {
@@ -40,9 +40,9 @@ function renderBillBoardsLayer(device, game) {
                 const splashImg = device.images.getImage(GameDefs.billBoardTypes.SPLASH.type);
                 if (board && splashImg) 
                 {
-                    try {
-                        //device.renderImage(splashImg, board.posX, board.posY - yBuff);
-                        board.render(device, splashImg, yBuff)
+                    try 
+                    {
+                        board.render(device, splashImg, yBuff);
                     } 
                     catch (e) 
                     {
@@ -65,8 +65,7 @@ function renderBillBoardsLayer(device, game) {
                 {
                     try 
                     {
-                        device.renderImage(pauseImg, board.posX, board.posY - yBuff);
-                        board.render(device, pauseImg, yBuff)
+                        board.render(device, pauseImg, yBuff);
                     } 
                     catch (e) 
                     {
@@ -89,9 +88,8 @@ function renderBillBoardsLayer(device, game) {
                 if (board && dieImg) 
                 {
                     try 
-                    {
-                        device.renderImage(dieImg, board.posX, board.posY- yBuff);  
-                        board.render(device, dieImg, yBuff)   
+                    { 
+                        board.render(device, dieImg, yBuff);   
                     } 
                     catch (e) 
                     {

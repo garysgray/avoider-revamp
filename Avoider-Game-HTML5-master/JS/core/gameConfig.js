@@ -235,7 +235,6 @@ class Game
         this.gameSprites.clearObjects();
         this.projectiles.clearObjects();
 
-        //this.setPlayState(GameDefs.playStates.AVOID);
         this.player.setPlayerState(GameDefs.playStates.AVOID);
         this.setMouseToPlayer(device, this.#player);
         this.#gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
