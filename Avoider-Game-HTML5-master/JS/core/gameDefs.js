@@ -21,12 +21,12 @@ const GameDefs = Object.freeze({
         SUPER: 3,
         DEATH: 4
     },
-
+  
     spriteTypes: {
-        PLAYER:   { type: "player",    w: 32, h: 32, path: "assets/sprites/ships.png" },
-        ORB:      { type: "orb",       w: 24, h: 24, speed: 200, spawnRatio: 10, path: "assets/sprites/orb.png" },
-        FIRE_AMMO:{ type: "fireAmmo",  w: 16, h: 16, speed: 150, spawnRatio: 200, path: "assets/sprites/fire.png" },
-        BULLET:   { type: "bullet",    w: 8,  h: 8, speed: 550, spawnGap: 0, path: "assets/sprites/bullet.png" }
+        PLAYER:   { type: "player",    w: 32, h: 32, speed: 0, spawnRatio: 0, path: "assets/sprites/ships.png" },
+        ORB:      { type: "orb",       w: 24, h: 24, speed: 220, spawnRatio: 0.9, path: "assets/sprites/orb.png" },
+        FIRE_AMMO:{ type: "fireAmmo",  w: 16, h: 16, speed: 150, spawnRatio: 0.991, path: "assets/sprites/fire.png" },
+        BULLET:   { type: "bullet",    w: 8,  h: 8,  speed: 550, spawnRatio: 0, path: "assets/sprites/bullet.png" }
     },
 
     billBoardTypes: {

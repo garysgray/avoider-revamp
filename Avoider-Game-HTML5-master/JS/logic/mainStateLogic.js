@@ -44,11 +44,12 @@ function updateGameStates(device, game, delta)
 
                     // GAme clock that helps update when NPC's speed should incread and give player points
                     const gameClock = game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK);
-                    // Update all Game-Play for NPC's and Player
 
-                    game.player.update(device, game, delta);   //gameEntities.js
-                    updateNPCSprites(device, game, delta);     //npcLogic.js
-                    updateProjectiles(device, game, delta);    //npcLogic.js
+                    // Update all Game-Play for NPC's and Player
+                    game.player.update(device, game, delta);        //gameEntities.js
+                    generateNPCS(device, game);                     //npcLogic.js
+                    updateNPCSprites(device, game, delta);          //npcLogic.js
+                    updateProjectilesSprites(device, game, delta);  //projectileLogic.js
 
                     // If player is not in SHIELD Mode then check for collision with NPC's
                     if (game.player.playerState !== GameDefs.playStates.SHIELD) 

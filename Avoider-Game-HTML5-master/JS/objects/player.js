@@ -53,7 +53,7 @@ class Player extends GameObject
                 bulletDef.w,
                 bulletDef.h,
                 this.posX,
-                this.posY - this.halfHeight - bulletDef.spawnGap - (bulletDef.h  * 0.5),
+                this.posY - this.halfHeight - bulletDef.spawnRatio - (bulletDef.h  * 0.5),
                 bulletDef.speed 
             );
 

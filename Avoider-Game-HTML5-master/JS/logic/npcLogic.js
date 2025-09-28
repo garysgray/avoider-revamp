@@ -21,28 +21,6 @@ function updateNPCSprites(device, game, delta)
 {     
     try 
     {
-        if (!game.gameSprites) return;
-
-        // Spawn ORBS
-        try 
-        { 
-            spawnNPC(device, game, GameDefs.spriteTypes.ORB.type, GameDefs.spriteTypes.ORB.w, GameDefs.spriteTypes.ORB.h, GameDefs.spriteTypes.ORB.speed, 1 / GameDefs.spriteTypes.ORB.spawnRatio ); 
-        } 
-        catch (e) 
-        {
-             console.error("ORB spawn error:", e); 
-        }
-
-        // Spawn Fire Ammo
-        try 
-        { 
-            spawnNPC(device, game, GameDefs.spriteTypes.FIRE_AMMO.type, GameDefs.spriteTypes.FIRE_AMMO.w, GameDefs.spriteTypes.FIRE_AMMO.h, GameDefs.spriteTypes.FIRE_AMMO.speed, 1 / GameDefs.spriteTypes.FIRE_AMMO.spawnRatio ); 
-        } 
-        catch (e) 
-        { 
-            console.error("FireAmmo spawn error:", e); 
-        }
-
         // Update NPC movement
         for (let i = game.gameSprites.getSize() - 1; i >= 0; i--) 
             {
@@ -73,15 +51,52 @@ function updateNPCSprites(device, game, delta)
     {
         console.error("updateNPCSprites error:", e);
     }
-}  
+} 
 
-// Function that spawns NPC's, and moves them to a random x pos and then calls attempts at keeping these NPC's from spawning/moving positons on top of each other
-function spawnNPC(device, game, type, width, height, speed, chance)
+function generateNPCS(device, game)
 {
     try 
     {
-        if (!type || Math.random() >= chance) return;
+        // Spawn ORBS
+        try 
+        { 
+            //use clock for time duration to update spawn ratio
+            if (Math.random() >= GameDefs.spriteTypes.ORB.spawnRatio) 
+            {
+                spawnNPC(device, game, GameDefs.spriteTypes.ORB.type, GameDefs.spriteTypes.ORB.w, GameDefs.spriteTypes.ORB.h, GameDefs.spriteTypes.ORB.speed, GameDefs.spriteTypes.ORB.spawnRatio ); 
+            }
+            
+        } 
+        catch (e) 
+        {
+             console.error("ORB spawn error:", e); 
+        }
 
+        // Spawn Fire Ammo
+        try 
+        { 
+             //use clock for time duration to update spawn ratio
+            if (Math.random() >= GameDefs.spriteTypes.FIRE_AMMO.spawnRatio) 
+            {
+                spawnNPC(device, game, GameDefs.spriteTypes.FIRE_AMMO.type, GameDefs.spriteTypes.FIRE_AMMO.w, GameDefs.spriteTypes.FIRE_AMMO.h, GameDefs.spriteTypes.FIRE_AMMO.speed,  GameDefs.spriteTypes.FIRE_AMMO.spawnRatio ); 
+            }
+        } 
+        catch (e) 
+        { 
+            console.error("FireAmmo spawn error:", e); 
+        }
+    } 
+    catch (e) 
+    {
+        console.error("updateNPCSprites error:", e);
+    }
+}
+
+// Function that spawns NPC's, and moves them to a random x pos and then calls attempts at keeping these NPC's from spawning/moving positons on top of each other
+function spawnNPC(device, game, type, width, height, speed, spawnRatio)
+{
+    try 
+    {
         const npc = new NPC(type, width, height, 0, 0, speed);
 
         // Position vars
