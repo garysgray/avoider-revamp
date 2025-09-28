@@ -23,8 +23,9 @@ function renderNPCSprites(device, game)
         }
 
         // Preload references to images (avoid repeated lookups each frame)
-        const orbImage      = device.images.getImage?.(GameDefs.spriteTypes.ORB.type);
+        
         const fireAmmoImage = device.images.getImage?.(GameDefs.spriteTypes.FIRE_AMMO.type);
+        const orbImage      = device.images.getImage?.(GameDefs.spriteTypes.ORB.type);
 
         for (let i = 0; i < game.gameSprites.getSize(); i++) 
         {
@@ -93,7 +94,7 @@ function renderProjectiles(device, game)
 function renderPlayer(device, game) 
 {
     try {
-        const tempObj = game?.player;
+        const tempObj = game.player;
         if (!tempObj) {
             console.warn("Player object missing.");
             return;
@@ -112,7 +113,7 @@ function renderPlayer(device, game)
                 tempObj.posY,
                 tempObj.width,
                 tempObj.height,
-                tempObj.state
+                tempObj.playerState
             );
         }
 

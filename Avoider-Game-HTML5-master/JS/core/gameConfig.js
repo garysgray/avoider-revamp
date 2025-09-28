@@ -29,12 +29,10 @@ class Game
     #canvasHeight;
     #canvasHalfW;
     #canvasHalfH
-    #playState;
     #gameState;
     #score;
     #lives;
     #ammo;
-    #savedPlayState;
     #npcSpeedMultiplyer;
     #player;
 
@@ -60,10 +58,10 @@ class Game
         this.#canvasHeight = this.#gameConsts.SCREEN_HEIGHT;
         this.#canvasHalfW  = this.#canvasWidth * .5
         this.#canvasHalfH  = this.#canvasHeight * .5
-        // Default states
-        this.#playState = GameDefs.playStates.AVOID; 
+
+        // Default state
         this.#gameState = GameDefs.gameStates.INIT;
-        this.savedPlayState = GameDefs.playStates.AVOID;
+   
         // Gameplay variables
         this.#score  = 0;
         this.#lives  = 0;
@@ -93,11 +91,9 @@ class Game
     get canvasHalfW()  { return this.#canvasHalfW; }
     get canvasHalfH()  { return this.#canvasHalfH; }
     get gameState()    { return this.#gameState; }
-    get playState()    { return this.#playState; }
     get score()        { return this.#score; }
     get lives()        { return this.#lives; }
     get ammo()         { return this.#ammo; } 
-    get savedPlayState() { return this.#savedPlayState; }
     get npcSpeedMuliplyer() { return this.#npcSpeedMultiplyer; } 
     get player()       { return this.#player; }
     
@@ -106,10 +102,8 @@ class Game
     // -----------------------------
     set gameState(v)    { this.#gameState = v; }
     set score(v)        { this.#score = v; }
-    set playState(v)    { this.#playState = v; }
     set lives(v)        { this.#lives = v; }
     set ammo(v)         { this.#ammo = v; }
-    set savedPlayState(v) { this.#savedPlayState = v; }
     set npcSpeedMuliplyer(v) { this.#npcSpeedMultiplyer = v; }
 
     // Convenience modifiers
@@ -119,11 +113,9 @@ class Game
     decreaseLives(a)    { this.#lives -= a; }
     increaseScore(a)    { this.#score += a; }
 
-    // Functions to set Game and Play states
-    savePlayState(state)    { this.#savedPlayState = state; }
-    restorePlayState()      { this.#playState = this.#savedPlayState; }
+    // Functions to set Game states
     setGameState(state)     { this.#gameState = state; }
-    setPlayState(playstate) { this.#playState = playstate; }
+  
     
     // -----------------------------
     // Game Setup
@@ -168,8 +160,9 @@ class Game
             });
 
             // Initialize boards into an array using definitions 
-            const boards = [
-                new BillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0, 0, GameDefs.billBoardTypes.BACKGROUND.isCenter),
+            const boards = 
+            [
+                new ParallaxBillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0, 60, GameDefs.billBoardTypes.BACKGROUND.isCenter, GameDefs.parallexType.VERICAL),
                 new BillBoard(GameDefs.billBoardTypes.HUD.type,        GameDefs.billBoardTypes.HUD.w,        GameDefs.billBoardTypes.HUD.h,        0, 0, 0, GameDefs.billBoardTypes.HUD.isCenter),
                 new BillBoard(GameDefs.billBoardTypes.SPLASH.type,     GameDefs.billBoardTypes.SPLASH.w,     GameDefs.billBoardTypes.SPLASH.h,     0, 0, 0, GameDefs.billBoardTypes.SPLASH.isCenter),
                 new BillBoard(GameDefs.billBoardTypes.PAUSE.type,      GameDefs.billBoardTypes.PAUSE.w,      GameDefs.billBoardTypes.PAUSE.h,      0, 0, 0, GameDefs.billBoardTypes.PAUSE.isCenter),
@@ -208,10 +201,10 @@ class Game
             });
 
             // Initialize all game related timers and load into gameTimers
-            const timers = [
+            const timers = 
+            [
                 new Timer(GameDefs.timerTypes.SHIELD_TIMER, this.#gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN),
                 // initial duration 0 is fine — will be set by reset()
-                new Timer(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER, 0, GameDefs.timerModes.COUNTDOWN, false ),
                 new Timer(GameDefs.timerTypes.GAME_CLOCK, 0, GameDefs.timerModes.COUNTUP),
             ];
             timers.forEach(timer => 
@@ -242,7 +235,8 @@ class Game
         this.gameSprites.clearObjects();
         this.projectiles.clearObjects();
 
-        this.setPlayState(GameDefs.playStates.AVOID);
+        //this.setPlayState(GameDefs.playStates.AVOID);
+        this.player.setPlayerState(GameDefs.playStates.AVOID);
         this.setMouseToPlayer(device, this.#player);
         this.#gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
     }

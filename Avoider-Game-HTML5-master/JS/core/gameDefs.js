@@ -85,6 +85,11 @@ const GameDefs = Object.freeze({
         SHIELD_TIMER: "shieldTimer",
         SHOOT_COOL_DOWN_TIMER: "shootCooldownTimer",
         GAME_CLOCK: "gameClock",
+    },
+
+    parallexType: {
+        HORIZONTAL: 1,
+        VERTICLE:   2
     }
 
 });

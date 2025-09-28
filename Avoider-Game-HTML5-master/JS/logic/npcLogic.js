@@ -87,7 +87,7 @@ function spawnNPC(device, game, type, width, height, speed, chance)
         // Position vars
         const minX = npc.halfWidth;
         const maxX = device.canvas.width - npc.halfWidth;
-        const startY = npc.halfHeight + device.canvas.height * game.gameConsts.HUD_BUFFER;
+        const startY = npc.halfHeight;
 
         // how many attempts at not spawing on top of another npc
         const attemptsMax = game.gameConsts.SPAWN_ATTEMPTS;
@@ -173,7 +173,7 @@ function check_NPC_Collision(device, game)
                     console.warn("Could not play get sound:", e);
                 }
                 
-                game.playState = GameDefs.playStates.SHOOT;
+                game.player.playerState = GameDefs.playStates.SHOOT;
                 game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);
             } 
             else 
@@ -189,13 +189,13 @@ function check_NPC_Collision(device, game)
 
                 // Transition to lose state as before
                 // Tell the GAME that the playstates is Death
-                game.playState = GameDefs.playStates.DEATH;
+                game.player.playerState = GameDefs.playStates.DEATH;
                 game.gameState = GameDefs.gameStates.LOSE;
 
                 if (game.player) 
                 {
                     // Tell the PLAYER state that the playstates is Death
-                    game.player.state = GameDefs.playStates.DEATH; // force visual state immediately   
+                    game.player.playerState = GameDefs.playStates.DEATH; // force visual state immediately   
                 }
 
                 game.decreaseLives(1);
