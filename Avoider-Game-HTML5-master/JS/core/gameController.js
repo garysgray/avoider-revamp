@@ -63,9 +63,9 @@ class Controller
             this.#game.initGame(this.#device);
 
             // Layers have to be rendered in this order
-            if (typeof billBoardsLayer !== 'undefined')  this.addLayer(billBoardsLayer);      // game backgrounds
-            if (typeof hudRenderLayer !== 'undefined')   this.addLayer(hudRenderLayer);       // game HUD
+            if (typeof billBoardsLayer !== 'undefined')  this.addLayer(billBoardsLayer);      // game backgrounds 
             if (typeof gameObjectsLayer !== 'undefined') this.addLayer(gameObjectsLayer);     // game objects
+            if (typeof hudRenderLayer !== 'undefined')   this.addLayer(hudRenderLayer);       // game HUD
             if (typeof textRenderLayer !== 'undefined')  this.addLayer(textRenderLayer);      // game text
         }
         catch (error) 

@@ -39,6 +39,9 @@ function updateGameStates(device, game, delta)
             case GameDefs.gameStates.PLAY:
                 try 
                 {
+                    const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.BACKGROUND.type);
+                    board.update(delta, game)
+
                     // GAme clock that helps update when NPC's speed should incread and give player points
                     const gameClock = game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK);
                     // Update all Game-Play for NPC's and Player
@@ -48,7 +51,7 @@ function updateGameStates(device, game, delta)
                     updateProjectiles(device, game, delta);    //npcLogic.js
 
                     // If player is not in SHIELD Mode then check for collision with NPC's
-                    if (game.playState !== GameDefs.playStates.SHIELD) 
+                    if (game.player.playerState !== GameDefs.playStates.SHIELD) 
                     {
                         const avoidedCollision = check_NPC_Collision(device, game);
                         if (avoidedCollision === false) 
@@ -103,7 +106,7 @@ function updateGameStates(device, game, delta)
 
                         // Update states
                         game.setGameState(GameDefs.gameStates.PLAY);
-                        game.setPlayState(GameDefs.playStates.SHIELD);
+                        game.player.setPlayerState(GameDefs.playStates.SHIELD);
 
                         // Reset the Shield timer for when player comes out of pause
                         game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
@@ -173,7 +176,7 @@ function updateGameStates(device, game, delta)
                             
                             // Update states
                             game.setGameState(GameDefs.gameStates.PLAY);
-                            game.setPlayState(GameDefs.playStates.SHIELD);
+                            game.player.setPlayerState(GameDefs.playStates.SHIELD);
 
                             // Reset the Shield timer for when player comes out of re-spawn
                             game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER).reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
@@ -209,7 +212,7 @@ function checkforPause(device, game)
         {
             // if we are in play mode and not shielded
             if (game.gameState === GameDefs.gameStates.PLAY &&
-                game.playState !== GameDefs.playStates.SHIELD) 
+                game.player.playerState !== GameDefs.playStates.SHIELD) 
             {
                 // Save player position
                 game.player.savePos(game.player.posX, game.player.posY);
