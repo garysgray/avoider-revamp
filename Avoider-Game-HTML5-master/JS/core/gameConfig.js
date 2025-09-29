@@ -34,6 +34,7 @@ class Game
     #lives;
     #ammo;
     #npcSpeedMultiplyer;
+    #npcSpawnMultiplyer;
     #player;
 
     // ---- Constructor ----
@@ -67,6 +68,7 @@ class Game
         this.#lives  = 0;
         this.#ammo   = 0;
         this.#npcSpeedMultiplyer = 0;
+        this.#npcSpawnMultiplyer = 0;
 
         try 
         {
@@ -95,6 +97,7 @@ class Game
     get lives()        { return this.#lives; }
     get ammo()         { return this.#ammo; } 
     get npcSpeedMuliplyer() { return this.#npcSpeedMultiplyer; } 
+    get npcSpawnMultiplyer() { return this.#npcSpawnMultiplyer; } 
     get player()       { return this.#player; }
     
     // -----------------------------
@@ -105,6 +108,7 @@ class Game
     set lives(v)        { this.#lives = v; }
     set ammo(v)         { this.#ammo = v; }
     set npcSpeedMuliplyer(v) { this.#npcSpeedMultiplyer = v; }
+    set npcSpawnMultiplyer(v) { this.#npcSpawnMultiplyer = v; }
 
     // Convenience modifiers
     emptyAmmo()         { this.#ammo = 0; }    
@@ -232,8 +236,12 @@ class Game
         this.score     = 0;
         this.lives     = this.#gameConsts.GAME_LIVES_START_AMOUNT;
         this.ammo      = 0;
+
         this.gameSprites.clearObjects();
         this.projectiles.clearObjects();
+
+        this.npcSpeedMuliplyer = 0;
+        this.npcSpawnMultiplyer = 0;
 
         this.player.setPlayerState(GameDefs.playStates.AVOID);
         this.setMouseToPlayer(device, this.#player);
