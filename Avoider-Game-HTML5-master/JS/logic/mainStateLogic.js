@@ -39,50 +39,20 @@ function updateGameStates(device, game, delta)
             case GameDefs.gameStates.PLAY:
                 try 
                 {
+                    // Since the background billboard is a parallax it needs to be updated
                     const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.BACKGROUND.type);
                     board.update(delta, game)
 
-                    // GAme clock that helps update when NPC's speed should incread and give player points
+                    // Game clock that helps update when NPC's speed should incread and give player points
                     const gameClock = game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK);
 
+                    updateGameElementsBasedOnClock(game, delta, gameClock);
+
                     // Update all Game-Play for NPC's and Player
-                    game.player.update(device, game, delta);        //gameEntities.js
-                    generateNPCS(device, game);                     //npcLogic.js
-                    updateNPCSprites(device, game, delta);          //npcLogic.js
-                    updateProjectilesSprites(device, game, delta);  //projectileLogic.js
-
-                    // If player is not in SHIELD Mode then check for collision with NPC's
-                    if (game.player.playerState !== GameDefs.playStates.SHIELD) 
-                    {
-                        const avoidedCollision = check_NPC_Collision(device, game);
-                        if (avoidedCollision === false) 
-                        {
-                            // When player dies from collision we save his position to show dead player in pause menue
-                            game.player.savePos(game.player.posX, game.player.posY);
-                        }
-                    }
-
-                    // This is where we update the time clock and based on that we add speed to the Spawning NPCs
-                    if (gameClock.active)
-                    {
-                        // We save what the npcSpeedMuliplyer was last time
-                        const lastTime = game.npcSpeedMuliplyer;
-
-                        // Update game time clock
-                        gameClock.update(delta);
-
-                        // We need the new speedMultiplyer
-                        const speedMultiplier = 1 + Math.floor(gameClock.elapsedTime / game.gameConsts.NPC_SPEED_INCREASE_INTERVALS) * game.gameConsts.NPC_SPEED_INCREASE_AMOUNT;
-
-                        // Update the current speed now that  time has increased
-                        game.npcSpeedMuliplyer = speedMultiplier;
-
-                        // If its not the very first time we check and there not equal, then key time has elasped, so we increase score
-                        if (lastTime != game.npcSpeedMuliplyer && lastTime != 0)
-                        {
-                            game.increaseScore(game.gameConsts.SCORE_INCREASE);   
-                        }
-                    }
+                    game.player.update(device, game, delta, check_NPC_Collision);        //npcLogic.js
+                    generateNPCS(device, game);                                          //npcLogic.js
+                    updateNPCSprites(device, game, delta);                               //npcLogic.js
+                    updateProjectilesSprites(device, game, delta);                       //projectileLogic.js
 
                     // If player hits pause button we change game states
                     checkforPause(device, game);                
@@ -155,6 +125,9 @@ function updateGameStates(device, game, delta)
                     // Clear screen of all NPC's and bullets
                     game.projectiles.clearObjects();
                     game.gameSprites.clearObjects();
+
+                    game.npcSpeedMuliplyer = 0;
+                    game.npcSpawnMultiplyer = 0;
 
                     // Empty players ammo from gameplay
                     game.emptyAmmo();
@@ -233,3 +206,26 @@ function checkforPause(device, game)
         console.error("checkforPause error:", e);
     }
 }  
+
+function updateGameElementsBasedOnClock(game, delta, gameClock)
+{
+    // This is where we update the time clock and based on that we add speed to the Spawning NPCs
+    if (gameClock.active)
+    {
+        // We save what the npcSpeedMuliplyer was last time
+        const lastTime = game.npcSpeedMuliplyer;
+
+        // Update game time clock
+        gameClock.update(delta);
+
+        // We need the new npcSpeedMuliplyer
+        game.npcSpeedMuliplyer = 1 + Math.floor(gameClock.elapsedTime / game.gameConsts.NPC_SPEED_SPAWN_INCREASE_INTERVALS) * game.gameConsts.NPC_SPEED_INCREASE_AMOUNT;
+    
+        // If its not the very first time we check and there not equal, then key time has elasped, so we increase score
+        if (lastTime != game.npcSpeedMuliplyer && lastTime != 0)
+        {
+            game.increaseScore(game.gameConsts.SCORE_INCREASE); 
+            game.npcSpawnMultiplyer -= game.gameConsts.NPC_SPAWN_INCREASE_AMOUNT;  
+        }
+    }
+}

@@ -25,7 +25,7 @@ const GameDefs = Object.freeze({
     spriteTypes: {
         PLAYER:   { type: "player",    w: 32, h: 32, speed: 0, spawnRatio: 0, path: "assets/sprites/ships.png" },
         ORB:      { type: "orb",       w: 24, h: 24, speed: 220, spawnRatio: 0.9, path: "assets/sprites/orb.png" },
-        FIRE_AMMO:{ type: "fireAmmo",  w: 16, h: 16, speed: 150, spawnRatio: 0.991, path: "assets/sprites/fire.png" },
+        FIRE_AMMO:{ type: "fireAmmo",  w: 16, h: 16, speed: 150, spawnRatio: 0.99, path: "assets/sprites/fire.png" },
         BULLET:   { type: "bullet",    w: 8,  h: 8,  speed: 550, spawnRatio: 0, path: "assets/sprites/bullet.png" }
     },
 
@@ -107,8 +107,9 @@ class GameConsts
     //times
     #SHIELD_TIME = 3;
     #SHOOT_COOLDOWN = 0.2; // 200ms
-    #NPC_SPEED_INCREASE_INTERVALS = 10;
-    #NPC_SPEED_INCREASE_AMOUNT = 0.2;
+    #NPC_SPEED_SPAWN_INCREASE_INTERVALS = 10;
+    #NPC_SPEED_INCREASE_AMOUNT = 0.1;
+    #NPC_SPAWN_INCREASE_AMOUNT = 0.03;
     #FALLBACK_DELTA = 16; // fallback ~60fps
 
     //amounts
@@ -142,8 +143,9 @@ class GameConsts
     get HUD_BUFFER(){ return this.#HUD_BUFFER; }
     get POOLSIZE(){ return this.#POOLSIZE; }
     get VOLUME(){ return this.#VOLUME; }
-    get NPC_SPEED_INCREASE_INTERVALS(){ return this.#NPC_SPEED_INCREASE_INTERVALS; }
+    get NPC_SPEED_SPAWN_INCREASE_INTERVALS(){ return this.#NPC_SPEED_SPAWN_INCREASE_INTERVALS; }
     get NPC_SPEED_INCREASE_AMOUNT(){ return this.#NPC_SPEED_INCREASE_AMOUNT; }
+    get NPC_SPAWN_INCREASE_AMOUNT(){ return this.#NPC_SPAWN_INCREASE_AMOUNT; }
     get BILLBOARDS_OFFSET_BUFF(){ return this.#BILLBOARDS_OFFSET_BUFF; }
     get FALLBACK_DELTA(){ return this.#FALLBACK_DELTA; }
     get DEBUG_TEXT_COLOR(){ return this.#DEBUG_TEXT_COLOR; }

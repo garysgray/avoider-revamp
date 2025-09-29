@@ -75,10 +75,15 @@ class Player extends GameObject
     // - Updates cooldown
     // - Enforces screen bounds
     // - Handles shooting
-    update(device, game, delta) 
+    update(device, game, delta, collisionFunction) 
     {
         try 
         {
+            if (typeof collisionFunction === "function") 
+            {
+                this.checkNPCCollision(device, game, collisionFunction);
+            }
+
             // If dead, freeze state until game handles respawn/lose
             if (this.playerState === GameDefs.playStates.DEATH) 
             {
@@ -135,6 +140,21 @@ class Player extends GameObject
         {
             console.error("Player enforceBounds error:", e);
         }
+    }
+
+    checkNPCCollision(device, game, collisionFunction)
+    {
+        if (this.playerState !== GameDefs.playStates.SHIELD) 
+        {
+            const avoidedCollision = collisionFunction(device, game);
+            if (avoidedCollision === false) 
+            {
+                // When player dies from collision we save his position to show dead player in pause menue
+                this.savePos(this.posX, this.posY);
+                this.playerState = GameDefs.playStates.DEATH;
+            }
+        }
+
     }
 
     savePlayerState(state)    { this.#savedPlayerState = state; }

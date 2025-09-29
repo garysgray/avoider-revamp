@@ -61,7 +61,7 @@ function generateNPCS(device, game)
         try 
         { 
             //use clock for time duration to update spawn ratio
-            if (Math.random() >= GameDefs.spriteTypes.ORB.spawnRatio) 
+            if (Math.random() >= (GameDefs.spriteTypes.ORB.spawnRatio + game.npcSpawnMultiplyer) )
             {
                 spawnNPC(device, game, GameDefs.spriteTypes.ORB.type, GameDefs.spriteTypes.ORB.w, GameDefs.spriteTypes.ORB.h, GameDefs.spriteTypes.ORB.speed, GameDefs.spriteTypes.ORB.spawnRatio ); 
             }
@@ -75,8 +75,8 @@ function generateNPCS(device, game)
         // Spawn Fire Ammo
         try 
         { 
-             //use clock for time duration to update spawn ratio
-            if (Math.random() >= GameDefs.spriteTypes.FIRE_AMMO.spawnRatio) 
+            const tweak = GameDefs.spriteTypes.FIRE_AMMO.spawnRatio * game.npcSpawnMultiplyer
+            if (Math.random() >= GameDefs.spriteTypes.FIRE_AMMO.spawnRatio + (game.npcSpawnMultiplyer - tweak))
             {
                 spawnNPC(device, game, GameDefs.spriteTypes.FIRE_AMMO.type, GameDefs.spriteTypes.FIRE_AMMO.w, GameDefs.spriteTypes.FIRE_AMMO.h, GameDefs.spriteTypes.FIRE_AMMO.speed,  GameDefs.spriteTypes.FIRE_AMMO.spawnRatio ); 
             }
