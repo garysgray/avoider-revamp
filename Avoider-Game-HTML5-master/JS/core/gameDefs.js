@@ -23,16 +23,16 @@ const GameDefs = Object.freeze({
     },
   
     spriteTypes: {
-        PLAYER:   { type: "player",    w: 32, h: 32, speed: 0, spawnRatio: 0, path: "assets/sprites/ships.png" },
+        PLAYER:   { type: "player",    w: 36, h: 36, speed: 0, spawnRatio: 0, path: "assets/sprites/ships.png" },
         ORB:      { type: "orb",       w: 24, h: 24, speed: 220, spawnRatio: 0.9, path: "assets/sprites/orb.png" },
-        FIRE_AMMO:{ type: "fireAmmo",  w: 16, h: 16, speed: 150, spawnRatio: 0.99, path: "assets/sprites/fire.png" },
+        FIRE_AMMO:{ type: "fireAmmo",  w: 16, h: 16, speed: 150, spawnRatio: 0.99, path: "assets/sprites/fireball.png" },
         BULLET:   { type: "bullet",    w: 8,  h: 8,  speed: 550, spawnRatio: 0, path: "assets/sprites/bullet.png" }
     },
 
     billBoardTypes: {
         BACKGROUND: { type: "background", w: 600, h: 600, path: "assets/sprites/stars.png", isCenter: false },
         HUD:        { type: "hud",        w: 850, h: 200, path: "assets/sprites/hud.png" , isCenter: false },
-        SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/splash.png" , isCenter: true },
+        SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/avoiderSplash.png" , isCenter: true },
         PAUSE:      { type: "pause",      w: 400, h: 100, path: "assets/sprites/pause.png" , isCenter: true },
         DIE:        { type: "die",        w: 400, h: 100, path: "assets/sprites/die.png" , isCenter: true },
     },

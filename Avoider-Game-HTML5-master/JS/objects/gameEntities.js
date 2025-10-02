@@ -282,7 +282,6 @@ class BillBoard extends GameObject
     {
         device.renderImage(image, this.posX, this.posY - yBuff);
     }
-    
 }
 
 class ParallaxBillBoard extends BillBoard
@@ -308,8 +307,6 @@ class ParallaxBillBoard extends BillBoard
 
     set posX2(v) { this.#posX2 = v; }
     set posY2(v) { this.#posY2 = v; }
-
- 
 
     update(delta, game) 
     {

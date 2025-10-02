@@ -244,17 +244,7 @@ class Game
         this.npcSpawnMultiplyer = 0;
 
         this.player.setPlayerState(GameDefs.playStates.AVOID);
-        this.setMouseToPlayer(device, this.#player);
-        this.#gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
+        this.player.setMouseToPlayer(device);
+        this.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
     }
-    
-    // -----------------------------
-    // Player Mouse Input Binding
-    // -----------------------------
-    setMouseToPlayer(device, aPlayer) 
-    {
-        device.setupMouse(aPlayer, device);
-    }  
-
-    
 }

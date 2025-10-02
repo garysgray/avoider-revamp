@@ -157,6 +157,11 @@ class Player extends GameObject
 
     }
 
+    setMouseToPlayer(device, aPlayer) 
+    {
+        device.setupMouse(this, device);
+    } 
+
     savePlayerState(state)    { this.#savedPlayerState = state; }
     restorePlayerState()      { this.#playerState = this.#savedPlayerState; }
     setPlayerState(playerState) { this.#playerState = playerState; }
