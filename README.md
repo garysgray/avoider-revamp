@@ -1,3 +1,6 @@
+| ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/AvoiderSplash.png) |
+|:-----------------------------------------------------------------------:|
+
 # Avoider Game (Revamped)
 
 A rebuilt version of the original HTML5 avoider game.  
