@@ -20,3 +20,6 @@ feedit.py
 feedit2.py
 temp_clips.js
 suggestions_for_inputLogic
+
+config.py
+__pycache__/
