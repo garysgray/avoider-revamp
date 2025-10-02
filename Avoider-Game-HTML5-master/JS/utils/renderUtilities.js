@@ -24,12 +24,12 @@ function renderNPCSprites(device, game)
 
         // Preload references to images (avoid repeated lookups each frame)
         
-        const fireAmmoImage = device.images.getImage?.(GameDefs.spriteTypes.FIRE_AMMO.type);
-        const orbImage      = device.images.getImage?.(GameDefs.spriteTypes.ORB.type);
+        const fireAmmoImage = device.images.getImage(GameDefs.spriteTypes.FIRE_AMMO.type);
+        const orbImage      = device.images.getImage(GameDefs.spriteTypes.ORB.type);
 
         for (let i = 0; i < game.gameSprites.getSize(); i++) 
         {
-            const tempObj = game.gameSprites.getIndex?.(i);
+            const tempObj = game.gameSprites.getIndex(i);
             if (!tempObj) continue;
 
             switch(tempObj.name) 

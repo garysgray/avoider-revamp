@@ -21,12 +21,15 @@ Avoider-Game-HTML5-master/
 │   │   ├── gameConfig.js         // Configuration constants for the game
 │   │   ├── gameController.js      // Controller class for managing game state
 │   │   ├── gameDefs.js            // Enumerations and definitions used across the game
-│   │   └── gameEntities.js        // Definitions for game objects (Player, NPC, etc.)
 |   |
 │   ├── logic/
 │   │   ├── mainStateLogic.js      // Logic handling game states and transitions
 │   │   ├── npcLogic.js            // Logic for Non-Playable Characters (NPCs)
 │   │   └── projectileLogic.js      // Logic for projectile updates and collisions
+│   │
+│   ├── objects/
+│   │   ├── gameEntities.js        // Definitions for game objects, NPC, projectiles etc.)
+│   │   └── player.js              // Definitions for player
 │   │
 │   ├── render/
 │   │   ├── gameObjectsRenderLayer.js // Rendering logic for game objects
