@@ -126,6 +126,7 @@ class Game
     // -----------------------------
     initGame(device) 
     {   
+        console.log("hey hey in game initGame");
         try {
             // Input
             device.keys.initKeys();
@@ -169,9 +170,7 @@ class Game
                 new ParallaxBillBoard(GameDefs.billBoardTypes.BACKGROUND.type, GameDefs.billBoardTypes.BACKGROUND.w, GameDefs.billBoardTypes.BACKGROUND.h, 0, 0, 60, GameDefs.billBoardTypes.BACKGROUND.isCenter, GameDefs.parallexType.VERICAL),
                 new BillBoard(GameDefs.billBoardTypes.HUD.type,        GameDefs.billBoardTypes.HUD.w,        GameDefs.billBoardTypes.HUD.h,        0, 0, 0, GameDefs.billBoardTypes.HUD.isCenter),
                 new BillBoard(GameDefs.billBoardTypes.SPLASH.type,     GameDefs.billBoardTypes.SPLASH.w,     GameDefs.billBoardTypes.SPLASH.h,     0, 0, 0, GameDefs.billBoardTypes.SPLASH.isCenter),
-                new BillBoard(GameDefs.billBoardTypes.PAUSE.type,      GameDefs.billBoardTypes.PAUSE.w,      GameDefs.billBoardTypes.PAUSE.h,      0, 0, 0, GameDefs.billBoardTypes.PAUSE.isCenter),
-                new BillBoard(GameDefs.billBoardTypes.DIE.type,        GameDefs.billBoardTypes.DIE.w,        GameDefs.billBoardTypes.DIE.h,        0, 0, 0, GameDefs.billBoardTypes.DIE.isCenter),   
-            ];
+            ]
 
             // Some billboards are ment to be centered in play screen so we set the positions here (billboards have a bool to see if there centered)
             // then it gets added to the billboards obj holder
@@ -233,6 +232,7 @@ class Game
     // Reset values each time a game starts
     setGame(device) 
     { 
+        console.log("hey hey in game setup");
         this.score     = 0;
         this.lives     = this.#gameConsts.GAME_LIVES_START_AMOUNT;
         this.ammo      = 0;

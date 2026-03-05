@@ -59,8 +59,8 @@ function renderBillBoardsLayer(device, game)
 
             case GameDefs.gameStates.PAUSE:
             {
-                const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.PAUSE.type);
-                const pauseImg = device.images.getImage(GameDefs.billBoardTypes.PAUSE.type);
+                const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.SPLASH.type);
+                const pauseImg = device.images.getImage(GameDefs.billBoardTypes.SPLASH.type);
                 if (board && pauseImg) 
                 {
                     try 
@@ -83,8 +83,8 @@ function renderBillBoardsLayer(device, game)
 
             case GameDefs.gameStates.LOSE: 
             {
-                const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.DIE.type);
-                const dieImg = device.images.getImage(GameDefs.billBoardTypes.DIE.type);
+                const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.SPLASH.type);
+                const dieImg = device.images.getImage(GameDefs.billBoardTypes.SPLASH.type);
                 if (board && dieImg) 
                 {
                     try 

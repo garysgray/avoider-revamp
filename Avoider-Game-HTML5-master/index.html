@@ -15,6 +15,10 @@
                     
             </nav>
             <br></br>
+
+            <div id="debug-panel"> 
+                <pre id="debug-text">DEBUG READY</pre>
+            </div>
                 
             <canvas id="canvas"></canvas>
             <script type="text/javascript" src="js/render/layer.js"></script>
@@ -28,6 +32,8 @@
             <script type="text/javascript" src="js/utils/gameUtilities.js"></script>
             <script type="text/javascript" src="js/utils/collisionUtilities.js"></script>
             <script type="text/javascript" src="js/utils/renderUtilities.js"></script>
+            <script type="text/javascript" src="js/utils/DebugUtililties.js"></script>
+            <script type="text/javascript" src="js/utils/FullScreenUtilities.js"></script>
             <script type="text/javascript" src="js/core/gameController.js"></script>
             <script type="text/javascript" src="js/core/gameConfig.js"></script>
             <script type="text/javascript" src="js/core/gameDefs.js"></script>         
@@ -36,14 +42,6 @@
             <script type="text/javascript" src="js/main.js"></script>
             <br></br>
             
-            <script>
-                window.onload = function() 
-                {
-                    // Call the initialization function from main.js
-                    startGameLoop();
-                }
-            </script>
-
             <div id = "message">
                 <p>Press Ctrl to Pause</p>
             </div>

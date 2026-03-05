@@ -19,11 +19,11 @@ function updateGameStates(device, game, delta)
             case GameDefs.gameStates.INIT:
                 try 
                 {
-                    // Set up all the game stuff up and then wait for player to hit "start/play" button
-                    game.setGame(device);
+
 
                     if (device.keys.isKeyPressed(GameDefs.keyTypes.PLAY_KEY)) 
                     {
+                        game.setGame(device);
                         game.setGameState(GameDefs.gameStates.PLAY);
                     }
                 } 

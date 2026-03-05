@@ -1,0 +1,111 @@
+
+
+const GameDefs = Object.freeze({
+    // --- Sprite definitions ---
+    spriteTypes: {
+        PLAYER:   { type: "player",    w: 32, h: 32, path: "assets/sprites/ships.png" },
+        ORB:      { type: "orb",       w: 24, h: 24, speed: 200, spawnRatio: 10, path: "assets/sprites/orb.png" },
+        FIRE_AMMO:{ type: "fireAmmo",  w: 16, h: 16, speed: 150, spawnRatio: 200, path: "assets/sprites/fire.png" },
+        BULLET:   { type: "bullet",    w: 8,  h: 8, speed: 550, spawnGap: 0, path: "assets/sprites/bullet.png" }
+    },
+
+    // --- Billboard definitions ---
+    billBoardTypes: {
+        BACKGROUND: { type: "background", w: 600, h: 600, path: "assets/sprites/stars.png" },
+        SPLASH:     { type: "splash",     w: 400, h: 100, path: "assets/sprites/splash.png" },
+        PAUSE:      { type: "pause",      w: 400, h: 100, path: "assets/sprites/pause.png" },
+        DIE:        { type: "die",        w: 400, h: 100, path: "assets/sprites/die.png" }
+    },
+
+    // --- Sound identifiers ---
+    soundTypes: {
+        HIT:   { name: "hit",   path: "assets/sounds/hit.wav" },
+        GET:   { name: "get",   path: "assets/sounds/get.wav" },
+        HURT:  { name: "hurt",  path: "assets/sounds/hurt.wav" },
+        SHOOT: { name: "shoot", path: "assets/sounds/shoot.wav" }
+    },
+
+    // ... rest stays the same
+});
+
+timerTypes: {
+    SHIELD: {
+        id: "shieldTimer",
+        duration: 3, // seconds
+        mode: "countdown",
+        loop: false
+    },
+    SHOOT_COOLDOWN: {
+        id: "shootCooldownTimer",
+        duration: 0.2, // 200ms
+        mode: "countdown",
+        loop: false
+    },
+    GAME_CLOCK: {
+        id: "gameClock",
+        duration: 0, // starts at 0 and counts up
+        mode: "countup",
+        loop: true
+    }
+}
+
+--------------------------
+
+initGame(device) {
+    // -----------------------------
+    // Input
+    // -----------------------------
+    device.keys.initKeys();
+
+    // -----------------------------
+    // Sprites
+    // -----------------------------
+    Object.values(GameDefs.spriteTypes).forEach(spriteDef => {
+        const sprite = new Sprite(spriteDef.path, spriteDef.type);
+        device.images.addObject(sprite);
+    });
+
+    // -----------------------------
+    // Billboards
+    // -----------------------------
+    Object.values(GameDefs.billBoardTypes).forEach(boardDef => {
+        const board = new BillBoard(
+            boardDef.type,
+            boardDef.w,
+            boardDef.h,
+            0,
+            0
+        );
+
+        // Only center HUD boards, not background
+        if (boardDef.type !== GameDefs.billBoardTypes.BACKGROUND.type) {
+            board.centerObjectInWorld(
+                this.gameConsts.SCREEN_WIDTH,
+                this.gameConsts.SCREEN_HEIGHT
+            );
+        }
+
+        this.billBoards.addObject(board);
+    });
+
+    // -----------------------------
+    // Sounds
+    // -----------------------------
+    Object.values(GameDefs.soundTypes).forEach(sndDef => {
+        device.audio.addSound(
+            sndDef.name,
+            sndDef.path,
+            this.gameConsts.POOLSIZE,
+            this.gameConsts.VOLUME
+        );
+    });
+
+
+// Load timers
+const timers = Object.values(GameDefs.timerTypes).map(def =>
+    new Timer(def.id, def.duration, def.mode, def.loop)
+);
+
+timers.forEach(timer => {
+    this.#gameTimers.addObject(timer);
+});

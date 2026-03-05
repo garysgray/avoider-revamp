@@ -18,75 +18,89 @@ let DRAW_DEBUG_HITBOXES = false;
 if (HIT_BOXES) DRAW_DEBUG_HITBOXES = true;
 if (DEBUG_TEXT) DRAW_DEBUG_TEXT = true;
 
-// ============================================================================
-// Main entry point for the Avoider game
-// ============================================================================
+
+// =======================================================
+// GLOBALS
+// =======================================================
 let myController;
-
-try 
-{
-    myController = new Controller();
-} 
-catch (e) 
-{
-    console.error("Failed to create Controller instance:", e);
-}
-
-// ---------------------------------------------------------------------------
-// Fixed timestep game loop setup
-// ---------------------------------------------------------------------------
-
 let lastTime = performance.now();
 let accumulator = 0;
-// --------------------------------------------------------------------------- 
-// Main game loop with safety checks
-// ---------------------------------------------------------------------------
+let rafId = null;
+
+const FIXED_TIMESTEP = 1 / 60;
+const MAX_FRAME_TIME = 0.25;
+const SAFE_START_VALUE = 100;
+const TIME_OUT_VALUE = 200;
+const ONE_THOUSAND = 1000;
+
+
+// =======================================================
+// ENTRY POINT
+// =======================================================
+window.addEventListener("load", init);
+
+// =======================================================
+// INITIALIZATION
+// =======================================================
+function init() 
+{
+    try 
+    {
+        myController = new Controller();
+        
+        DebugUtil.updateDebugPanelVisibility();
+        DebugUtil.updateDebugPanelPosition();
+        
+        //safeStartGame();
+        gameLoop()
+    }
+    catch (e) 
+    {
+        console.error("Initialization failed:", e);
+    }
+}
+
+
+
 function gameLoop() 
 {
+   ;
 
-    const fixedStep = 1 / 60;
-    const timeInSecs = 1000;
-    const frameTimeMax = 0.25;
+    //const fixedStep = 1 / 60;
+    //const timeInSecs = 1000;
+    //const frameTimeMax = 0.25;
 
     try 
     {
         if (!myController) return;
 
         const now = performance.now();
-        let frameTime = (now - lastTime) / timeInSecs;
+        let frameTime = (now - lastTime) / ONE_THOUSAND;
         lastTime = now;
 
-        if (frameTime > frameTimeMax) 
+        if (frameTime > MAX_FRAME_TIME) 
         {
-            frameTime = frameTimeMax;
+            frameTime = MAX_FRAME_TIME;
         }
 
         accumulator += frameTime;
 
-        while (accumulator >= fixedStep) 
+        while (accumulator >= FIXED_TIMESTEP) 
         {
             try
             {
-                myController.updateGame(fixedStep);
+                myController.updateGame(FIXED_TIMESTEP);
             }
             catch (e)
             {
                 console.error("Error during updateGame():", e);
             }
 
-            accumulator -= fixedStep;
+            accumulator -= FIXED_TIMESTEP;
         }
 
-        if (DRAW_DEBUG_TEXT)
-        {            
-            texts= [
-               "debug text1 here, saying what up!!!!",
-               "player posX: " + myController.game.player.posX,
-               "player posY: " + myController.game.player.posY,
-            ];
+            DebugUtil.updateDebugPanel(); 
 
-            renderDebugText(texts);  
-        }
     } 
     catch (e) 
     {
@@ -116,17 +130,4 @@ function startGameLoop()
     {
         console.error("Failed to start game loop:", e);
     }
-}
-
-function renderDebugText(texts)
-{
-    const posX  = myController.game.gameConsts.SCREEN_WIDTH   * 0.03;
-    let posY    = myController.game.gameConsts.SCREEN_HEIGHT  * 0.2;
-    const buffY = myController.game.gameConsts.SCREEN_HEIGHT  * 0.05;
-
-    texts.forEach(text => 
-    {
-        myController.device.debugText(text, posX, posY, myController.game.gameConsts.DEBUG_TEXT_COLOR);
-        posY += buffY;
-    });
 }

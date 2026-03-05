@@ -68,7 +68,7 @@ function renderHUDLayer(device, game)
                     const livesText = GameDefs.gameTexts.HUD.LIVES + game.lives;
                     const timer = game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK);
 
-                    device.colorText("red");
+                    //device.colorText("red");
                     device.centerTextOnY(scoreText, ch * layout.hudY2);
                     device.putText(ammoText, cw * layout.hudAmmoX, ch * layout.hudY);
                     device.putText(livesText, cw * layout.hudLivesX, ch * layout.hudY);

@@ -69,7 +69,7 @@ function renderTextLayer(device, game)
                 {
                     const pauseMsg = GameDefs.gameTexts.PAUSE.MESSAGE;
 
-                    device.colorText("white");
+                    //device.colorText("white");
                     device.centerTextOnY(pauseMsg, ch * layout.pauseY);
                     
                 } 

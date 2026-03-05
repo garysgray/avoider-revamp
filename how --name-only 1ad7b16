@@ -1,0 +1,91 @@
+[33m1ad7b16[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m structure changes
+[33m1e6310e[m[33m ([m[1;31morigin/main[m[33m)[m splash readme
+[33m5242e63[m bunch of sprite changes and files
+[33ma0e33f6[m ignore
+[33mc6761ba[m Merge branch 'main' of github.com:garysgray/avoider-revamp
+[33ma93da9d[m more moving things around
+[33mee0db72[m Create README.md
+[33meaaf4a7[m more cleaning up npcLogic
+[33m443ec8b[m moved player into own file and gave player its own playerState from game obj, and moved other compnents into player
+[33m2b72569[m updating map
+[33m85949eb[m splitting up render layers and some code functions into other files
+[33mb8daab3[m updating and cleanin gup code in state machines for readability
+[33m892d542[m fixed billboards to have a isCenterd bool so it seasy to set them up and added them to gameDefs
+[33m0c54bc8[m cleaned up a lot of ?
+[33m47cb157[m cleaned up gameObjectsRenderlayer
+[33mfac2d3c[m clean up and added the board for hud
+[33m1bba91d[m cleaned up gameUtilities
+[33m6a6aadc[m cleaned up gameEntaties
+[33m51a6a19[m figured out what was causeing gamedefs screen size unable to be changed, fixed it and some clean up removing chain checking ? due to redundence
+[33mf1dbb75[m so just clean up, cant figure out why screensize cnat be changed i know it has to do with test stuff added
+[33m65e09dc[m update mao and README
+[33m7a80f05[m update map
+[33mf673031[m update mao and README
+[33m14fe93a[m man went off the res for a bit got the billboards back in place but a bit of a hack
+[33m47ead8c[m got unit testing working but had some tweeks, somwhere in there billboards are off center just a tad, hardcodeding valuse fixs for temp , adding bug
+[33ma2dacd4[m added in gameeplay that as time goes on the NPC fall rate increases and player gets points for staying alive as tiem goes on
+[33m643433a[m added very simple unit testing using jasmine
+[33mc52bb21[m error checking in every file and changes that and fixs that came with
+[33m57613ed[m error checking added to gameConfig,gamecontroller, gameUtilities
+[33m3ace605[m error checking in gameController.js
+[33m623faeb[m consolidated more game dat into const more for sound and audio, but sprites and billboards needed chages
+[33m4c62995[m readme fix
+[33m0edfab6[m added the timer objHolder to the game and made changes to make it work
+[33m8eb1f14[m update the debug set up a little its just commenting out some bools at top of main.js
+[33m43aa209[m changes
+[33m6fd515e[m update the sound class and audio manager to not overlap sounds
+[33m9910b09[m removing more redundent consts, made a billboard holder which helped
+[33m4a46ad5[m consolidated enums and const to make a lot less private vars and gets and sets for consts
+[33m5498e53[m lots of small things to clean up code
+[33m5f52d07[m file name changes
+[33m4dd501f[m readme update
+[33maf4fd12[m more clean up
+[33m8c046c8[m fixed backdrop issue not being centered centering and render mix ups, did some other clean up along the way, changes to main html file
+[33mb03821a[m small changes
+[33mba9b725[m lots of clean up for many things mainly magic numbers and getting rid of irrelevent code or members
+[33m5492ebf[m readme redo
+[33mda9638a[m  updated ccs to make main html page look way better
+[33mf2683d6[m folder restructer
+[33m2fd0132[m new map
+[33m20aba88[m new map
+[33m03c015f[m new map
+[33ma644381[m new map
+[33m0286e20[m folder restructer
+[33m8a81c5a[m lots of changes based on changing collision to bounding boxs, lots of adjustments to make it work across lots of code files
+[33md4da21e[m little more restruction of collision
+[33m1de4f57[m cleaned up updateNPCSprites with spawn function few magic number fixs
+[33m1dc4cfb[m more changes to finalize utilizing the alive meber for removing game objects in updates
+[33m7d1722c[m cleaning up more utilizing halfw and halfh members gave all gameobjects an alive bool and a kill function
+[33mb69145b[m suggestions file made
+[33m1b72660[m small changes that were missed in last revamp of inputLogic, and updat eto README
+[33m05f4da9[m moved logic for objects from updatelog to actual object updates, so now we have our NPC object extended from GameObject and they have their own updat efunction so its more Opp
+[33ma65d319[m moving code from inpulogic to the player so it actully has a player update function now, changes to accomidat enew player update
+[33m578a843[m  so much clean up to inputLogicwhich leads to clean up in other places. fixed a few bugs along the way
+[33m6e3bedf[m update readme
+[33m61d1162[m slight clean up fixs more logic cleanup
+[33mc706200[m clean up for the render files just to be consistant with comments and naming conventions
+[33m58fdbe8[m slight clean up fixs more
+[33mcb10b3e[m small changes to index.html and updated README
+[33m9a7b121[m slight changes to file names dealing with layers
+[33m74e82db[m slight clean up fixs
+[33m9809543[m gameObjects clean up and then fixs due to the changes, got some things working while cleaning, player is locked to screen now thansk to enforceBounds
+[33m14f566c[m mainly clean up in commnets spacing in paramaters renaming arguments to be readable and consistant, clean up clean up clean up
+[33m5fb1521[m lots of changes based on changing the rendering to using layers which had to move stuff around and change some name sof files, lots of little clean ups here and there
+[33me268e20[m changes made to controller and game and main so that controller has them and there not needed to pass around as much good clean up
+[33m04ce0e8[m changes to render text getting rid of magic numbers also cleaned up functions in helpers thta were elated to text rendering changes
+[33m637e49b[m more changes to sprite class ans timer class and any changes needed to make it work
+[33m5a8b0c6[m made morre changes to helpers.js to privatize classes
+[33m9330ad8[m manly changes in helper.js updated objHolder, and Sprite classes, had to make changes in a few spots to acomidate updated classes
+[33m481f98d[m finished up revamping game.js to be more modern and pro looking ha ha
+[33m2c2ffb8[m changes to game.js chnged the way sprites and sounds are loaded using an array first to reduce typo errors
+[33m49e330c[m made changes to game.js revamping the gameConsts structure and update any changes needed in other code
+[33me25aeb8[m add tempclips.js to gitignore
+[33mf5b0e11[m made suggested changes by adding a key manager to get rid off global key events
+[33m4ff6b06[m changes to main.js gameloop to make things more efficiant based on suggestions
+[33mc25b435[m changes to css to clean up
+[33m39e082b[m add .gitignore to not see feedme.py files
+[33m37c5ab3[m Restructure project into core, render, objects, assets, utils folders
+[33me0a7cdf[m Update README.md
+[33m39432c6[m Update README.md
+[33m4e809b6[m Update README.md
+[33m5a05122[m  initial commit

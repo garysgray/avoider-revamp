@@ -16,6 +16,8 @@ node_modules/
 # Ignore environment files
 .env
 
+stuff/
+
 feedit.py
 feedit2.py
 temp_clips.js
