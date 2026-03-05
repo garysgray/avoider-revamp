@@ -117,7 +117,7 @@ class GameConsts
     #SPAWN_ATTEMPTS = 5;
 
     //settings
-    #FONT_SETTINGS = `bold 17pt Century Gothic`
+    #FONT_SETTINGS = `bold 21pt Century Gothic`
     #FONT_COLOR = '#faf7f7e0'
     #HUD_BUFFER = .12;
     #BILLBOARDS_OFFSET_BUFF = 0;

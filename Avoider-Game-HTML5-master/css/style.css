@@ -42,8 +42,9 @@ body
 {
     background: var(--color-black) var(--image-url) no-repeat center center / cover;
     text-align: center;
-    padding: var(--body-padding);
-    margin: 0;
+    margin: 0;        /* remove body padding */
+    padding: 0;
+    min-height: 100vh; /* ensures body fills viewport */
 }
 
 canvas 
@@ -71,7 +72,8 @@ p
 /* ------------------------------------------------------------------ */
 #container
 {
-   display: inline-block;
+    display: inline-block;
+    padding: var(--body-padding); /* move padding here */
 }
 
 /* ------------------------------------------------------------------ */
