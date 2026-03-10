@@ -74,7 +74,6 @@ function renderPlayer(device, game)
         
         if (isShield)
         {
-            device.ctx.globalAlpha              = 0.75;
             device.ctx.globalCompositeOperation = "lighter";
             device.ctx.fillStyle = "rgba(186, 209, 231, 0.1)"; // 
             device.ctx.beginPath();
@@ -86,9 +85,7 @@ function renderPlayer(device, game)
 
         if (isUltra)
         {
-            device.ctx.globalAlpha              = 0.75;
-            device.ctx.globalCompositeOperation = "lighter";
-            device.ctx.fillStyle = "rgba(212, 32, 203, 0.1)"; // 
+            device.ctx.fillStyle = "rgba(212, 32, 203, 0.3)"; // 
             device.ctx.beginPath();
             device.ctx.arc(obj.posX, obj.posY, 25, 0, Math.PI * 2);
             device.ctx.fill();
