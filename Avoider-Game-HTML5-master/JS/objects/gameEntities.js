@@ -1,28 +1,12 @@
 // ============================================================================
-// Base GameObject + Child Classes (Player, Projectile, NPC, BackDrop)
+// gameObjects.js
+// Base GameObject and all child classes: Projectile, NPC, BillBoard, ParallaxBillBoard
 // ============================================================================
-// --------------------------------------------
-// GameObject is the base class for all in-game entities
-// - Tracks position, size, speed, and state
-// - Provides movement and collision functions
-//
-// Player extends GameObject
-// - Adds shooting mechanics (timer + delay)
-// - Enforces screen boundaries
-//
-// Projectile extends GameObject
-// - Moves upward each frame until offscreen
-// - Has alive flag for cleanup
-//
-// NPC extends GameObject
-// - Moves downward each frame until offscreen
-// - Has alive flag for cleanup
-//
-// BackDrop extends GameObject
-// - Used for static/scrolling backgrounds or decorative elements
-// --------------------------------------------
 
-class GameObject 
+
+// ---- GameObject (Base) ------------------------------------------------------
+
+class GameObject
 {
     #name;
     #width;
@@ -30,259 +14,185 @@ class GameObject
     #posX;
     #posY;
     #speed;
-    #alive = true;
-
-    #halfWidth; #halfHeight;
-
+    #alive    = true;
+    #halfWidth;
+    #halfHeight;
     #holdPosX = 0;
     #holdPosY = 0;
 
-    constructor(name, width, height, posX, posY, speed) 
+    constructor(name, width, height, posX, posY, speed)
     {
-        try
-        {
-            this.#name = name;
-            this.#width = width;
-            this.#height = height;
-            this.#posX = posX;
-            this.#posY = posY;
-            this.#speed = speed;
-
-            this.#halfWidth = width * 0.5;
-            this.#halfHeight = height * 0.5;
-        } 
-        catch (e) 
-        {
-            console.error("GameObject constructor error:", e);
-        }
+        this.#name       = name;
+        this.#width      = width;
+        this.#height     = height;
+        this.#posX       = posX;
+        this.#posY       = posY;
+        this.#speed      = speed;
+        this.#halfWidth  = width  * 0.5;
+        this.#halfHeight = height * 0.5;
     }
 
     // ---- Getters ----
-    get name() { return this.#name; }
-    get width() { return this.#width; }
-    get height() { return this.#height; }
-    get posX() { return this.#posX; }
-    get posY() { return this.#posY; }
-    get speed() { return this.#speed; }
-
-    //get state() { return this.#state; }
-    get alive() { return this.#alive; }
-
+    get name()      { return this.#name; }
+    get width()     { return this.#width; }
+    get height()    { return this.#height; }
+    get posX()      { return this.#posX; }
+    get posY()      { return this.#posY; }
+    get speed()     { return this.#speed; }
+    get alive()     { return this.#alive; }
     get halfWidth() { return this.#halfWidth; }
-    get halfHeight() { return this.#halfHeight; }
-
-    get holdPosX() { return this.#holdPosX; }
-    get holdPosY() { return this.#holdPosY; }
+    get halfHeight(){ return this.#halfHeight; }
+    get holdPosX()  { return this.#holdPosX; }
+    get holdPosY()  { return this.#holdPosY; }
 
     // ---- Setters ----
-    set name(v) { this.#name = v; }
-    set width(v) { this.#width = v; }
-    set height(v) { this.#height = v; }
-    set posX(v) { this.#posX = v; }
-    set posY(v) { this.#posY = v; }
-    set speed(v) { this.#speed = v; }
-
-    //set state(v) { this.#state = v; }
-    set alive(v) { this.#alive = Boolean(v); }
-
+    set name(v)     { this.#name  = v; }
+    set width(v)    { this.#width = v; }
+    set height(v)   { this.#height = v; }
+    set posX(v)     { this.#posX  = v; }
+    set posY(v)     { this.#posY  = v; }
+    set speed(v)    { this.#speed = v; }
+    set alive(v)    { this.#alive = Boolean(v); }
     set holdPosX(v) { this.#holdPosX = v; }
     set holdPosY(v) { this.#holdPosY = v; }
 
     kill() { this.#alive = false; }
 
-    // ---- Core Methods ----
-    // Placeholder update (to be overridden by child classes if needed)
+    // ---- Methods ----
     update(device, delta) {}
 
-    // Move object down based on its speed
-    moveDown(delta) 
+    movePos(x, y)
     {
-        try
-         {
-            this.#posY += this.#speed * delta;
-        } 
-        catch (e) 
-        {
-            console.error(`moveDown error for ${this.#name}:`, e);
-        }
+        this.#posX = x;
+        this.#posY = y;
     }
 
-    movePos(newX, newY) 
-    {
-        try 
-        {
-            this.#posX = newX;
-            this.#posY = newY;
-        } 
-        catch (e) 
-        {
-            console.error(`movePos error for ${this.#name}:`, e);
-        }
-    }
-
-    // Save player position so it can be restored on resume
     savePos(x, y)
     {
-         this.#holdPosX = x;             
-         this.#holdPosY = y;             
+        this.#holdPosX = x;
+        this.#holdPosY = y;
     }
 
     restoreSavedPos()
     {
-         this.#posX =  this.#holdPosX; 
-         this.#posY =  this.#holdPosY ;
+        this.#posX = this.#holdPosX;
+        this.#posY = this.#holdPosY;
     }
 
-    // Return an axis-aligned hitbox for this object.
-    // scale lets you make the box a bit smaller (e.g., 0.9 for friendlier hits).
-    // buffer shrinks it further by pixels on each side.
-    // Both are clamped so they can’t go negative.
-    getHitbox(scale = 1.0, buffer = 0) 
+    // Returns an AABB hitbox. scale shrinks proportionally; buffer shrinks by pixels.
+    getHitbox(scale = 1.0, buffer = 0)
     {
-        try 
-        {
-            const hw = Math.max(0, this.#halfWidth * scale - buffer);
-            const hh = Math.max(0, this.#halfHeight * scale - buffer);
-            return {
-                left: this.#posX - hw,
-                right: this.#posX + hw,
-                top: this.#posY - hh,
-                bottom: this.#posY + hh
-            };
-        } 
-        catch (e) 
-        {
-            console.error(`getHitbox error for ${this.#name}:`, e);
-            return { left: 0, right: 0, top: 0, bottom: 0 };
-        }
+        const hw = Math.max(0, this.#halfWidth  * scale - buffer);
+        const hh = Math.max(0, this.#halfHeight * scale - buffer);
+        return {
+            left:   this.#posX - hw,
+            right:  this.#posX + hw,
+            top:    this.#posY - hh,
+            bottom: this.#posY + hh
+        };
     }
 
-    getRoughRadius() 
+    getRoughRadius()
     {
         return Math.max(this.#halfWidth, this.#halfHeight);
     }
 }
 
-// --------------------------------------------
-// Projectile
-// --------------------------------------------
-// Fired by the player (or NPCs in the future)
-// - Moves upward each frame
-// - Becomes inactive if offscreen
-// --------------------------------------------
-class Projectile extends GameObject 
+
+// ---- Projectile -------------------------------------------------------------
+
+class Projectile extends GameObject
 {
-    constructor(name, width, height, posX, posY, speed) {
+    constructor(name, width, height, posX, posY, speed)
+    {
         super(name, width, height, posX, posY, speed);
     }
 
-    update(device, game, delta) 
+    update(device, game, delta)
     {
-        try 
-        {
-            this.posY -= this.speed * delta;
-            if (this.posY + this.halfHeight < 0) this.kill();
-        } 
-        catch (e) 
-        {
-            console.error("Projectile update error:", e);
-        }
+        this.posY -= this.speed * delta;
+        if (this.posY + this.halfHeight < 0) this.kill();
     }
 }
 
-// --------------------------------------------
-// NPC (Enemy/Obstacle)
-// --------------------------------------------
-// Moves downward from top of screen
-// Dies if it leaves the play area
-// --------------------------------------------
-class NPC extends GameObject 
+
+// ---- NPC --------------------------------------------------------------------
+
+class NPC extends GameObject
 {
-    constructor(name, width, height, x, y, speed) 
+    #type;
+
+    constructor(name, width, height, x, y, speed, type)
     {
         super(name, width, height, x, y, speed);
+        this.#type = type;
     }
 
-    update(device, game, delta) 
+    get type()  { return this.#type; }
+    set type(v) { this.#type = v; }
+
+    update(device, game, delta, moveStrategy = this.moveDown)
     {
-        try 
-        {
-            const hud_buff = game.gameConsts.HUD_BUFFER  * game.gameConsts.SCREEN_HEIGHT;
-            this.moveDown(game, delta);
-            if (this.posY > game.gameConsts.SCREEN_HEIGHT  + hud_buff) this.kill();
-        } 
-        catch (e) 
-        {
-            console.error("NPC update error:", e);
-        }
+        const hudBuff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
+        moveStrategy.call(this, game, delta);
+        if (this.posY > game.gameConsts.SCREEN_HEIGHT + hudBuff) this.kill();
     }
 
-    moveDown(game, delta) 
+    // Shared multiplier helper
+    #multiplier(game) { return game.npcSpeedMuliplyer > 0 ? game.npcSpeedMuliplyer : 1; }
+
+    moveDown(game, delta)
     {
-        try 
-        {
-            if (game.npcSpeedMuliplyer > 0)
-            {
-                this.posY += (this.speed * game.npcSpeedMuliplyer)  * delta;
-            }
-            else
-            {
-                this.posY += this.speed  * delta;
-            }
-            
-        } 
-        catch (e) 
-        {
-            console.error(`moveDown error for ${this.name}:`, e);
-        }
+        this.posY += this.speed * this.#multiplier(game) * delta;
     }
 
+    moveDiagonalDownLeft(game, delta)
+    {
+        const s = this.speed * this.#multiplier(game) * delta;
+        this.posY += s * game.gameConsts.Y_ANGLE_SPEED;
+        this.posX -= s * game.gameConsts.X_ANGLE_SPEED;
+    }
+
+    moveDiagonalDownRight(game, delta)
+    {
+        const s = this.speed * this.#multiplier(game) * delta;
+        this.posY += s * game.gameConsts.Y_ANGLE_SPEED;
+        this.posX += s * game.gameConsts.X_ANGLE_SPEED;
+    }
 }
 
-// --------------------------------------------
-// BillBoard
-// --------------------------------------------
-// Static or decorative background object
-// Currently does nothing, but could support parallax or animation
-// --------------------------------------------
-class BillBoard extends GameObject 
-{
-    #isCenter = true;
 
-    constructor(name, width, height, x, y, speed, isCenter = true) 
+// ---- BillBoard --------------------------------------------------------------
+
+class BillBoard extends GameObject
+{
+    #isCenter;
+
+    constructor(name, width, height, x, y, speed, isCenter = true)
     {
         super(name, width, height, x, y, speed);
-
         this.#isCenter = isCenter;
     }
 
     get isCenter() { return this.#isCenter; }
 
-    centerObjectInWorld(screenW, screenH) 
+    centerObjectInWorld(screenW, screenH)
     {
-        if (this.#isCenter)
-        {
-            try 
-            {
-                this.posX = (screenW - this.width) * 0.5;
-                this.posY = (screenH - this.height) * 0.5;
-            } 
-            catch (e) 
-            {
-                console.error("BillBoard centerObjectInWorld error:", e);
-            }
-        }
-        
+        if (!this.#isCenter) return;
+        this.posX = (screenW - this.width)  * 0.5;
+        this.posY = (screenH - this.height) * 0.5;
     }
-    update(device, delta) 
-    {
-        // Optional: BillBoard scrolling/animation
-    }
+
+    update(device, delta) {}
+
     render(device, image, yBuff)
     {
         device.renderImage(image, this.posX, this.posY - yBuff);
     }
 }
+
+
+// ---- ParallaxBillBoard ------------------------------------------------------
 
 class ParallaxBillBoard extends BillBoard
 {
@@ -290,40 +200,33 @@ class ParallaxBillBoard extends BillBoard
     #posX2 = 0;
     #posY2 = 0;
 
-    constructor(name, width, height, x, y, speed, isCenter, parallexType) 
+    constructor(name, width, height, x, y, speed, isCenter, parallexType)
     {
         super(name, width, height, x, y, speed, isCenter);
         this.#parallexType = parallexType;
-
-        // start second copy right next to the first
         this.#posX2 = this.posX + this.width;
         this.#posY2 = this.posY;
     }
 
     get parallexType() { return this.#parallexType; }
+    get posX2()        { return this.#posX2; }
+    get posY2()        { return this.#posY2; }
+    set posX2(v)       { this.#posX2 = v; }
+    set posY2(v)       { this.#posY2 = v; }
 
-    get posX2() { return this.#posX2; }
-    get posY2() { return this.#posY2; }
-
-    set posX2(v) { this.#posX2 = v; }
-    set posY2(v) { this.#posY2 = v; }
-
-    update(delta, game) 
+    update(delta, game)
     {
-        // HORIZONTAL
-        if (this.parallexType === GameDefs.parallexType.HORIZONTAL) 
+        const screenW = game.gameConsts.SCREEN_WIDTH;
+
+        if (this.#parallexType === GameDefs.parallexType.HORIZONTAL)
         {
-           this.posX -= this.speed * delta;
-
-            // calculate scaled width for screen
-            const scaledWidth = game.gameConsts.SCREEN_WIDTH; // or use image.width if you prefer
-            if (this.posX <= -scaledWidth) this.posX += scaledWidth;
-
-            // second copy always aligned
-            this.posX2 = this.posX + scaledWidth;
+            this.posX -= this.speed * delta;
+            if (this.posX <= -screenW) this.posX += screenW;
+            this.posX2 = this.posX + screenW;
             this.posY2 = this.posY;
-        } else {
-            // vertical unchanged
+        }
+        else
+        {
             this.posY -= this.speed * delta;
             if (this.posY <= -this.height) this.posY += this.height;
             this.posY2 = this.posY + this.height;
@@ -333,7 +236,9 @@ class ParallaxBillBoard extends BillBoard
 
     render(device, game, image)
     {
-        device.renderImage(image, this.posX, this.posY , game.gameConsts.SCREEN_WIDTH , game.gameConsts.SCREEN_HEIGHT);
-        device.renderImage(image, this.posX2, this.posY2,  game.gameConsts.SCREEN_WIDTH , game.gameConsts.SCREEN_HEIGHT);
+        const w = game.gameConsts.SCREEN_WIDTH;
+        const h = game.gameConsts.SCREEN_HEIGHT;
+        device.renderImage(image, this.posX,  this.posY,  w, h);
+        device.renderImage(image, this.posX2, this.posY2, w, h);
     }
 }

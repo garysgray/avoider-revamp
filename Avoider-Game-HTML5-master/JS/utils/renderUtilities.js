@@ -1,146 +1,91 @@
-//***************************************************************
-// Rendering Functions for Game Objects
-//***************************************************************
-// These helper functions are called inside renderGameObjectsLayer
-// (which is wrapped in a Layer and managed by controller.js).
-// Each function is responsible for rendering a specific type of
-// object in the game: NPC sprites, projectiles, and the player.
-//***************************************************************
+// ============================================================================
+// renderHelpers.js
+// Rendering helpers for NPCs, projectiles, and player.
+// Called from renderGameObjectsLayer.
+// ============================================================================
 
-//---------------------------------------------------------------
-// Render NPC Sprites (orbs, fireAmmo, etc.)
-//---------------------------------------------------------------
-function renderNPCSprites(device, game) 
+
+// ---- NPCs -------------------------------------------------------------------
+
+function renderNPCSprites(device, game)
 {
-    try {
-        if (!device?.images || typeof device.centerImage !== "function") {
-            console.warn("Device or centerImage function not available.");
-            return;
-        }
-        if (!game?.gameSprites || typeof game.gameSprites.getSize !== "function") {
-            console.warn("gameSprites not found or invalid.");
-            return;
-        }
+    try
+    {
+        const droneImg = device.images.getImage(GameDefs.spriteTypes.DRONE.name);
+        const ammoImg  = device.images.getImage(GameDefs.spriteTypes.AMMO.name);
 
-        // Preload references to images (avoid repeated lookups each frame)
-        
-        const fireAmmoImage = device.images.getImage(GameDefs.spriteTypes.FIRE_AMMO.type);
-        const orbImage      = device.images.getImage(GameDefs.spriteTypes.ORB.type);
-
-        for (let i = 0; i < game.gameSprites.getSize(); i++) 
+        for (let i = 0; i < game.gameSprites.getSize(); i++)
         {
-            const tempObj = game.gameSprites.getIndex(i);
-            if (!tempObj) continue;
+            const obj = game.gameSprites.getIndex(i);
+            if (!obj) continue;
 
-            switch(tempObj.name) 
+            switch (obj.name)
             {
-                case GameDefs.spriteTypes.ORB.type:
-                    if (orbImage) device.centerImage(orbImage, tempObj.posX, tempObj.posY);
-                    else console.warn("ORB image missing.");
-                break;
-
-                case GameDefs.spriteTypes.FIRE_AMMO.type:
-                    if (fireAmmoImage) device.centerImage(fireAmmoImage, tempObj.posX, tempObj.posY);
-                    else console.warn("FIRE_AMMO image missing.");
-                break;
-
+                case GameDefs.spriteTypes.DRONE.name:
+                    device.renderClip(droneImg, obj.posX, obj.posY, GameDefs.spriteTypes.DRONE.w, GameDefs.spriteTypes.DRONE.h, obj.type);
+                    break;
+                case GameDefs.spriteTypes.AMMO.name:
+                    device.renderClip(ammoImg,  obj.posX, obj.posY, GameDefs.spriteTypes.AMMO.w,  GameDefs.spriteTypes.AMMO.h,  obj.type);
+                    break;
                 default:
-                    console.warn("Unknown NPC type:", tempObj.name);
+                    console.warn("Unknown NPC name:", obj.name);
             }
 
-            if (DRAW_DEBUG_HITBOXES && tempObj) drawHitBoxs(device, tempObj);
+            if (DebugUtil.DRAW_DEBUG_HITBOXES) drawHitBoxs(device, obj);
         }
-
-    } catch (e) {
-        console.error("Error in renderNPCSprites:", e);
     }
+    catch (e) { console.error("renderNPCSprites error:", e); }
 }
 
-//---------------------------------------------------------------
-// Render Bullets (projectiles)
-//---------------------------------------------------------------
-function renderProjectiles(device, game) 
+
+// ---- Projectiles ------------------------------------------------------------
+
+function renderProjectiles(device, game)
 {
-    try {
-        if (!device?.images || typeof device.centerImage !== "function") {
-            console.warn("Device or centerImage function not available.");
-            return;
-        }
-        if (!game?.projectiles || typeof game.projectiles.getSize !== "function") {
-            console.warn("projectiles not found or invalid.");
-            return;
-        }
+    try
+    {
+        const bulletImg = device.images.getImage(GameDefs.spriteTypes.BULLET.name);
 
-        const bulletImage = device.images.getImage?.(GameDefs.spriteTypes.BULLET.type);
-        if (!bulletImage) console.warn("Bullet image missing.");
-
-        for (let i = 0; i < game.projectiles.getSize(); i++) 
+        for (let i = 0; i < game.projectiles.getSize(); i++)
         {
-            const tempObj = game.projectiles.getIndex?.(i);
-            if (!tempObj) continue;
+            const obj = game.projectiles.getIndex(i);
+            if (!obj) continue;
 
-            if (bulletImage) device.centerImage(bulletImage, tempObj.posX, tempObj.posY);
-            if (DRAW_DEBUG_HITBOXES) drawHitBoxs(device, tempObj);
+            if (bulletImg) device.centerImage(bulletImg, obj.posX, obj.posY);
+            if (DebugUtil.DRAW_DEBUG_HITBOXES) drawHitBoxs(device, obj);
         }
-
-    } catch (e) {
-        console.error("Error in renderProjectiles:", e);
     }
+    catch (e) { console.error("renderProjectiles error:", e); }
 }
 
-//---------------------------------------------------------------
-// Render Player (different clips based on playState)
-//---------------------------------------------------------------
-function renderPlayer(device, game) 
+
+// ---- Player -----------------------------------------------------------------
+
+function renderPlayer(device, game)
 {
-    try {
-        const tempObj = game.player;
-        if (!tempObj) {
-            console.warn("Player object missing.");
-            return;
-        }
+    try
+    {
+        const obj        = game.player;
+        const playerImg  = device.images.getImage(GameDefs.spriteTypes.PLAYER.name);
 
-        const playerImage = device.images.getImage?.(GameDefs.spriteTypes.PLAYER.type);
-        if (!playerImage) {
-            console.warn("Player image missing.");
-        }
+        device.renderClip(playerImg, obj.posX, obj.posY, obj.width, obj.height, obj.playerState);
 
-         // Always draw according to the internal state
-        if (typeof device.renderClip === "function") {
-            device.renderClip(
-                playerImage,
-                tempObj.posX,
-                tempObj.posY,
-                tempObj.width,
-                tempObj.height,
-                tempObj.playerState
-            );
-        }
-
-        if (DRAW_DEBUG_HITBOXES) drawHitBoxs(device, tempObj);
-
-    } catch (e) {
-        console.error("Error in renderPlayer:", e);
+        if (DebugUtil.DRAW_DEBUG_HITBOXES) drawHitBoxs(device, obj);
     }
+    catch (e) { console.error("renderPlayer error:", e); }
 }
 
-//---------------------------------------------------------------
-// Render HITBOXES if DRAW_DEBUG_HITBOXES == true
-//---------------------------------------------------------------
-function drawHitBoxs(device, tempObj) 
+
+// ---- Debug Hitboxes ---------------------------------------------------------
+
+function drawHitBoxs(device, obj)
 {
-    try {
-        if (!device?.ctx || !tempObj) return;
-
-        const x = tempObj.posX - (tempObj.halfWidth ?? 0);
-        const y = tempObj.posY - (tempObj.halfHeight ?? 0);
-        const w = tempObj.width ?? 0;
-        const h = tempObj.height ?? 0;
-
-        device.ctx.strokeStyle = "lime";
-        device.ctx.strokeRect(x, y, w, h);
-
-    } catch (e) {
-        console.error("Error in drawHitBoxs:", e);
-    }
+    if (!device?.ctx || !obj) return;
+    device.ctx.strokeStyle = "lime";
+    device.ctx.strokeRect(
+        obj.posX - (obj.halfWidth  ?? 0),
+        obj.posY - (obj.halfHeight ?? 0),
+        obj.width  ?? 0,
+        obj.height ?? 0
+    );
 }

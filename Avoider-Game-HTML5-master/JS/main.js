@@ -1,133 +1,79 @@
 // ============================================================================
-// MAIN.js  MAIN POINT oF ENTRY
-// GameLoop resides here! Was called thru index.html
+// main.js — Entry point. Hosts the game loop.
 // ============================================================================
 
-// ============================================================================
-// DEBUG/TESTING CONTROL AREA
-// ============================================================================
-let HIT_BOXES = false;
-let DEBUG_TEXT = false;
 
- //HIT_BOXES = true;
-// DEBUG_TEXT = true;
+// ---- Globals ----------------------------------------------------------------
 
-let DRAW_DEBUG_TEXT = false; 
-let DRAW_DEBUG_HITBOXES = false;
-
-if (HIT_BOXES) DRAW_DEBUG_HITBOXES = true;
-if (DEBUG_TEXT) DRAW_DEBUG_TEXT = true;
-
-
-// =======================================================
-// GLOBALS
-// =======================================================
 let myController;
-let lastTime = performance.now();
+let lastTime    = performance.now();
 let accumulator = 0;
-let rafId = null;
 
 const FIXED_TIMESTEP = 1 / 60;
 const MAX_FRAME_TIME = 0.25;
-const SAFE_START_VALUE = 100;
-const TIME_OUT_VALUE = 200;
-const ONE_THOUSAND = 1000;
+const SAFE_START_MS  = 100;
+const IDLE_TIMEOUT   = 200;
 
 
-// =======================================================
-// ENTRY POINT
-// =======================================================
-window.addEventListener("load", init);
+// ---- Init -------------------------------------------------------------------
 
-// =======================================================
-// INITIALIZATION
-// =======================================================
-function init() 
+window.addEventListener("load", () =>
 {
-    try 
+    try
     {
         myController = new Controller();
-        
         DebugUtil.updateDebugPanelVisibility();
         DebugUtil.updateDebugPanelPosition();
-        
-        //safeStartGame();
-        gameLoop()
+        safeStartGame();
     }
-    catch (e) 
-    {
-        console.error("Initialization failed:", e);
-    }
-}
+    catch (e) { console.error("Initialization failed:", e); }
+});
 
 
+// ---- Game Loop --------------------------------------------------------------
 
-function gameLoop() 
+function gameLoop()
 {
-   ;
-
-    //const fixedStep = 1 / 60;
-    //const timeInSecs = 1000;
-    //const frameTimeMax = 0.25;
-
-    try 
+    try
     {
-        if (!myController) return;
+        const now       = performance.now();
+        const frameTime = Math.min((now - lastTime) / 1000, MAX_FRAME_TIME);
+        lastTime        = now;
+        accumulator    += frameTime;
 
-        const now = performance.now();
-        let frameTime = (now - lastTime) / ONE_THOUSAND;
-        lastTime = now;
-
-        if (frameTime > MAX_FRAME_TIME) 
+        while (accumulator >= FIXED_TIMESTEP)
         {
-            frameTime = MAX_FRAME_TIME;
-        }
-
-        accumulator += frameTime;
-
-        while (accumulator >= FIXED_TIMESTEP) 
-        {
-            try
-            {
-                myController.updateGame(FIXED_TIMESTEP);
-            }
-            catch (e)
-            {
-                console.error("Error during updateGame():", e);
-            }
-
+            try   { myController.updateGame(FIXED_TIMESTEP); }
+            catch (e) { console.error("updateGame error:", e); }
             accumulator -= FIXED_TIMESTEP;
         }
 
-            DebugUtil.updateDebugPanel(); 
-
-    } 
-    catch (e) 
-    {
-        console.error("Unexpected error in gameLoop:", e);
-    } 
-    finally 
-    {
-        try 
-        {
-            requestAnimationFrame(gameLoop);
-        }
-        catch (e) 
-        {
-            console.error("Failed to request next animation frame:", e);
-        }
+        DebugUtil.updateDebugPanel();
     }
+    catch (e) { console.error("gameLoop error:", e); }
+    finally   { requestAnimationFrame(gameLoop); }
 }
 
-// called from window.onload() in index.html
-function startGameLoop() 
+
+// ---- Startup ----------------------------------------------------------------
+
+function safeStartGame()
 {
-    try 
-    {
-        gameLoop();
-    } 
-    catch (e)
-    {
-        console.error("Failed to start game loop:", e);
-    }
+    if (!readyToStart()) { setTimeout(safeStartGame, SAFE_START_MS); return; }
+
+    window.requestIdleCallback
+        ? requestIdleCallback(startLoop, { timeout: IDLE_TIMEOUT })
+        : setTimeout(startLoop, IDLE_TIMEOUT);
+}
+
+function readyToStart()
+{
+    const canvas = document.getElementById("canvas");
+    return canvas && canvas.getContext && canvas.width > 0 && canvas.height > 0;
+}
+
+function startLoop()
+{
+    lastTime = performance.now();
+    requestAnimationFrame(() => requestAnimationFrame(gameLoop));
 }

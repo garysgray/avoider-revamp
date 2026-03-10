@@ -1,227 +1,165 @@
 // ============================================================================
 // npcLogic.js
-// -----------------------------------------------------------------------------
-// Core update logic for NPCs and collisions.
-// Called every frame from controller.js update loop.
-// -----------------------------------------------------------------------------
+// Core NPC spawning, movement updates, and collision handling.
+// Called every frame from the controller update loop.
 // ============================================================================
 
-// -----------------------------------------------------------------------------
-// NPC UPDATES
-/**
- * Spawns and updates NPC sprites:
- * - Orbs (common).
- * - FireAmmo (rare).
- * Ensures no overlapping spawns and removes off-screen or dead NPCs.
- */
-// -----------------------------------------------------------------------------
 
-// Calls to spawns and update Enemy Orbs and Gunfire ammo while in play mode
-function updateNPCSprites(device, game, delta)  
-{     
-    try 
+// ---- NPC Updates ------------------------------------------------------------
+
+function updateNPCSprites(device, game, delta)
+{
+    try
     {
-        // Update NPC movement
-        for (let i = game.gameSprites.getSize() - 1; i >= 0; i--) 
-            {
+        for (let i = game.gameSprites.getSize() - 1; i >= 0; i--)
+        {
             const npc = game.gameSprites.getIndex(i);
             if (!npc) continue;
 
-            try 
-            { 
-                npc.update(device, game, delta); 
-            } 
-            catch (e) 
-            { 
-                console.error("NPC update error:", e); 
-            }
-
-            // If NPC is dead remove from game
-            const offscreen = npc.posY > (device.canvas.height);
-            if (!npc.alive || offscreen) 
+            try
             {
-                try 
-                { 
-                    game.gameSprites.subObject(i); } catch (e) { console.error("Failed to remove NPC:", e);    
+                if (npc.name === "ammo")
+                {
+                    npc.update(device, game, delta);
+                }
+                else
+                {
+                    switch (npc.type)
+                    {
+                        case GameDefs.enemyTypes.EYE: npc.update(device, game, delta);                              break;
+                        case GameDefs.enemyTypes.BUG: npc.update(device, game, delta, npc.moveDiagonalDownLeft);    break;
+                        case GameDefs.enemyTypes.UFO: npc.update(device, game, delta, npc.moveDiagonalDownRight);   break;
+                    }
                 }
             }
+            catch (e) { console.error("NPC update error:", e); }
+
+            const offscreen = npc.posY > device.canvas.height;
+            if (!npc.alive || offscreen)
+            {
+                try   { game.gameSprites.subObject(i); }
+                catch (e) { console.error("Failed to remove NPC:", e); }
+            }
         }
-    } 
-    catch (e) 
-    {
-        console.error("updateNPCSprites error:", e);
     }
-} 
+    catch (e) { console.error("updateNPCSprites error:", e); }
+}
+
+
+// ---- NPC Spawning -----------------------------------------------------------
 
 function generateNPCS(device, game)
 {
-    try 
-    {
-        // Spawn ORBS
-        try 
-        { 
-            //use clock for time duration to update spawn ratio
-            if (Math.random() >= (GameDefs.spriteTypes.ORB.spawnRatio + game.npcSpawnMultiplyer) )
-            {
-                spawnNPC(device, game, GameDefs.spriteTypes.ORB.type, GameDefs.spriteTypes.ORB.w, GameDefs.spriteTypes.ORB.h, GameDefs.spriteTypes.ORB.speed, GameDefs.spriteTypes.ORB.spawnRatio ); 
-            }
-            
-        } 
-        catch (e) 
-        {
-             console.error("ORB spawn error:", e); 
-        }
+    const { DRONE, AMMO } = GameDefs.spriteTypes;
 
-        // Spawn Fire Ammo
-        try 
-        { 
-            const tweak = GameDefs.spriteTypes.FIRE_AMMO.spawnRatio * game.npcSpawnMultiplyer
-            if (Math.random() >= GameDefs.spriteTypes.FIRE_AMMO.spawnRatio + (game.npcSpawnMultiplyer - tweak))
-            {
-                spawnNPC(device, game, GameDefs.spriteTypes.FIRE_AMMO.type, GameDefs.spriteTypes.FIRE_AMMO.w, GameDefs.spriteTypes.FIRE_AMMO.h, GameDefs.spriteTypes.FIRE_AMMO.speed,  GameDefs.spriteTypes.FIRE_AMMO.spawnRatio ); 
-            }
-        } 
-        catch (e) 
-        { 
-            console.error("FireAmmo spawn error:", e); 
-        }
-    } 
-    catch (e) 
+    try
     {
-        console.error("updateNPCSprites error:", e);
+        if (Math.random() >= DRONE.spawnRatio + game.npcSpawnMultiplyer)
+        {
+            spawnNPC(device, game, DRONE.name, DRONE.w, DRONE.h, DRONE.speed, DRONE.spawnRatio);
+        }
     }
+    catch (e) { console.error("Drone spawn error:", e); }
+
+    try
+    {
+        const tweak = AMMO.spawnRatio * game.npcSpawnMultiplyer;
+        if (Math.random() >= AMMO.spawnRatio + (game.npcSpawnMultiplyer - tweak))
+        {
+            spawnNPC(device, game, AMMO.name, AMMO.w, AMMO.h, AMMO.speed, AMMO.spawnRatio);
+        }
+    }
+    catch (e) { console.error("Ammo spawn error:", e); }
 }
 
-// Function that spawns NPC's, and moves them to a random x pos and then calls attempts at keeping these NPC's from spawning/moving positons on top of each other
-function spawnNPC(device, game, type, width, height, speed, spawnRatio)
+function spawnNPC(device, game, name, width, height, speed, spawnRatio)
 {
-    try 
+    try
     {
-        const npc = new NPC(type, width, height, 0, 0, speed);
-
-        // Position vars
+        const npc  = new NPC(name, width, height, 0, 0, speed, Math.floor(Math.random() * 3));
         const minX = npc.halfWidth;
         const maxX = device.canvas.width - npc.halfWidth;
-        const startY = npc.halfHeight;
+        const topY = npc.halfHeight;
 
-        // how many attempts at not spawing on top of another npc
-        const attemptsMax = game.gameConsts.SPAWN_ATTEMPTS;
-
-        // Moves to a position with random x pos
-        npc.movePos(minX + Math.random() * (maxX - minX), startY);
+        npc.movePos(minX + Math.random() * (maxX - minX), topY);
 
         let attempts = 0;
-        while (attempts < attemptsMax && overlapsAny(npc, game.gameSprites))
+        while (attempts < game.gameConsts.SPAWN_ATTEMPTS && overlapsAny(npc, game.gameSprites))
         {
-            npc.movePos(minX + Math.random() * (maxX - minX), startY);
+            npc.movePos(minX + Math.random() * (maxX - minX), topY);
             attempts++;
         }
 
         game.gameSprites.addObject(npc);
-    } 
-    catch (e) 
-    {
-        console.error("spawnNPC error:", e);
     }
+    catch (e) { console.error("spawnNPC error:", e); }
 }
 
-// helper: does npc overlap any existing alive sprites
-// using gameObjects self getHitbox function to check for overlap
-function overlapsAny(npc, holder) 
+// Returns true if npc overlaps any existing sprite in holder
+function overlapsAny(npc, holder)
 {
-    try 
+    try
     {
-        const count = holder.getSize();
-        const npcBox = npc.getHitbox(1.0, 0); 
-
-        for (let i = 0; i < count; i++) 
+        const npcBox = npc.getHitbox(1.0, 0);
+        for (let i = 0; i < holder.getSize(); i++)
         {
-            const other = holder.getIndex(i);
-            const otherBox = other.getHitbox(1.0, 0);
-
+            const otherBox = holder.getIndex(i).getHitbox(1.0, 0);
             if (otherBox && rectsCollide(npcBox, otherBox)) return true;
         }
-    } 
-    catch (e) 
-    {
-        console.error("overlapsAny error:", e);
     }
+    catch (e) { console.error("overlapsAny error:", e); }
     return false;
 }
 
-// -----------------------------------------------------------------------------
-// COLLISION
-// -----------------------------------------------------------------------------
 
-/**-----------------------------------------------------------------------------
- * Checks player collisions with NPCs:
- * - fireAmmo → gives ammo, switches to SHOOT state.
- * - orb/others → causes damage, reduces life, sets DEATH/LOSE state.
- *///-----------------------------------------------------------------------------
+// ---- Collision --------------------------------------------------------------
 
-function check_NPC_Collision(device, game)  
-{    
-    try 
+function check_NPC_Collision(device, game)
+{
+    const player  = game.player;
+    const sprites = game.gameSprites;
+
+    for (let i = sprites.getSize() - 1; i >= 0; i--)
     {
-        const player = game.player;
-        const spritesCount = game.gameSprites.getSize();
+        const npc = sprites.getIndex(i);
+        if (!roughNear(player, npc)) continue;
 
-        for (let i = spritesCount - 1; i >= 0; i--) 
+        npc.kill();
+
+        if (npc.name === GameDefs.spriteTypes.AMMO.name)
         {
-            const npc = game.gameSprites.getIndex(i);
+            try { device.audio.playSound(GameDefs.soundTypes.GET.name); } catch(e) {}
 
-            // If we are not close enough then move on to next sprite
-            if (!roughNear(player, npc)) continue;
-
-            // We hit the NPC
-            npc.kill();
-
-            // Depending on the NPC (enemy orb, fire ammo) type we have dif actions
-            if (npc.name === GameDefs.spriteTypes.FIRE_AMMO.type) 
-            {    
-               try 
-                {
-                    device.audio.playSound(GameDefs.soundTypes.GET.name);
-                } 
-                catch(e) 
-                {
-                    console.warn("Could not play get sound:", e);
-                }
-                
-                game.player.playerState = GameDefs.playStates.SHOOT;
+            if (npc.type === GameDefs.ammoTypes.FIRE)
+            {
+                player.playerState = GameDefs.playStates.SHOOT;
                 game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);
-            } 
-            else 
-            {  
-                try 
-                {
-                    device.audio.playSound(GameDefs.soundTypes.HURT.name);
-                } 
-                catch(e) 
-                {
-                    console.warn("Could not play hurt sound:", e);
-                }
-
-                // Transition to lose state as before
-                // Tell the GAME that the playstates is Death
-                game.player.playerState = GameDefs.playStates.DEATH;
-                game.gameState = GameDefs.gameStates.LOSE;
-
-                if (game.player) 
-                {
-                    // Tell the PLAYER state that the playstates is Death
-                    game.player.playerState = GameDefs.playStates.DEATH; // force visual state immediately   
-                }
-
+            }
+            else
+            {
+                player.playerState = (npc.type === GameDefs.ammoTypes.GHOST)
+                    ? GameDefs.playStates.SHIELD
+                    : GameDefs.playStates.ULTRA;
+                game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER)
+                    .reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
+            }
+        }
+        else
+        {
+            if (player.playerState === GameDefs.playStates.ULTRA)
+            {
+                try { device.audio.playSound(GameDefs.soundTypes.HIT.name); } catch(e) {}
+                game.increaseScore(game.gameConsts.SCORE_INCREASE);
+            }
+            else
+            {
+                try { device.audio.playSound(GameDefs.soundTypes.HURT.name); } catch(e) {}
+                player.playerState = GameDefs.playStates.DEATH;
+                game.gameState     = GameDefs.gameStates.LOSE;
                 game.decreaseLives(1);
-
                 return false;
             }
         }
-    } 
-    catch (e) 
-    {
-        console.error("check_NPC_Collision error:", e);
     }
     return true;
-} 
+}

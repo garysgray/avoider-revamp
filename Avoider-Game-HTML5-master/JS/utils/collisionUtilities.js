@@ -1,10 +1,9 @@
-
 // ============================================================================
-// COLLISION UTILS 
-// -----------------------------------------------------------------------------
+// collisionUtils.js
 // ============================================================================
 
-function rectsCollide(a, b) {
+function rectsCollide(a, b)
+{
     if (!a || !b) return false;
     return !(
         a.right  < b.left  ||
@@ -14,18 +13,11 @@ function rectsCollide(a, b) {
     );
 }
 
-function roughNear(a, b, pad = 0) {
-    try 
-    {
-        if (!a || !b) return false;
-        const dx = a.posX - b.posX;
-        const dy = a.posY - b.posY;
-        const r  = a.getRoughRadius()  + b.getRoughRadius() + pad;
-        return (dx * dx + dy * dy) <= (r * r);
-    } 
-    catch (e) 
-    {
-        console.error("roughNear error:", e);
-        return false;
-    }
+function roughNear(a, b, pad = 0)
+{
+    if (!a || !b) return false;
+    const dx = a.posX - b.posX;
+    const dy = a.posY - b.posY;
+    const r  = a.getRoughRadius() + b.getRoughRadius() + pad;
+    return (dx * dx + dy * dy) <= (r * r);
 }

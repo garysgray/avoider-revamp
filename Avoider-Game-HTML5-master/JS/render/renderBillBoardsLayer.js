@@ -1,114 +1,36 @@
 // ============================================================================
-// BillBoards Render Layer
-// ----------------------------------------------------------------------------
-// Handles rendering of all core game visuals (background, splash, objects, player, UI overlays). 
-// Called by the Controller during the main update cycle
-// Responsible only for drawing (no game logic here)
-// Uses game state to decide what to render
+// billBoardsLayer.js
+// Renders background and state-based splash overlays.
+// No game logic — drawing only.
 // ============================================================================
 
-function renderBillBoardsLayer(device, game) 
-{   
-    try 
+function renderBillBoardsLayer(device, game)
+{
+    const yBuff     = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
+    const board     = game.billBoards.getObjectByName(GameDefs.billBoardTypes.BACKGROUND.name);
+    const bgImage   = device.images.getImage(GameDefs.billBoardTypes.BACKGROUND.name);
+
+    if (board && bgImage)
     {
-        const yBuff = (game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT); 
+        try   { board.render(device, game, bgImage); }
+        catch (e) { console.error("Failed to render background:", e); }
+    }
 
-        const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.BACKGROUND.type);
-        const bgImage = device.images.getImage(GameDefs.billBoardTypes.BACKGROUND.type);
-        if (board && bgImage) 
-        {
-            try 
-            {
-                board.render(device, game, bgImage);
-            } 
-            catch (e) 
-            {
-                console.error("Failed to render background image:", e);
-            }      
-        } 
-        else
-        { 
-            console.warn("Background board or image missing.");
-        }
+    const showSplash = game.gameState === GameDefs.gameStates.INIT  ||
+                       game.gameState === GameDefs.gameStates.PAUSE ||
+                       game.gameState === GameDefs.gameStates.LOSE;
 
-        // === Render Based on Game State ===
-        switch (game.gameState) 
-        {
-            case GameDefs.gameStates.INIT: 
-            {
-                const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.SPLASH.type);
-                const splashImg = device.images.getImage(GameDefs.billBoardTypes.SPLASH.type);
-                if (board && splashImg) 
-                {
-                    try 
-                    {
-                        board.render(device, splashImg, yBuff);
-                    } 
-                    catch (e) 
-                    {
-                        console.error("Failed to render splash image:", e);
-                    }
-                }
-            } 
-            break;
-
-            case GameDefs.gameStates.PLAY: 
-            {
-            }
-            break;
-
-            case GameDefs.gameStates.PAUSE:
-            {
-                const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.SPLASH.type);
-                const pauseImg = device.images.getImage(GameDefs.billBoardTypes.SPLASH.type);
-                if (board && pauseImg) 
-                {
-                    try 
-                    {
-                        board.render(device, pauseImg, yBuff);
-                    } 
-                    catch (e) 
-                    {
-                        console.error("Failed to render pause screen:", e);
-                    }
-                }
-            } 
-            break;
-
-            case GameDefs.gameStates.WIN: 
-            {
-                // Reserved for future win state content
-            } 
-            break;
-
-            case GameDefs.gameStates.LOSE: 
-            {
-                const board = game.billBoards.getObjectByName(GameDefs.billBoardTypes.SPLASH.type);
-                const dieImg = device.images.getImage(GameDefs.billBoardTypes.SPLASH.type);
-                if (board && dieImg) 
-                {
-                    try 
-                    { 
-                        board.render(device, dieImg, yBuff);   
-                    } 
-                    catch (e) 
-                    {
-                        console.error("Failed to render die screen:", e);
-                    }
-                }
-            } 
-            break;
-
-            default:
-                console.warn("Unknown game state:", game.gameState);
-                break;
-        }
-    } 
-    catch (e) 
+    if (showSplash)
     {
-        console.error("Unexpected error in renderGameObjectsLayer:", e);
+        const splash     = game.billBoards.getObjectByName(GameDefs.billBoardTypes.SPLASH.name);
+        const splashImg  = device.images.getImage(GameDefs.billBoardTypes.SPLASH.name);
+
+        if (splash && splashImg)
+        {
+            try   { splash.render(device, splashImg, yBuff); }
+            catch (e) { console.error("Failed to render splash:", e); }
+        }
     }
 }
 
-// === Layer Registration ===
-const billBoardsLayer = new Layer("GameObjects", renderBillBoardsLayer);
+const billBoardsLayer = new Layer("BillBoards", renderBillBoardsLayer);
