@@ -30,7 +30,7 @@ const GameDefs = Object.freeze({
 
     billBoardTypes: {
         BACKGROUND: { name: "background", w: 600, h: 600, path: "assets/sprites/stars.png",        isCenter: false },
-        HUD:        { name: "hud",        w: 850, h: 200, path: "assets/sprites/hud.png",          isCenter: false },
+        HUD:        { name: "hud",        w: 850, h: 250, path: "assets/sprites/hud.png",          isCenter: false },
         SPLASH:     { name: "splash",     w: 400, h: 100, path: "assets/sprites/avoiderSplash.png", isCenter: true  },
     },
 

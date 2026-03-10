@@ -65,10 +65,18 @@ function renderPlayer(device, game)
 {
     try
     {
-        const obj        = game.player;
-        const playerImg  = device.images.getImage(GameDefs.spriteTypes.PLAYER.name);
+        const obj       = game.player;
+        const playerImg = device.images.getImage(GameDefs.spriteTypes.PLAYER.name);
+        const isShield  = obj.playerState === GameDefs.playStates.SHIELD;
 
+        device.ctx.save();
+        if (isShield)
+        {
+            device.ctx.globalAlpha              = 0.75;
+            device.ctx.globalCompositeOperation = "lighter";
+        }
         device.renderClip(playerImg, obj.posX, obj.posY, obj.width, obj.height, obj.playerState);
+        device.ctx.restore();
 
         if (DebugUtil.DRAW_DEBUG_HITBOXES) drawHitBoxs(device, obj);
     }
