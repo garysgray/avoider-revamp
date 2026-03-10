@@ -12,10 +12,8 @@ function renderHUDLayer(device, game)
     const layout =
     {
         ammoX:  0.20,
-        livesX: 0.70,
-        hudY:   0.07,
-        scoreY: 0.095,
-        clockY: 0.05,
+        scoreY: 0.70,
+        hudY:   0.08,
     };
 
     device.setFont(game.gameConsts.FONT_SETTINGS);
@@ -36,10 +34,9 @@ function renderHUDLayer(device, game)
 
                 const timer = game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK);
 
-                device.centerTextOnY(GameDefs.gameTexts.HUD.SCORE + game.score,  ch * layout.scoreY);
                 device.putText(GameDefs.gameTexts.HUD.AMMO  + game.ammo,  cw * layout.ammoX,  ch * layout.hudY);
-                device.putText(GameDefs.gameTexts.HUD.LIVES + game.lives, cw * layout.livesX, ch * layout.hudY);
-                device.centerTextOnY(`Clock: ${timer.formatted}`,         ch * layout.clockY);
+                device.putText(GameDefs.gameTexts.HUD.SCORE + game.score, cw * layout.scoreY, ch * layout.hudY);
+                device.centerTextOnY(`Clock: ${timer.formatted}`,         ch * layout.hudY);
             }
             catch (e) { console.error("Error rendering PLAY HUD:", e); }
             break;
