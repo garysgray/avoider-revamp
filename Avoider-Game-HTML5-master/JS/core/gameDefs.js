@@ -66,7 +66,7 @@ const GameDefs = Object.freeze({
             LIVES: "Lives: "
         },
         WIN:  { MESSAGE:     "PRESS  ENTER  TO  PLAY  AGAIN"   },
-        LOSE: { DIE_MESSAGE: "YOU  DIED,  SPACE-BAR  TO  RETRY" }
+        LOSE: { DIE_MESSAGE: "GAME OVER,  SPACE-BAR  TO  RETRY" }
     },
 
     timerModes: {
