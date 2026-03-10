@@ -68,13 +68,35 @@ function renderPlayer(device, game)
         const obj       = game.player;
         const playerImg = device.images.getImage(GameDefs.spriteTypes.PLAYER.name);
         const isShield  = obj.playerState === GameDefs.playStates.SHIELD;
+        const isUltra  = obj.playerState === GameDefs.playStates.ULTRA;
 
         device.ctx.save();
+        
         if (isShield)
         {
             device.ctx.globalAlpha              = 0.75;
             device.ctx.globalCompositeOperation = "lighter";
+            device.ctx.fillStyle = "rgba(186, 209, 231, 0.1)"; // 
+            device.ctx.beginPath();
+            device.ctx.arc(obj.posX, obj.posY, 25, 0, Math.PI * 2);
+            device.ctx.fill();
+            device.ctx.arc(obj.posX, obj.posY, 30, 0, Math.PI * 2); // Overlapping circle
+            device.ctx.fill();
         }
+
+        if (isUltra)
+        {
+            device.ctx.globalAlpha              = 0.75;
+            device.ctx.globalCompositeOperation = "lighter";
+            device.ctx.fillStyle = "rgba(212, 32, 203, 0.1)"; // 
+            device.ctx.beginPath();
+            device.ctx.arc(obj.posX, obj.posY, 25, 0, Math.PI * 2);
+            device.ctx.fill();
+            device.ctx.arc(obj.posX, obj.posY, 30, 0, Math.PI * 2); // Overlapping circle
+            device.ctx.fill();
+        }
+
+
         device.renderClip(playerImg, obj.posX, obj.posY, obj.width, obj.height, obj.playerState);
         device.ctx.restore();
 
