@@ -17,7 +17,6 @@ function renderBillBoardsLayer(device, game)
     }
 
     const showSplash = game.gameState === GameDefs.gameStates.INIT  ||
-                       game.gameState === GameDefs.gameStates.PAUSE ||
                        game.gameState === GameDefs.gameStates.LOSE;
 
     if (showSplash)

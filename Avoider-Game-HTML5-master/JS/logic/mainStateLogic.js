@@ -76,7 +76,6 @@ function updateGameStates(device, game, delta)
                     game.gameSprites.clearObjects();
                     game.npcSpeedMuliplyer  = 0;
                     game.npcSpawnMultiplyer = 0;
-                    game.emptyAmmo();
 
                     // Restart game on key press
                     if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY)) 
@@ -85,8 +84,6 @@ function updateGameStates(device, game, delta)
                         game.setGameState(GameDefs.gameStates.INIT);
                     }
 
-                    // Keep game clock ticking for re-spawn timing
-                    game.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
                 } 
                 catch (e) { console.error("LOSE state error:", e); }
                 break;

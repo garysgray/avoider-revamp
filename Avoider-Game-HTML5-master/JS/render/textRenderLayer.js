@@ -10,7 +10,7 @@ function renderTextLayer(device, game)
 
     const layout =
     {
-        initTextY:  [0.57, 0.62, 0.67, 0.72],
+        initTextY:  [0.57, 0.62, 0.67, 0.72, 0.77],
         messageY:   0.57,
     };
 

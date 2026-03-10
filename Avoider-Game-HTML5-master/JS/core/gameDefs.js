@@ -51,10 +51,13 @@ const GameDefs = Object.freeze({
     gameTexts: {
         INIT: {
             INSTRUCTIONS: [
-                "Shoot the Orbs!!!",
-                "Catch the Fire Balls for Ammo",
-                "Use Space-Bar or Mouse-Btn to Fire",
-                "Press Space-Bar to Start"
+                "Mouse to Move",
+                "Mouse-Btn to Fire",
+                "Shoot the Drones!!!!!",
+                "Catch the Power-Ups!!",
+                "Press Space-Bar to Start",
+  
+                
             ]
         },
         HUD: {
@@ -125,7 +128,7 @@ class GameConsts
     #FONT_SETTINGS          = "bold 21pt Century Gothic";
     #FONT_COLOR             = "#faf7f7e0";
     #DEBUG_TEXT_COLOR       = "yellow";
-    #HUD_BUFFER             = 0.12;
+    #HUD_BUFFER             = 0.08;
     #BILLBOARDS_OFFSET_BUFF = 0;
 
     // Audio
