@@ -1,80 +1,74 @@
-// =======================================================
-// FULLSCREEN MANAGEMENT
-// =======================================================
-const FullScreenUtil = 
+// ============================================================================
+// fullscreen.js
+// ============================================================================
+
+const FullScreenUtil =
 {
-     toggleFullScreen(canvas) 
+    toggleFullScreen(canvas)
     {
-        if (!document.fullscreenElement) 
+        if (!document.fullscreenElement)
         {
-            if (canvas.requestFullscreen) 
-                canvas.requestFullscreen({ navigationUI: "hide" });
-            else if (canvas.webkitRequestFullscreen) 
-                canvas.webkitRequestFullscreen();
-            else if (canvas.msRequestFullscreen) 
-                canvas.msRequestFullscreen();
-        } 
-        else 
+            (canvas.requestFullscreen       && canvas.requestFullscreen({ navigationUI: "hide" })) ||
+            (canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen())                   ||
+            (canvas.msRequestFullscreen     && canvas.msRequestFullscreen());
+        }
+        else
         {
-            if (document.exitFullscreen) 
-                document.exitFullscreen();
-            else if (document.webkitExitFullscreen) 
-                document.webkitExitFullscreen();
-            else if (document.msExitFullscreen) 
-                document.msExitFullscreen();
+            (document.exitFullscreen       && document.exitFullscreen())       ||
+            (document.webkitExitFullscreen && document.webkitExitFullscreen()) ||
+            (document.msExitFullscreen     && document.msExitFullscreen());
         }
     },
 
-    resizeCanvasToFullscreen(canvas, game) 
+    resizeCanvasToFullscreen(canvas, game)
     {
         if (!canvas) return;
 
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-        const internalWidth = game.gameConsts.SCREEN_WIDTH;
-        const internalHeight = game.gameConsts.SCREEN_HEIGHT;
-        const scale = Math.min(windowWidth / internalWidth, windowHeight / internalHeight);
+        const iw    = game.gameConsts.SCREEN_WIDTH;
+        const ih    = game.gameConsts.SCREEN_HEIGHT;
+        const scale = Math.min(window.innerWidth / iw, window.innerHeight / ih);
+        const sw    = iw * scale;
+        const sh    = ih * scale;
 
-        const scaledWidth = internalWidth * scale;
-        const scaledHeight = internalHeight * scale;
-
-        canvas.style.width = scaledWidth + "px";
-        canvas.style.height = scaledHeight + "px";
+        canvas.style.width   = `${sw}px`;
+        canvas.style.height  = `${sh}px`;
         canvas.style.display = "block";
-        canvas.style.margin = `${(windowHeight - scaledHeight) / 2}px auto`;
-    }
-}
+        canvas.style.margin  = `${(window.innerHeight - sh) / 2}px auto`;
+    },
 
-
-// =======================================================
-// EVENT LISTENERS
-// =======================================================
-window.addEventListener("keydown", e => 
-{
-    if (e.code === "KeyF") 
+    restoreCanvas(canvas, game)
     {
-        const canvas = document.getElementById("canvas");
-        FullScreenUtil.toggleFullScreen(canvas);
+        canvas.style.width  = `${game.gameConsts.SCREEN_WIDTH}px`;
+        canvas.style.height = `${game.gameConsts.SCREEN_HEIGHT}px`;
+        canvas.style.margin = "0 auto";
     }
+};
+
+// ---- Event Listeners --------------------------------------------------------
+
+window.addEventListener("keydown", e =>
+{
+    if (e.code === "KeyF")
+        FullScreenUtil.toggleFullScreen(document.getElementById("canvas"));
 });
 
-document.addEventListener("fullscreenchange", () => 
+document.addEventListener("fullscreenchange", () =>
 {
     const canvas = document.getElementById("canvas");
-    if (!myController || !myController.game) return;
-    
+    if (!myController?.game) return;
+
     const game = myController.game;
-    
-    if (document.fullscreenElement) 
+
+    if (document.fullscreenElement)
     {
         FullScreenUtil.resizeCanvasToFullscreen(canvas, game);
+        myController.device.fixCanvasScale();
         game.isGameFullscreen = true;
-    } 
-    else 
+    }
+    else
     {
-        canvas.style.width = game.gameConsts.SCREEN_WIDTH + "px";
-        canvas.style.height = game.gameConsts.SCREEN_HEIGHT + "px";
-        canvas.style.margin = "0 auto";
+        FullScreenUtil.restoreCanvas(canvas, game);
+        myController.device.fixCanvasScale();
         game.isGameFullscreen = false;
     }
 });
