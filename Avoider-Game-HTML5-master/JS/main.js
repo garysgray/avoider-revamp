@@ -2,21 +2,18 @@
 // main.js — Entry point. Hosts the game loop.
 // ============================================================================
 
-
 // ---- Globals ----------------------------------------------------------------
-
 let myController;
 let lastTime    = performance.now();
 let accumulator = 0;
 
 const FIXED_TIMESTEP = 1 / 60;
 const MAX_FRAME_TIME = 0.25;
+const MAX_STEPS      = 5;
 const SAFE_START_MS  = 100;
 const IDLE_TIMEOUT   = 200;
 
-
 // ---- Init -------------------------------------------------------------------
-
 window.addEventListener("load", () =>
 {
     try
@@ -29,9 +26,7 @@ window.addEventListener("load", () =>
     catch (e) { console.error("Initialization failed:", e); }
 });
 
-
 // ---- Game Loop --------------------------------------------------------------
-
 function gameLoop()
 {
     try
@@ -41,12 +36,17 @@ function gameLoop()
         lastTime        = now;
         accumulator    += frameTime;
 
-        while (accumulator >= FIXED_TIMESTEP)
+        let steps = 0;
+        while (accumulator >= FIXED_TIMESTEP && steps < MAX_STEPS)
         {
-            try   { myController.updateGame(FIXED_TIMESTEP); }
+            try   { myController.callUpdateGame(FIXED_TIMESTEP); }
             catch (e) { console.error("updateGame error:", e); }
             accumulator -= FIXED_TIMESTEP;
+            steps++;
         }
+
+        // Drain any remaining accumulator if steps were capped
+        if (steps >= MAX_STEPS) accumulator = 0;
 
         DebugUtil.updateDebugPanel();
     }
@@ -54,13 +54,10 @@ function gameLoop()
     finally   { requestAnimationFrame(gameLoop); }
 }
 
-
 // ---- Startup ----------------------------------------------------------------
-
 function safeStartGame()
 {
     if (!readyToStart()) { setTimeout(safeStartGame, SAFE_START_MS); return; }
-
     window.requestIdleCallback
         ? requestIdleCallback(startLoop, { timeout: IDLE_TIMEOUT })
         : setTimeout(startLoop, IDLE_TIMEOUT);

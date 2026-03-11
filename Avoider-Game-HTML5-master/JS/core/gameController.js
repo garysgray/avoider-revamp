@@ -7,9 +7,12 @@ class Controller
     #device;
     #game;
     #layers;
+    #gameConsts;
 
-    constructor()
+    constructor(gameConsts = new GameConsts())
     {
+        this.#gameConsts = gameConsts;
+
         try
         {
             this.#game = new Game();
@@ -23,7 +26,7 @@ class Controller
 
         try
         {
-            this.#device = new Device(this.game.gameConsts.SCREEN_WIDTH, this.game.gameConsts.SCREEN_HEIGHT);
+            this.#device = new Device(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
         }
         catch (err)
         {
@@ -33,23 +36,29 @@ class Controller
         }
 
         this.#layers = [];
-        this.initGame();
+        this.initGameObj();
     }
 
     // ---- Getters ----
-    get device() { return this.#device; }
-    get game()   { return this.#game; }
+    get device()     { return this.#device; }
+    get game()       { return this.#game; }
+    get layers()     { return this.#layers; }
+    get gameConsts() { return this.#gameConsts; }
 
     // ---- Init ----
-    initGame()
+    initGameObj()
     {
         try
         {
             this.#game.initGame(this.#device);
-            this.addLayer(billBoardsLayer);
-            this.addLayer(gameObjectsLayer);
-            this.addLayer(hudRenderLayer);
-            this.addLayer(textRenderLayer);
+            Layer.addRenderLayers(
+            [
+                billBoardsLayer,
+                gameObjectsLayer,
+                hudRenderLayer,
+                textRenderLayer
+            ],
+            this.#layers);
         }
         catch (err)
         {
@@ -65,13 +74,13 @@ class Controller
     }
 
     // ---- Update + Render ----
-    updateGame(delta)
+    callUpdateGame(delta)
     {
-        if (typeof delta !== "number" || delta <= 0) delta = this.game.gameConsts.FALLBACK_DELTA;
+        if (typeof delta !== "number" || delta <= 0) delta = this.#gameConsts.FALLBACK_DELTA;
 
         try
         {
-            updateGameStates(this.#device, this.#game, delta);
+            this.updateGame(this.#device, this.#game, delta);
 
             for (const layer of this.#layers)
             {
@@ -84,6 +93,28 @@ class Controller
         catch (err)
         {
             console.error("Game update error:", err.message);
+            alert("An error occurred during the game update. Please restart.");
+        }
+    }
+
+    updateGame(device, game, delta)
+    {
+        try
+        {
+            const stateHandlers =
+            {
+                [GameDefs.gameStates.INIT]: () => handleInitState(device, game, delta),
+                [GameDefs.gameStates.PLAY]: () => handlePlayState(device, game, delta),
+                [GameDefs.gameStates.LOSE]: () => handleLoseState(device, game, delta),
+            };
+
+            const handler = stateHandlers[game.gameState];
+            if (handler) handler();
+            else console.warn("Unknown game state:", game.gameState);
+        }
+        catch (err)
+        {
+            console.error("updateGame error:", err.message);
             alert("An error occurred during the game update. Please restart.");
         }
     }
