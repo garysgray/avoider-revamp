@@ -116,6 +116,24 @@ class Device
         }
         catch {}
     }
+    // ------------------------------------------------------------------------
+    // Asset loading
+    // ------------------------------------------------------------------------
+    setImagesForType(typeDefs, callback) 
+    {
+        Object.values(typeDefs).forEach(def => 
+        {
+            if (!def.path) return;
+
+            const sprite = new Sprite(def.path, def.name);
+            this.#images.addObject(sprite);
+
+            if (typeof callback === "function") 
+            {
+                callback(def, sprite);
+            }
+        });
+    }
 }
 
 
@@ -346,7 +364,7 @@ class Timer
     #mode;
     #loop;
 
-    constructor(name, durationSeconds = 0, mode = GameDefs.timerModes.COUNTDOWN, loop = false)
+    constructor(name, durationSeconds = 0, mode = timerModes .COUNTDOWN, loop = false)
     {
         this.#name     = name;
         this.#duration = durationSeconds;
@@ -361,7 +379,7 @@ class Timer
     get elapsedTime() { return this.#elapsedTime; }
     get progress()
     {
-        return this.#mode === GameDefs.timerModes.COUNTDOWN
+        return this.#mode === timerModes .COUNTDOWN
             ? 1 - (this.#timeLeft / (this.#duration || 1))
             : (this.#duration ? Math.min(1, this.#elapsedTime / this.#duration) : 0);
     }
@@ -373,7 +391,7 @@ class Timer
 
     start()
     {
-        if (this.#mode === GameDefs.timerModes.COUNTDOWN) this.#timeLeft    = this.#duration;
+        if (this.#mode === timerModes .COUNTDOWN) this.#timeLeft    = this.#duration;
         else                                               this.#elapsedTime = 0;
         this.#active = true;
     }
@@ -392,7 +410,7 @@ class Timer
     {
         if (!this.#active) return false;
 
-        if (this.#mode === GameDefs.timerModes.COUNTDOWN)
+        if (this.#mode === timerModes .COUNTDOWN)
         {
             this.#timeLeft -= delta;
             if (this.#timeLeft <= 0)

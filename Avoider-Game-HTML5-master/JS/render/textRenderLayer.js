@@ -19,7 +19,7 @@ function renderTextLayer(device, game)
 
     switch (game.gameState)
     {
-        case GameDefs.gameStates.INIT:
+        case gameStates.INIT:
             try
             {
                 layout.initTextY.forEach((pct, i) =>
@@ -29,7 +29,7 @@ function renderTextLayer(device, game)
             catch (e) { console.error("Error rendering INIT text:", e); }
             break;
 
-        case GameDefs.gameStates.LOSE:
+        case gameStates.LOSE:
             try
             {
                 const msg = game.lives <= 0

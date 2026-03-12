@@ -28,7 +28,7 @@ function getPlayerEffects()
 
     PlayerEffects =
     {
-        [GameDefs.playStates.SHIELD]: (ctx, obj) =>
+        [playStates.SHIELD]: (ctx, obj) =>
         {
             ctx.globalCompositeOperation = "lighter";
             drawGlow(ctx, obj, SHIELD,
@@ -39,7 +39,7 @@ function getPlayerEffects()
             ]);
         },
 
-        [GameDefs.playStates.ULTRA]: (ctx, obj) =>
+        [playStates.ULTRA]: (ctx, obj) =>
         {
             // Inner core burst
             drawGlow(ctx, obj, ULTRA,
@@ -60,7 +60,7 @@ function getPlayerEffects()
             ]);
         },
 
-        [GameDefs.playStates.SHOOT]: (ctx, obj) =>
+        [playStates.SHOOT]: (ctx, obj) =>
         {
             drawGlow(ctx, obj, FIRE,
             [
@@ -70,7 +70,7 @@ function getPlayerEffects()
             ]);
         },
 
-        [GameDefs.playStates.AVOID]: (ctx, obj) =>
+        [playStates.AVOID]: (ctx, obj) =>
         {
             drawGlow(ctx, obj, AVOID,
             [

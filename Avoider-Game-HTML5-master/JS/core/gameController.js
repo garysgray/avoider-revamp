@@ -103,9 +103,9 @@ class Controller
         {
             const stateHandlers =
             {
-                [GameDefs.gameStates.INIT]: () => handleInitState(device, game, delta),
-                [GameDefs.gameStates.PLAY]: () => handlePlayState(device, game, delta),
-                [GameDefs.gameStates.LOSE]: () => handleLoseState(device, game, delta),
+                [gameStates.INIT]: () => handleInitState(device, game, delta),
+                [gameStates.PLAY]: () => handlePlayState(device, game, delta),
+                [gameStates.LOSE]: () => handleLoseState(device, game, delta),
             };
 
             const handler = stateHandlers[game.gameState];

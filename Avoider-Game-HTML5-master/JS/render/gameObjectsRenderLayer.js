@@ -8,7 +8,7 @@ function renderGameObjectsLayer(device, game)
 {
     switch (game.gameState)
     {
-        case GameDefs.gameStates.PLAY:
+        case gameStates.PLAY:
             try
             {
                 renderNPCSprites(device, game);
@@ -18,7 +18,7 @@ function renderGameObjectsLayer(device, game)
             catch (e) { console.error("Error rendering gameplay objects:", e); }
             break;
 
-        case GameDefs.gameStates.LOSE:
+        case gameStates.LOSE:
             try   { renderPlayer(device, game); }
             catch (e) { console.error("Error rendering player on lose screen:", e); }
             break;

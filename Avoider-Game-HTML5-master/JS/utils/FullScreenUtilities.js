@@ -21,21 +21,18 @@ const FullScreenUtil =
     },
 
     resizeCanvasToFullscreen(canvas, game)
-    {
-        if (!canvas) return;
-
-        const iw    = game.gameConsts.SCREEN_WIDTH;
-        const ih    = game.gameConsts.SCREEN_HEIGHT;
-        const scale = Math.min(window.innerWidth / iw, window.innerHeight / ih);
-        const sw    = iw * scale;
-        const sh    = ih * scale;
-
-        canvas.style.width   = `${sw}px`;
-        canvas.style.height  = `${sh}px`;
-        canvas.style.display = "block";
-        canvas.style.margin  = `${(window.innerHeight - sh) / 2}px auto`;
-    },
-
+{
+    if (!canvas) return;
+    const iw    = game.gameConsts.SCREEN_WIDTH;
+    const ih    = game.gameConsts.SCREEN_HEIGHT;
+    const scale = Math.max(window.innerWidth / iw, window.innerHeight / ih);
+    const sw    = iw * scale;
+    const sh    = ih * scale;
+    canvas.style.width   = `${sw}px`;
+    canvas.style.height  = `${sh}px`;
+    canvas.style.display = "block";
+    canvas.style.margin  = `${(window.innerHeight - sh) / 2}px ${(window.innerWidth - sw) / 2}px`;
+},
     restoreCanvas(canvas, game)
     {
         canvas.style.width  = `${game.gameConsts.SCREEN_WIDTH}px`;
@@ -62,13 +59,11 @@ document.addEventListener("fullscreenchange", () =>
     if (document.fullscreenElement)
     {
         FullScreenUtil.resizeCanvasToFullscreen(canvas, game);
-        myController.device.fixCanvasScale();
         game.isGameFullscreen = true;
     }
     else
     {
         FullScreenUtil.restoreCanvas(canvas, game);
-        myController.device.fixCanvasScale();
         game.isGameFullscreen = false;
     }
 });

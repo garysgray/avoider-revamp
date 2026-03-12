@@ -26,9 +26,9 @@ function updateNPCSprites(device, game, delta)
                 {
                     switch (npc.type)
                     {
-                        case GameDefs.enemyTypes.EYE: npc.update(device, game, delta);                              break;
-                        case GameDefs.enemyTypes.BUG: npc.update(device, game, delta, npc.moveDiagonalDownLeft);    break;
-                        case GameDefs.enemyTypes.UFO: npc.update(device, game, delta, npc.moveDiagonalDownRight);   break;
+                        case enemyEnum.EYE: npc.update(device, game, delta);                              break;
+                        case enemyEnum.BUG: npc.update(device, game, delta, npc.moveDiagonalDownLeft);    break;
+                        case enemyEnum.UFO: npc.update(device, game, delta, npc.moveDiagonalDownRight);   break;
                     }
                 }
             }
@@ -50,7 +50,7 @@ function updateNPCSprites(device, game, delta)
 
 function generateNPCS(device, game)
 {
-    const { DRONE, AMMO } = GameDefs.spriteTypes;
+    const { DRONE, AMMO } = spriteTypes;
 
     try
     {
@@ -126,37 +126,36 @@ function check_NPC_Collision(device, game)
 
         npc.kill();
 
-        if (npc.name === GameDefs.spriteTypes.AMMO.name)
+        if (npc.name === spriteTypes.AMMO.name)
         {
-            try { device.audio.playSound(GameDefs.soundTypes.GET.name); } catch(e) {}
+            try { device.audio.playSound(soundTypes.GET.name); } catch(e) {}
 
-            if (npc.type === GameDefs.ammoTypes.FIRE)
+            if (npc.type === ammoEnum.FIRE)
             {
-                player.playerState = GameDefs.playStates.SHOOT;
+                player.playerState = playStates.SHOOT;
                 game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);
             }
             else
             {
-                player.playerState = (npc.type === GameDefs.ammoTypes.GHOST)
-                    ? GameDefs.playStates.SHIELD
-                    : GameDefs.playStates.ULTRA;
-                game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER)
-                    .reset(game.gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN, false);
+                player.playerState = (npc.type === ammoEnum.GHOST)
+                    ? playStates.SHIELD
+                    : playStates.ULTRA;
+                game.gameTimers.getObjectByName(timerTypes.SHIELD_TIMER)
+                    .reset(game.gameConsts.SHIELD_TIME, timerModes .COUNTDOWN, false);
             }
         }
         else
         {
-            if (player.playerState === GameDefs.playStates.ULTRA)
+            if (player.playerState === playStates.ULTRA)
             {
-                try { device.audio.playSound(GameDefs.soundTypes.HIT.name); } catch(e) {}
+                try { device.audio.playSound(soundTypes.HIT.name); } catch(e) {}
                 game.increaseScore(game.gameConsts.SCORE_INCREASE);
             }
             else
             {
-                try { device.audio.playSound(GameDefs.soundTypes.HURT.name); } catch(e) {}
-                player.playerState = GameDefs.playStates.DEATH;
-                game.gameState     = GameDefs.gameStates.LOSE;
-                game.decreaseLives(1);
+                try { device.audio.playSound(soundTypes.HURT.name); } catch(e) {}
+                player.playerState = playStates.DEATH;
+                game.gameState     = gameStates.LOSE;
                 return false;
             }
         }

@@ -11,10 +11,10 @@ class Player extends GameObject
 
     constructor(width, height, x, y, speed)
     {
-        super(GameDefs.spriteTypes.PLAYER, width, height, x, y, speed);
-        this.#playerState      = GameDefs.playStates.AVOID;
-        this.#savedPlayerState = GameDefs.playStates.AVOID;
-        this.#coolDownTimer    = new Timer(GameDefs.timerTypes.SHOOT_COOL_DOWN_TIMER, 0, GameDefs.timerModes.COUNTDOWN);
+        super(playerSpriteTypes.PLAYER, width, height, x, y, speed);
+        this.#playerState      = playStates.AVOID;
+        this.#savedPlayerState = playStates.AVOID;
+        this.#coolDownTimer    = new Timer(timerTypes.SHOOT_COOL_DOWN_TIMER, 0, timerModes .COUNTDOWN);
     }
 
     // ---- Getters / Setters ----
@@ -34,9 +34,9 @@ class Player extends GameObject
     {
         if (typeof collisionFunction === "function") this.checkNPCCollision(device, game, collisionFunction);
 
-        if (this.#playerState === GameDefs.playStates.DEATH)
+        if (this.#playerState === playStates.DEATH)
         {
-            this.#savedPlayerState = GameDefs.playStates.DEATH;
+            this.#savedPlayerState = playStates.DEATH;
             return;
         }
 
@@ -45,10 +45,10 @@ class Player extends GameObject
         this.enforceBounds(game);
 
         // If shield/ultra timer expires, revert to appropriate state
-        const shieldTimer = game.gameTimers.getObjectByName(GameDefs.timerTypes.SHIELD_TIMER);
+        const shieldTimer = game.gameTimers.getObjectByName(timerTypes.SHIELD_TIMER);
         if (shieldTimer.active && shieldTimer.update(delta))
         {
-            this.#playerState = game.ammo > 0 ? GameDefs.playStates.SHOOT : GameDefs.playStates.AVOID;
+            this.#playerState = game.ammo > 0 ? playStates.SHOOT : playStates.AVOID;
         }
 
         if (this.#savedPlayerState !== this.#playerState) this.#savedPlayerState = this.#playerState;
@@ -57,19 +57,19 @@ class Player extends GameObject
     // ---- Shooting ----
     tryShoot(device, game)
     {
-        if (this.#playerState !== GameDefs.playStates.SHOOT) return false;
+        if (this.#playerState !== playStates.SHOOT) return false;
         if (this.#coolDownTimer.active) return false;
 
         if (game.ammo <= 0)
         {
-            this.#playerState = GameDefs.playStates.AVOID;
+            this.#playerState = playStates.AVOID;
             return false;
         }
 
         const firePressed = device.mouseDown || device.keys.isKeyPressed(GameDefs.keyTypes.PLAY_KEY);
         if (!firePressed) return false;
 
-        const def    = GameDefs.spriteTypes.BULLET;
+        const def    = spriteTypes.BULLET;
         const bullet = new Projectile(
             def.name,
             def.w,
@@ -81,8 +81,8 @@ class Player extends GameObject
 
         game.projectiles.addObject(bullet);
         game.decreaseAmmo(1);
-        this.#coolDownTimer.reset(game.gameConsts.SHOOT_COOLDOWN, GameDefs.timerModes.COUNTDOWN, false);
-        try { device.audio.playSound(GameDefs.soundTypes.SHOOT.name); } catch(e) {}
+        this.#coolDownTimer.reset(game.gameConsts.SHOOT_COOLDOWN, timerModes .COUNTDOWN, false);
+        try { device.audio.playSound(soundTypes.SHOOT.name); } catch(e) {}
         return true;
     }
 
@@ -101,19 +101,42 @@ class Player extends GameObject
 
     // ---- Collision ----
     checkNPCCollision(device, game, collisionFunction)
-    {
-        if (this.#playerState === GameDefs.playStates.SHIELD) return;
+{
+    if (this.#playerState === playStates.SHIELD) return;
 
-        if (collisionFunction(device, game) === false)
-        {
-            this.savePos(this.posX, this.posY);
-            this.#playerState = GameDefs.playStates.DEATH;
-        }
+    if (collisionFunction(device, game) === false)
+    {
+        this.savePos(this.posX, this.posY);
+        this.#playerState = playStates.DEATH;
+
+        const bg = game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
+        if (bg) bg.reset();
     }
+}
 
     // ---- Mouse ----
     setMouseToPlayer(device)
     {
         device.setupMouse(this, device);
+    }
+
+    static buildPlayer()
+    {
+        try 
+        {
+            const player = new Player(
+                playerSpriteTypes.PLAYER.w,
+                playerSpriteTypes.PLAYER.h,
+                0,
+                0,
+                 0
+            );
+            return player;
+        } 
+        catch (err) 
+        {
+            console.error("Failed to initialize player:", err);
+        }
+        
     }
 }

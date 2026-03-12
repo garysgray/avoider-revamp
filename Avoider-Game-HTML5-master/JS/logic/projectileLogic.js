@@ -53,7 +53,7 @@ function updateProjectilesCollision(device, game)
 
                 if (rectsCollide(projBox, npcBox))
                 {
-                    try { device.audio.playSound(GameDefs.soundTypes.HIT.name); } catch(e) {}
+                    try { device.audio.playSound(soundTypes.HIT.name); } catch(e) {}
                     npc.kill();
                     proj.kill();
                     game.increaseScore(game.gameConsts.SCORE_INCREASE);

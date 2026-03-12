@@ -10,8 +10,8 @@ function renderNPCSprites(device, game)
 {
     try
     {
-        const droneImg = device.images.getImage(GameDefs.spriteTypes.DRONE.name);
-        const ammoImg  = device.images.getImage(GameDefs.spriteTypes.AMMO.name);
+        const droneImg = device.images.getImage(spriteTypes.DRONE.name);
+        const ammoImg  = device.images.getImage(spriteTypes.AMMO.name);
 
         for (let i = 0; i < game.gameSprites.getSize(); i++)
         {
@@ -20,11 +20,11 @@ function renderNPCSprites(device, game)
 
             switch (obj.name)
             {
-                case GameDefs.spriteTypes.DRONE.name:
-                    device.renderClip(droneImg, obj.posX, obj.posY, GameDefs.spriteTypes.DRONE.w, GameDefs.spriteTypes.DRONE.h, obj.type);
+                case spriteTypes.DRONE.name:
+                    device.renderClip(droneImg, obj.posX, obj.posY, spriteTypes.DRONE.w, spriteTypes.DRONE.h, obj.type);
                     break;
-                case GameDefs.spriteTypes.AMMO.name:
-                    device.renderClip(ammoImg,  obj.posX, obj.posY, GameDefs.spriteTypes.AMMO.w,  GameDefs.spriteTypes.AMMO.h,  obj.type);
+                case spriteTypes.AMMO.name:
+                    device.renderClip(ammoImg,  obj.posX, obj.posY, spriteTypes.AMMO.w,  spriteTypes.AMMO.h,  obj.type);
                     break;
                 default:
                     console.warn("Unknown NPC name:", obj.name);
@@ -42,7 +42,7 @@ function renderProjectiles(device, game)
 {
     try
     {
-        const bulletImg = device.images.getImage(GameDefs.spriteTypes.BULLET.name);
+        const bulletImg = device.images.getImage(spriteTypes.BULLET.name);
 
         for (let i = 0; i < game.projectiles.getSize(); i++)
         {
@@ -56,17 +56,26 @@ function renderProjectiles(device, game)
     catch (e) { console.error("renderProjectiles error:", e); }
 }
 
-// ---- Player -----------------------------------------------------------------
 function renderPlayer(device, game)
 {
     try
     {
         const obj       = game.player;
-        const playerImg = device.images.getImage(GameDefs.spriteTypes.PLAYER.name);
+        const playerImg = device.images.getImage(playerSpriteTypes.PLAYER.name);
+        if (!playerImg) return;
+
+        // Get background angle and lean ship against it
+        const bg           = game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
+        const counterAngle = bg ? bg.angle * 0.3 : 0;
 
         device.ctx.save();
+        device.ctx.translate(obj.posX, obj.posY);
+        device.ctx.rotate(counterAngle);
+        device.ctx.translate(-obj.posX, -obj.posY);
+
         getPlayerEffects().draw(device.ctx, obj);
         device.renderClip(playerImg, obj.posX, obj.posY, obj.width, obj.height, obj.playerState);
+
         device.ctx.restore();
 
         if (DebugUtil.DRAW_DEBUG_HITBOXES) drawHitBoxs(device, obj);

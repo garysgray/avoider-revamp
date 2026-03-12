@@ -26,7 +26,6 @@ class Game
     #canvasHalfH;
     #gameState;
     #score;
-    #lives;
     #ammo;
     #npcSpeedMultiplyer;
     #npcSpawnMultiplyer;
@@ -49,24 +48,12 @@ class Game
         this.#canvasHalfW  = this.#canvasWidth  * 0.5;
         this.#canvasHalfH  = this.#canvasHeight * 0.5;
 
-        this.#gameState          = GameDefs.gameStates.INIT;
+        this.#gameState          = gameStates.INIT;
         this.#score              = 0;
-        this.#lives              = 0;
         this.#ammo               = 0;
         this.#npcSpeedMultiplyer = 0;
         this.#npcSpawnMultiplyer = 0;
 
-        try 
-        {
-            this.#player = new Player(
-                GameDefs.spriteTypes.PLAYER.w,
-                GameDefs.spriteTypes.PLAYER.h,
-                this.#canvasHalfW,
-                this.#canvasHeight,
-                0
-            );
-        }
-        catch (err) { console.error("Failed to initialize player:", err); }
     }
 
     // ---- Accessors ----
@@ -81,7 +68,6 @@ class Game
     get canvasHalfH()         { return this.#canvasHalfH; }
     get gameState()           { return this.#gameState; }
     get score()               { return this.#score; }
-    get lives()               { return this.#lives; }
     get ammo()                { return this.#ammo; }
     get npcSpeedMuliplyer()   { return this.#npcSpeedMultiplyer; }
     get npcSpawnMultiplyer()  { return this.#npcSpawnMultiplyer; }
@@ -90,81 +76,64 @@ class Game
     // ---- Mutators ----
     set gameState(v)           { this.#gameState = v; }
     set score(v)               { this.#score = v; }
-    set lives(v)               { this.#lives = v; }
     set ammo(v)                { this.#ammo = v; }
     set npcSpeedMuliplyer(v)   { this.#npcSpeedMultiplyer = v; }
     set npcSpawnMultiplyer(v)  { this.#npcSpawnMultiplyer = v; }
+    set player(v)    { this.#player = v; }
 
-    emptyAmmo()       { this.#ammo = 0; }
+    emptyAmmo()       { this.#ammo    = 0; }
     increaseAmmo(a)   { this.#ammo   += a; }
     decreaseAmmo(a)   { this.#ammo   -= a; }
-    decreaseLives(a)  { this.#lives  -= a; }
     increaseScore(a)  { this.#score  += a; }
     setGameState(s)   { this.#gameState = s; }
 
     // ---- Game Setup ----
     initGame(device) 
+{
+    try 
     {
-        try 
+        device.keys.initKeys();
+
+        // Load images
+        device.setImagesForType(playerSpriteTypes);
+        device.setImagesForType(spriteTypes);
+
+        // Load billboards — image + board object together
+        device.setImagesForType(billBoardTypes, boardDef => 
         {
-            device.keys.initKeys();
-
-            // Load sprite assets
-            Object.values(GameDefs.spriteTypes).forEach(def => 
-            {
-                if (!def.path) return;
-                try { device.images.addObject(new Sprite(def.path, def.name)); }
-                catch (err) { console.error(`Failed to load sprite "${def.name}":`, err); }
-            });
-
-            // Load billboard assets
-            Object.values(GameDefs.billBoardTypes).forEach(def => 
-            {
-                if (!def.path) return;
-                try { device.images.addObject(new Sprite(def.path, def.name)); }
-                catch (err) { console.error(`Failed to load billboard "${def.name}":`, err); }
-            });
-
-            // Initialize billboards
-            const { BACKGROUND, HUD, SPLASH } = GameDefs.billBoardTypes;
-            const boards = 
-            [
-                new ParallaxBillBoard(BACKGROUND.name, BACKGROUND.w, BACKGROUND.h, 0, 0, 60, BACKGROUND.isCenter, GameDefs.parallexType.VERICAL),
-                new BillBoard(HUD.name,    HUD.w,    HUD.h,    0, 0, 0, HUD.isCenter),
-                new BillBoard(SPLASH.name, SPLASH.w, SPLASH.h, 0, 0, 0, SPLASH.isCenter),
-            ];
-            boards.forEach(board => 
-            {
-                try 
+            const board = boardDef.name === billBoardTypes.BACKGROUND.name
+                //? new ParallaxBillBoard(boardDef.name, boardDef.w, boardDef.h, 0, 0, 60, boardDef.isCenter, parallexEnum.VERTICLE)
+                //? new CircularParallaxBillBoard(boardDef.name, boardDef.w, boardDef.h, 0, 0, 60, boardDef.isCenter, 0.2)
+                ? new CircularParallaxBillBoard(boardDef.name, boardDef.w, boardDef.h, 0, 0, 175, boardDef.isCenter, parallexEnum.VERTICLE, 
                 {
-                    board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
-                    this.#billBoards.addObject(board);
-                }
-                catch (err) { console.error(`Failed to add board "${board.name}":`, err); }
-            });
+                    holdDuration: 6,
+                    rotateSpeed:  0.5,
+                    rotateAmount: 20
+                })
+                : new BillBoard(boardDef.name, boardDef.w, boardDef.h, 0, 0, 0, boardDef.isCenter);
 
-            // Load sounds
-            Object.values(GameDefs.soundTypes).forEach(def => 
-            {
-                if (!def.path) return;
-                try { device.audio.addSound(def.name, def.path, this.gameConsts.POOLSIZE, this.gameConsts.VOLUME); }
-                catch (err) { console.error(`Failed to add sound "${def.name}":`, err); }
-            });
+            board.centerObjectInWorld(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
+            this.#billBoards.addObject(board);
+        });
 
-            // Initialize timers
-            const timers = 
-            [
-                new Timer(GameDefs.timerTypes.SHIELD_TIMER, this.#gameConsts.SHIELD_TIME, GameDefs.timerModes.COUNTDOWN),
-                new Timer(GameDefs.timerTypes.GAME_CLOCK,   0,                            GameDefs.timerModes.COUNTUP),
-            ];
-            timers.forEach(timer => 
-            {
-                try { this.#gameTimers.addObject(timer); }
-                catch (err) { console.error("Failed to add timer:", err); }
-            });
-        }
-        catch (err) { console.error("Error in initGame:", err); }
+        // Load sounds
+        Object.values(soundTypes).forEach(def =>
+        {
+            if (!def.path) return;
+            device.audio.addSound(def.name, def.path, this.#gameConsts.POOLSIZE, this.#gameConsts.VOLUME);
+        });
+
+        // Initialize timers
+        const timers =
+        [
+            new Timer(timerTypes.SHIELD_TIMER,          this.#gameConsts.SHIELD_TIME, timerModes.COUNTDOWN),
+            new Timer(timerTypes.SHOOT_COOL_DOWN_TIMER, 0,                            timerModes.COUNTDOWN),
+            new Timer(timerTypes.GAME_CLOCK,            0,                            timerModes.COUNTUP),
+        ];
+        timers.forEach(timer => this.#gameTimers.addObject(timer));
     }
+    catch (err) { console.error("Error in initGame:", err); }
+}
 
     // Reset values each time a new game starts
     setGame(device) 
@@ -179,10 +148,15 @@ class Game
         this.npcSpeedMuliplyer  = 0;
         this.npcSpawnMultiplyer = 0;
 
-        this.player.setPlayerState(GameDefs.playStates.AVOID);
-        this.player.setMouseToPlayer(device);
-        this.gameTimers.getObjectByName(GameDefs.timerTypes.GAME_CLOCK).start();
+        this.player = Player.buildPlayer();
 
-        device.audio.playSoundLooping(GameDefs.soundTypes.SPACE.name);
+        this.player.setPlayerState(playStates.AVOID);
+        this.player.setMouseToPlayer(device);
+        this.gameTimers.getObjectByName(timerTypes.GAME_CLOCK).start();
+
+        device.audio.playSoundLooping(soundTypes.SPACE.name);
+
+        const bg = this.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
+        if (bg) bg.reset();
     }
 }
