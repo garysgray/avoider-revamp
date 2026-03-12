@@ -30,7 +30,7 @@ function renderNPCSprites(device, game)
                     console.warn("Unknown NPC name:", obj.name);
             }
 
-            if (DebugUtil.DRAW_DEBUG_HITBOXES) drawHitBoxs(device, obj);
+            if (DebugUtil.DRAW_DEBUG_HITBOXES) renderHitBoxs(device, obj);
         }
     }
     catch (e) { console.error("renderNPCSprites error:", e); }
@@ -50,7 +50,7 @@ function renderProjectiles(device, game)
             if (!obj) continue;
 
             if (bulletImg) device.centerImage(bulletImg, obj.posX, obj.posY);
-            if (DebugUtil.DRAW_DEBUG_HITBOXES) drawHitBoxs(device, obj);
+            if (DebugUtil.DRAW_DEBUG_HITBOXES) renderHitBoxs(device, obj);
         }
     }
     catch (e) { console.error("renderProjectiles error:", e); }
@@ -78,20 +78,53 @@ function renderPlayer(device, game)
 
         device.ctx.restore();
 
-        if (DebugUtil.DRAW_DEBUG_HITBOXES) drawHitBoxs(device, obj);
+        if (DebugUtil.DRAW_DEBUG_HITBOXES) renderHitBoxs(device, obj);
     }
     catch (e) { console.error("renderPlayer error:", e); }
 }
 
 // ---- Debug Hitboxes ---------------------------------------------------------
-function drawHitBoxs(device, obj)
+function renderHitBoxs(device, tempObj)
 {
-    if (!device?.ctx || !obj) return;
-    device.ctx.strokeStyle = "lime";
-    device.ctx.strokeRect(
-        obj.posX - (obj.halfWidth  ?? 0),
-        obj.posY - (obj.halfHeight ?? 0),
-        obj.width  ?? 0,
-        obj.height ?? 0
-    );
+    try 
+        {
+            const x = tempObj.posX - tempObj.halfWidth;
+            const y = tempObj.posY - tempObj.halfHeight;
+            const w = tempObj.width;
+            const h = tempObj.height;
+            device.ctx.strokeStyle = "lime";
+            device.ctx.strokeRect(x, y, w, h);
+        } 
+        catch (e)
+        {
+            console.error("Error in renderHitBoxs:", e);
+        }
 }
+
+
+// ---- drawHitbox -------------------------------------------------------------
+
+// function drawHitbox(device, obj, options = {})
+// {
+//     if (typeof obj.getHitbox !== "function") return;
+
+//     try
+//     {
+//         const hb  = obj.getHitbox(options.scale ?? 1.0, options.buffer ?? 0);
+//         const w   = hb.right  - hb.left;
+//         const h   = hb.bottom - hb.top;
+//         const ctx = device.ctx;
+
+//         ctx.save();
+//         ctx.globalAlpha = options.alpha     ?? 1.0;
+//         ctx.lineWidth   = options.lineWidth ?? 1;
+//         ctx.strokeStyle = options.color     || "magenta";
+
+//         options.fill
+//             ? (ctx.fillStyle = options.color || "magenta", ctx.fillRect(hb.left, hb.top, w, h))
+//             : ctx.strokeRect(hb.left, hb.top, w, h);
+
+//         ctx.restore();
+//     }
+//     catch (err) { console.warn("drawHitbox failed:", err.message); }
+// }
