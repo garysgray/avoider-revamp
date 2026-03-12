@@ -101,30 +101,3 @@ function renderHitBoxs(device, tempObj)
         }
 }
 
-
-// ---- drawHitbox -------------------------------------------------------------
-
-// function drawHitbox(device, obj, options = {})
-// {
-//     if (typeof obj.getHitbox !== "function") return;
-
-//     try
-//     {
-//         const hb  = obj.getHitbox(options.scale ?? 1.0, options.buffer ?? 0);
-//         const w   = hb.right  - hb.left;
-//         const h   = hb.bottom - hb.top;
-//         const ctx = device.ctx;
-
-//         ctx.save();
-//         ctx.globalAlpha = options.alpha     ?? 1.0;
-//         ctx.lineWidth   = options.lineWidth ?? 1;
-//         ctx.strokeStyle = options.color     || "magenta";
-
-//         options.fill
-//             ? (ctx.fillStyle = options.color || "magenta", ctx.fillRect(hb.left, hb.top, w, h))
-//             : ctx.strokeRect(hb.left, hb.top, w, h);
-
-//         ctx.restore();
-//     }
-//     catch (err) { console.warn("drawHitbox failed:", err.message); }
-// }

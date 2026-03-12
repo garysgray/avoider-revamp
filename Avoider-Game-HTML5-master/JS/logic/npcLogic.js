@@ -34,7 +34,7 @@ function updateNPCSprites(device, game, delta)
             }
             catch (e) { console.error("NPC update error:", e); }
 
-            const offscreen = npc.posY > device.canvas.height;
+            const offscreen = npc.posY > device.canvas.height + (npc.height * 2);
             if (!npc.alive || offscreen)
             {
                 try   { game.gameSprites.subObject(i); }
@@ -118,18 +118,17 @@ function check_NPC_Collision(device, game)
 {
     const player  = game.player;
     const sprites = game.gameSprites;
-
     for (let i = sprites.getSize() - 1; i >= 0; i--)
     {
         const npc = sprites.getIndex(i);
         if (!roughNear(player, npc)) continue;
-
+        const playerBox = player.getHitbox(1.0, 0);
+        const npcBox    = npc.getHitbox(1.0, 0);
+        if (!rectsCollide(playerBox, npcBox)) continue;
         npc.kill();
-
         if (npc.name === spriteTypes.AMMO.name)
         {
             try { device.audio.playSound(soundTypes.GET.name); } catch(e) {}
-
             if (npc.type === ammoEnum.FIRE)
             {
                 player.playerState = playStates.SHOOT;
@@ -141,7 +140,7 @@ function check_NPC_Collision(device, game)
                     ? playStates.SHIELD
                     : playStates.ULTRA;
                 game.gameTimers.getObjectByName(timerTypes.SHIELD_TIMER)
-                    .reset(game.gameConsts.SHIELD_TIME, timerModes .COUNTDOWN, false);
+                    .reset(game.gameConsts.SHIELD_TIME, timerModes.COUNTDOWN, false);
             }
         }
         else

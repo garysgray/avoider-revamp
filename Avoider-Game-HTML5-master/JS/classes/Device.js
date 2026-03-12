@@ -2,10 +2,14 @@ class Device
 {
     #canvas;
     #ctx;
-    #mouseDown = false;
+    #mouseDown = null;
     #images;
     #audio;
     #keys;
+
+    #onMouseDown = null;
+    #onMouseUp = null;
+    #onMouseMove = null;
 
     constructor(width, height, canvasEl = null)
     {
@@ -34,22 +38,41 @@ class Device
     get images()    { return this.#images; }
     get audio()     { return this.#audio; }
     get keys()      { return this.#keys; }
+
+    get onMouseDown() { return this.#onMouseDown; }
+    get onMouseUp() { return this.#onMouseUp; }
+    get onMouseMove() { return this.#onMouseMove; }
+
     set mouseDown(v){ this.#mouseDown = v; }
 
+    set onMouseDown(v){ this.#onMouseDown = v; }
+    set onMouseUp(v){ this.#onMouseUp = v; }
+    set onMouseMove(v){ this.#onMouseMove = v; }
+
     // ---- Mouse ----
+    
     setupMouse(sprite)
     {
         if (!sprite || !this.#canvas) return;
-        window.addEventListener("mousedown", () => this.#mouseDown = true);
-        window.addEventListener("mouseup",   () => this.#mouseDown = false);
-        window.addEventListener("mousemove", e =>
+        this.#onMouseDown = () => this.#mouseDown = true;
+        this.#onMouseUp   = () => this.#mouseDown = false;
+        this.#onMouseMove = e =>
         {
-            const rect   = this.#canvas.getBoundingClientRect();
-            sprite.posX  = e.clientX - rect.left;
-            sprite.posY  = e.clientY - rect.top;
-        });
+            const rect  = this.#canvas.getBoundingClientRect();
+            sprite.posX = e.clientX - rect.left;
+            sprite.posY = e.clientY - rect.top;
+        };
+        window.addEventListener("mousedown", this.#onMouseDown);
+        window.addEventListener("mouseup",   this.#onMouseUp);
+        window.addEventListener("mousemove", this.#onMouseMove);
     }
 
+    teardownMouse()
+    {
+        if (this.#onMouseDown) window.removeEventListener("mousedown", this.#onMouseDown);
+        if (this.#onMouseUp)   window.removeEventListener("mouseup",   this.#onMouseUp);
+        if (this.#onMouseMove) window.removeEventListener("mousemove", this.#onMouseMove);
+    }
     // ---- Rendering ----
     renderImage(imgOrSprite, x = 0, y = 0, w, h)
     {
@@ -84,9 +107,9 @@ class Device
     }
 
     // ---- Text ----
-    putText(str, x, y)         { try { this.#ctx.fillText(str, x, y); }                                                              catch {} }
-    colorText(color)           { try { this.#ctx.fillStyle = color.toString(); }                                                      catch {} }
-    setFont(font)              { try { this.#ctx.font = font.toString(); }                                                            catch {} }
+    putText(str, x, y)         { try { this.#ctx.fillText(str, x, y); }          catch {} }
+    colorText(color)           { try { this.#ctx.fillStyle = color.toString(); } catch {} }
+    setFont(font)              { try { this.#ctx.font = font.toString(); }       catch {} }
 
     centerTextOnY(text, posY)
     {

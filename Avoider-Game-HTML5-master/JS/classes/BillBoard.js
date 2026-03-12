@@ -1,4 +1,10 @@
-// ---- BillBoard --------------------------------------------------------------
+// --------------------------------------------
+// BILLBOARD CLASS
+// --------------------------------------------
+// Static or decorative background object
+// Currently does nothing, but could support parallax or animation
+// --------------------------------------------
+
 
 class BillBoard extends GameObject
 {

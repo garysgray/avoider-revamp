@@ -117,6 +117,7 @@ class Player extends GameObject
     // ---- Mouse ----
     setMouseToPlayer(device)
     {
+        //device.teardownMouse();
         device.setupMouse(this, device);
     }
 

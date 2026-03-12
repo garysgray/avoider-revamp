@@ -36,16 +36,14 @@ function handlePlayState(device, game, delta)
         updateGameElementsBasedOnClock(game, delta, gameClock);
 
         // Update NPCs, player, and projectiles
-        game.player.update(device, game, delta, check_NPC_Collision);   // npcLogic.js
-        generateNPCS(device, game);                                     // npcLogic.js
-        updateNPCSprites(device, game, delta);                          // npcLogic.js
+        updateNPCSprites(device, game, delta);                          
+        game.player.update(device, game, delta, check_NPC_Collision);   
+        generateNPCS(device, game);                                     
         updateProjectilesSprites(device, game, delta);
-        updateProjectilesCollision(device, game);           // projectileLogic.js
+        updateProjectilesCollision(device, game);           
     }
     catch (e) { console.error("PLAY state error:", e); }
 }
-
-
 
 
 // ============================================================================
