@@ -66,7 +66,7 @@ class Player extends GameObject
             return false;
         }
 
-        const firePressed = device.mouseDown || device.keys.isKeyPressed(GameDefs.keyTypes.PLAY_KEY);
+        const firePressed = device.mouseDown || device.keys.isKeyPressed(keyTypes.PLAY_KEY);
         if (!firePressed) return false;
 
         const def    = spriteTypes.BULLET;
@@ -101,18 +101,18 @@ class Player extends GameObject
 
     // ---- Collision ----
     checkNPCCollision(device, game, collisionFunction)
-{
-    if (this.#playerState === playStates.SHIELD) return;
-
-    if (collisionFunction(device, game) === false)
     {
-        this.savePos(this.posX, this.posY);
-        this.#playerState = playStates.DEATH;
+        if (this.#playerState === playStates.SHIELD) return;
 
-        const bg = game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
-        if (bg) bg.reset();
+        if (collisionFunction(device, game) === false)
+        {
+            this.savePos(this.posX, this.posY);
+            this.#playerState = playStates.DEATH;
+
+            const bg = game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
+            if (bg) bg.reset();
+        }
     }
-}
 
     // ---- Mouse ----
     setMouseToPlayer(device)
@@ -139,4 +139,36 @@ class Player extends GameObject
         }
         
     }
+
+    checkForMoveInput(device, game, delta) 
+    {
+        const { dx, dy } = device.keys.getMovementVector();
+
+        if (dx === 0 && dy === 0)
+            return false;
+
+        // Player state (animation / facing)
+        if (dx === 0 && dy < 0) this.playerState = playStates.UP;
+        else if (dx === 0 && dy > 0) this.playerState = playStates.DOWN;
+        else if (dx > 0 && dy === 0) this.playerState = playStates.RIGHT;
+        else if (dx < 0 && dy === 0) this.playerState = playStates.LEFT;
+        else if (dx > 0 && dy < 0) this.playerState = playStates.UP_RIGHT;
+        else if (dx < 0 && dy < 0) this.playerState = playStates.UP_LEFT;
+        else if (dx > 0 && dy > 0) this.playerState = playStates.DOWN_RIGHT;
+        else if (dx < 0 && dy > 0) this.playerState = playStates.DOWN_LEFT;
+
+        // Normalize
+        const len = Math.hypot(dx, dy);
+        const nx = dx / len;
+        const ny = dy / len;
+
+        this.tryMoveWithCollision(
+            game.mapHolder,
+            nx * this.speed * delta,
+            ny * this.speed * delta
+        );
+
+        return true;
+    }
+    
 }

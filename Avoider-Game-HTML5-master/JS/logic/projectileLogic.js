@@ -14,10 +14,8 @@ function updateProjectilesSprites(device, game, delta)
         for (let i = game.projectiles.getSize() - 1; i >= 0; i--)
         {
             const proj = game.projectiles.getIndex(i);
-
             try   { proj.update(device, game, delta); }
             catch (e) { console.error("Projectile update error:", e); }
-
             const offscreen = proj.posY + proj.halfHeight < game.gameConsts.SCREEN_HEIGHT * game.gameConsts.HUD_BUFFER;
             if (offscreen || !proj.alive)
             {
@@ -25,12 +23,10 @@ function updateProjectilesSprites(device, game, delta)
                 catch (e) { console.error("Failed to remove projectile:", e); }
             }
         }
-
-        updateProjectilesCollision(device, game);
+        // DELETE the updateProjectilesCollision(device, game) call that was here
     }
     catch (e) { console.error("updateProjectilesSprites error:", e); }
 }
-
 
 // ---- Collision --------------------------------------------------------------
 

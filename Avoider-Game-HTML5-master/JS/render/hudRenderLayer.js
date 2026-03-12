@@ -36,8 +36,8 @@ function renderHUDLayer(device, game)
 
         const timer = game.gameTimers.getObjectByName(timerTypes.GAME_CLOCK);
 
-        device.putText(GameDefs.gameTexts.HUD.AMMO  + game.ammo,  cw * layout.ammoX,  ch * layout.hudY);
-        device.putText(GameDefs.gameTexts.HUD.SCORE + game.score, cw * layout.scoreX, ch * layout.hudY);
+        device.putText(gameTexts.HUD.AMMO  + game.ammo,  cw * layout.ammoX,  ch * layout.hudY);
+        device.putText(gameTexts.HUD.SCORE + game.score, cw * layout.scoreX, ch * layout.hudY);
         device.centerTextOnY(`Clock: ${timer.formatted}`,         ch * layout.hudY);
     }
     catch (e) { console.error("Error rendering HUD:", e); }

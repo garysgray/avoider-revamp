@@ -23,7 +23,7 @@ function renderTextLayer(device, game)
             try
             {
                 layout.initTextY.forEach((pct, i) =>
-                    device.centerTextOnY(GameDefs.gameTexts.INIT.INSTRUCTIONS[i], ch * pct)
+                    device.centerTextOnY(gameTexts.INIT.INSTRUCTIONS[i], ch * pct)
                 );
             }
             catch (e) { console.error("Error rendering INIT text:", e); }
@@ -33,8 +33,8 @@ function renderTextLayer(device, game)
             try
             {
                 const msg = game.lives <= 0
-                    ? GameDefs.gameTexts.LOSE.LOSE_MESSAGE
-                    : GameDefs.gameTexts.LOSE.DIE_MESSAGE;
+                    ? gameTexts.LOSE.LOSE_MESSAGE
+                    : gameTexts.LOSE.DIE_MESSAGE;
                 device.centerTextOnY(msg, ch * layout.messageY);
             }
             catch (e) { console.error("Error rendering LOSE text:", e); }

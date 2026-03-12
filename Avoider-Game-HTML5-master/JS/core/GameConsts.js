@@ -1,37 +1,4 @@
 // =======================================================
-// GameDefs.js
-// Immutable enumerations, texts, billboard & sprite configs.
-// =======================================================
-
-const GameDefs = Object.freeze({
-
-    keyTypes: {
-        PLAY_KEY:    "Space",
-        RESET_KEY:   "Space",
-    },
-
-    gameTexts: {
-        INIT: {
-            INSTRUCTIONS: [
-                "Mouse to Move!",
-                "Mouse-Btn to Fire!!",
-                "Catch the Power-Ups!",
-                "Deal with the Drones!!!",
-                "Press Space-Bar to Start!!",
-            ]
-        },
-        HUD: {
-            SCORE: "Score: ",
-            AMMO:  "Ammo: ",
-            LIVES: "Lives: "
-        },
-        WIN:  { MESSAGE:     "PRESS  ENTER  TO  PLAY  AGAIN"   },
-        LOSE: { DIE_MESSAGE: "GAME OVER,  SPACE-BAR  TO  RETRY" }
-    },
-
-});
-
-// =======================================================
 // GameConsts
 // Tunable game values exposed via private fields + getters.
 // =======================================================

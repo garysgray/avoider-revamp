@@ -11,7 +11,7 @@ function handleInitState(device, game, delta)
 {
     try
     {
-        if (device.keys.isKeyPressed(GameDefs.keyTypes.PLAY_KEY))
+        if (device.keys.isKeyPressed(keyTypes.PLAY_KEY))
         {
             game.setGame(device);
             game.setGameState(gameStates.PLAY);
@@ -39,7 +39,8 @@ function handlePlayState(device, game, delta)
         game.player.update(device, game, delta, check_NPC_Collision);   // npcLogic.js
         generateNPCS(device, game);                                     // npcLogic.js
         updateNPCSprites(device, game, delta);                          // npcLogic.js
-        updateProjectilesSprites(device, game, delta);                  // projectileLogic.js
+        updateProjectilesSprites(device, game, delta);
+        updateProjectilesCollision(device, game);           // projectileLogic.js
     }
     catch (e) { console.error("PLAY state error:", e); }
 }
@@ -62,7 +63,7 @@ function handleLoseState(device, game, delta)
         game.npcSpawnMultiplyer = 0;
 
         // Restart game on key press
-        if (device.keys.isKeyDown(GameDefs.keyTypes.RESET_KEY))
+        if (device.keys.isKeyDown(keyTypes.RESET_KEY))
         {
             device.audio.stopAll();
             game.setGameState(gameStates.INIT);
