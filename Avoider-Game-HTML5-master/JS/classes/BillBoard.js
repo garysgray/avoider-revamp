@@ -5,7 +5,6 @@
 // Currently does nothing, but could support parallax or animation
 // --------------------------------------------
 
-
 class BillBoard extends GameObject
 {
     #isCenter;

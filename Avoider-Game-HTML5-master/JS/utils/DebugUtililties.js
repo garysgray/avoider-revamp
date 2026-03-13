@@ -4,7 +4,7 @@
 
 const DebugUtil =
 {
-    DEV_MODE:          true,
+    DEV_MODE:          false,
     DRAW_DEBUG_TEXT:   false,
     DRAW_DEBUG_HITBOXES: false,
 

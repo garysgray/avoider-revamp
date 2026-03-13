@@ -27,6 +27,32 @@ window.addEventListener("load", () =>
 });
 
 // ---- Game Loop --------------------------------------------------------------
+// function gameLoop()
+// {
+//     try
+//     {
+//         const now       = performance.now();
+//         const frameTime = Math.min((now - lastTime) / 1000, MAX_FRAME_TIME);
+//         lastTime        = now;
+//         accumulator    += frameTime;
+
+//         let steps = 0;
+//         while (accumulator >= FIXED_TIMESTEP && steps < MAX_STEPS)
+//         {
+//             try   { myController.callUpdateGame(FIXED_TIMESTEP); }
+//             catch (e) { console.error("updateGame error:", e); }
+//             accumulator -= FIXED_TIMESTEP;
+//             steps++;
+//         }
+
+//         // Drain any remaining accumulator if steps were capped
+//         if (steps >= MAX_STEPS) accumulator = 0;
+
+//         DebugUtil.updateDebugPanel();
+//     }
+//     catch (e) { console.error("gameLoop error:", e); }
+//     finally   { requestAnimationFrame(gameLoop); }
+// }
 function gameLoop()
 {
     try
@@ -37,22 +63,30 @@ function gameLoop()
         accumulator    += frameTime;
 
         let steps = 0;
+
         while (accumulator >= FIXED_TIMESTEP && steps < MAX_STEPS)
         {
-            try   { myController.callUpdateGame(FIXED_TIMESTEP); }
-            catch (e) { console.error("updateGame error:", e); }
+            myController.callUpdateGame(FIXED_TIMESTEP);
             accumulator -= FIXED_TIMESTEP;
             steps++;
         }
 
-        // Drain any remaining accumulator if steps were capped
         if (steps >= MAX_STEPS) accumulator = 0;
+
+        myController.callRenderGame();
 
         DebugUtil.updateDebugPanel();
     }
-    catch (e) { console.error("gameLoop error:", e); }
-    finally   { requestAnimationFrame(gameLoop); }
+    catch (e)
+    {
+        console.error("gameLoop error:", e);
+    }
+    finally
+    {
+        requestAnimationFrame(gameLoop);
+    }
 }
+
 
 // ---- Startup ----------------------------------------------------------------
 function safeStartGame()

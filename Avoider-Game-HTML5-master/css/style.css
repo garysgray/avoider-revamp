@@ -1,50 +1,33 @@
-/* ------------------------------------------------------------------ */
-/* Root constants */
-/* ------------------------------------------------------------------ */
-
 :root {
-    /* Colors */
     --color-orange: #b85809;
     --color-black: #000000;
     --color-white: #fcf8f8;
-
-    /* Fonts */
     --font-format: bold 20px Calibri;
- 
-    /* Borders & Radii */
     --border-width: 4px;
     --border-radius: 18px;
     --border-style: solid;
     --border: var(--border-width) var(--border-style) var(--color-orange);
-
-    /* Spacing */
-    --body-padding: clamp(15px, 3vw, 45px);
+    --body-padding: 22px;
     --menu-gap: 1.5rem;
-    --menu-padding: 0.75rem 2rem;
+    --menu-padding: 0.5rem 2rem;
     --link-padding: 0.5rem 1.25rem;
-    --message-padding-y: clamp(0.05rem, 1vw, 0.1rem);
-    --message-padding-x: clamp(1rem, 4vw, 2.5rem);
-
-    /* Effects */
+    --message-padding-y: 0.05rem;
+    --message-padding-x: 2.5rem;
     --transition-speed: 0.3s;
     --canvas-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
     --glass-bg: rgba(0, 0, 0, 0.7);
     --glass-blur: blur(4px);
-
-    /* Assets */
     --image-url: url(../assets/sprites/space.png);
 }
 
-/* ------------------------------------------------------------------ */
-/* Base elements */
-/* ------------------------------------------------------------------ */
 body 
 {
     background: var(--color-black) var(--image-url) no-repeat center center / cover;
     text-align: center;
-    margin: 0;        /* remove body padding */
+    margin: 0;
     padding: 0;
-    min-height: 100vh; /* ensures body fills viewport */
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 canvas 
@@ -53,6 +36,8 @@ canvas
     border-radius: var(--border-radius);
     cursor: none;
     box-shadow: var(--canvas-shadow);
+    display: block;
+    margin: 0 auto;
 }
 
 a 
@@ -62,26 +47,18 @@ a
     transition: color var(--transition-speed) ease;
 }
 
-p 
-{
-  word-spacing: 0.2em; 
-}
+p { word-spacing: 0.2em; }
 
-/* ------------------------------------------------------------------ */
-/* Container */
-/* ------------------------------------------------------------------ */
 #container
 {
     display: inline-block;
-    padding: var(--body-padding); /* move padding here */
+    padding: var(--body-padding);
+    box-sizing: border-box;
 }
 
-/* ------------------------------------------------------------------ */
-/* Top Menu */
-/* ------------------------------------------------------------------ */
 #top_menu 
 {
-   display: flex;
+    display: flex;
     justify-content: center;
     gap: var(--menu-gap);
     background: var(--glass-bg);
@@ -90,6 +67,7 @@ p
     border-radius: var(--border-radius);
     border: var(--border);
     backdrop-filter: var(--glass-blur);
+    margin-bottom: 8px;
 }
 
 #top_menu a 
@@ -106,29 +84,25 @@ p
     border: var(--border);
 }
 
-/* ------------------------------------------------------------------ */
-/* Message */
-/* ------------------------------------------------------------------ */
-#message {
+#message 
+{
     display: flex;
-    justify-content: center; /* center horizontally */
-    align-items: center;     /* center vertically */
+    justify-content: center;
+    align-items: center;
     background: var(--glass-bg);
     font: var(--font-format);
     color: var(--color-white);
     padding: var(--message-padding-y) var(--message-padding-x);
-    margin: 1rem auto;
+    margin: 6px auto 0;
     text-align: center;
     border: var(--border);
     border-radius: var(--border-radius);
     backdrop-filter: var(--glass-blur);
 }
 
-/* ------------------------------------------------------------------ */
-/* Debug Panel */
-/* ------------------------------------------------------------------ */
-#debug-panel {
-    position: absolute;      /* relative to container or document */
+#debug-panel 
+{
+    position: absolute;
     width: 220px;
     max-height: 80%;
     overflow-y: auto;
@@ -141,7 +115,8 @@ p
     z-index: 9999;
 }
 
-#debug-text {
+#debug-text 
+{
     margin: 0;
     color: var(--color-orange);
     font: 14px Consolas, monospace;
@@ -149,15 +124,30 @@ p
     white-space: pre-wrap;
 }
 
-#debug-panel.hidden {
-    display: none;
-}
+#debug-panel.hidden { display: none; }
 
-#message .message-text {
+#message .message-text 
+{
     opacity: 1;
     transition: opacity 0.35s ease-in-out;
 }
 
-#message .message-text.fade-out {
-    opacity: 0;
+#message .message-text.fade-out { opacity: 0; }
+
+canvas:fullscreen
+{
+    width         : 100vw  !important;
+    height        : 100vh  !important;
+    border        : none   !important;
+    border-radius : 0      !important;
+    margin        : 0      !important;
+}
+
+canvas:-webkit-full-screen
+{
+    width         : 100vw  !important;
+    height        : 100vh  !important;
+    border        : none   !important;
+    border-radius : 0      !important;
+    margin        : 0      !important;
 }

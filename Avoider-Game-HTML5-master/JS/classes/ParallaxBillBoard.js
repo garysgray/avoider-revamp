@@ -86,44 +86,54 @@ class CircularParallaxBillBoard extends ParallaxBillBoard
     render(device, game, image)
     {
         const ctx   = device.ctx;
-        const cx    = game.gameConsts.SCREEN_WIDTH  * 0.5;
-        const cy    = game.gameConsts.SCREEN_HEIGHT * 0.5;
+        const w     = game.gameConsts.SCREEN_WIDTH;
+        const h     = game.gameConsts.SCREEN_HEIGHT;
+        const cx    = w * 0.5;
+        const cy    = h * 0.5;
         const scale = 1.5;
 
-        // Fill void black first
-        ctx.fillStyle = "#000005";
-        ctx.fillRect(0, 0, game.gameConsts.SCREEN_WIDTH, game.gameConsts.SCREEN_HEIGHT);
+        // --- Base space ---
+        ctx.fillStyle = "#02010a";
+        ctx.fillRect(0, 0, w, h);
 
-        // Rotate and draw starfield
+        // --- Rotating starfield ---
         ctx.save();
         ctx.translate(cx, cy);
         ctx.rotate(this.#currentAngle);
         ctx.scale(scale, scale);
         ctx.translate(-cx, -cy);
+
         super.render(device, game, image);
+
         ctx.restore();
 
-        // Deep cosmic vignette
-        const vignette = ctx.createRadialGradient(cx, cy, cx * 0.3, cx, cy, cx * 1.6);
-        vignette.addColorStop(0,    "rgba(0, 0, 0, 0)");
-        vignette.addColorStop(0.5,  "rgba(5, 0, 20, 0.3)");
-        vignette.addColorStop(0.75, "rgba(40, 0, 60, 0.6)");
-        vignette.addColorStop(0.85, "rgba(120, 30, 20, 0.65)");
-        vignette.addColorStop(0.9,  "rgba(200, 80, 0, 0.7)");
-        vignette.addColorStop(1,    "rgba(0, 0, 0, 0.95)");
-        ctx.fillStyle = vignette;
-        ctx.fillRect(0, 0, game.gameConsts.SCREEN_WIDTH, game.gameConsts.SCREEN_HEIGHT);
+        // --- Subtle cosmic color bloom ---
+        ctx.save();
+        ctx.globalCompositeOperation = "screen";
 
-        // Cosmic pulse
-        const pulse = Math.abs(Math.sin(Date.now() * 0.0005));
-        const cosmicEdge = ctx.createRadialGradient(cx, cy, cx * 0.8, cx, cy, cx * 1.5);
-        cosmicEdge.addColorStop(0,   "rgba(0, 0, 0, 0)");
-        cosmicEdge.addColorStop(0.7, `rgba(80, 0, 120, ${pulse * 0.15})`);
-        cosmicEdge.addColorStop(0.85,`rgba(150, 40, 20, ${pulse * 0.2})`);
-        cosmicEdge.addColorStop(1,   `rgba(200, 80, 0,  ${pulse * 0.25})`);
-        ctx.fillStyle = cosmicEdge;
-        ctx.fillRect(0, 0, game.gameConsts.SCREEN_WIDTH, game.gameConsts.SCREEN_HEIGHT);
+        const nebula = ctx.createRadialGradient(cx, cy, cx * 0.2, cx, cy, cx * 1.2);
+        nebula.addColorStop(0,   "rgba(90,120,255,0.10)");  // blue glow
+        nebula.addColorStop(0.4, "rgba(180,60,255,0.08)");  // purple
+        nebula.addColorStop(0.7, "rgba(255,80,120,0.06)");  // red nebula
+        nebula.addColorStop(1,   "rgba(0,0,0,0)");
+
+        ctx.fillStyle = nebula;
+        ctx.fillRect(0,0,w,h);
+
+        ctx.restore();
+
+        // --- Cosmic vignette ---
+        const vignette = ctx.createRadialGradient(cx, cy, cx * 0.4, cx, cy, cx * 1.6);
+
+        vignette.addColorStop(0,   "rgba(0,0,0,0)");
+        vignette.addColorStop(0.75,"rgba(20,0,60,0.25)");
+        vignette.addColorStop(0.9, "rgba(80,0,120,0.35)");
+        vignette.addColorStop(1,   "rgba(0,0,0,0.85)");
+
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0,0,w,h);
     }
+
 
     reset()
     {

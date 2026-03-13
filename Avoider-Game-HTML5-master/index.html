@@ -1,26 +1,21 @@
-
 <!DOCTYPE html>
 <html>
     <head>
         <title>Avoider</title>
-		<link rel="stylesheet" href="css/style.css" />
-
+        <link rel="stylesheet" href="css/style.css" />
     </head>
     <body>
-		<div id = "container">
+        <div id="container">
             
-            <nav id = "top_menu">
-                    
-                    <li><a href ="https://github.com/garysgray/avoider-revamp/">GitHub</a></li>
-                    
+            <nav id="top_menu">
+                <li><a href="https://github.com/garysgray/avoider-revamp/">GitHub</a></li>
             </nav>
-            <br></br>
 
             <div id="debug-panel"> 
                 <pre id="debug-text">DEBUG READY</pre>
             </div>
                 
-            <canvas id="canvas"></canvas>
+            <canvas id="canvas" width="1280" height="720"></canvas>
             
             <script type="text/javascript" src="js/classes/GameObject.js"></script>
             <script type="text/javascript" src="js/classes/NPC.js"></script> 
@@ -41,7 +36,6 @@
             <script type="text/javascript" src="js/render/gameObjectsRenderLayer.js"></script>
             <script type="text/javascript" src="js/logic/projectileLogic.js"></script> 
             <script type="text/javascript" src="js/logic/npcLogic.js"></script>         
-            <script type="text/javascript" src="js/utils/gameUtilities.js"></script>
             <script type="text/javascript" src="js/utils/collisionUtilities.js"></script>
             <script type="text/javascript" src="js/utils/renderUtilities.js"></script>
             <script type="text/javascript" src="js/utils/DebugUtililties.js"></script>
@@ -56,12 +50,10 @@
             <script type="text/javascript" src="js/core/GameConsts.js"></script>
             <script type="text/javascript" src="js/core/UpdateGameStates.js"></script>         
             <script type="text/javascript" src="js/main.js"></script>
-            <br></br>
             
-            <div id = "message">
+            <div id="message">
                 <p>Press Ctrl to Pause</p>
             </div>
         </div>
-		
     </body>
-	
+</html>

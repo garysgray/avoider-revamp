@@ -18,16 +18,16 @@ class Layer
     // Render method calls the assigned render function for this layer
     // Passes in the device (canvas/audio/inputs), game state, and delta time
     render(dev, game, screenWidth, screenHeight, hudBuff = 0, normFont = null, midFont = null, bigFont = null, highlightColor = null, fontColor = null)
-{
-    try 
     {
-        this.renderFn(dev, game, screenWidth, screenHeight, hudBuff, normFont, midFont, bigFont, highlightColor, fontColor);
-    } 
-    catch (e) 
-    {
-        console.error(`Layer '${this.name}': Error during render -`, e);
+        try 
+        {
+            this.renderFn(dev, game, screenWidth, screenHeight, hudBuff, normFont, midFont, bigFont, highlightColor, fontColor);
+        } 
+        catch (e) 
+        {
+            console.error(`Layer '${this.name}': Error during render -`, e);
+        }
     }
-}
 
     // ------------------------------------------------------------------------
     // Add a render layer

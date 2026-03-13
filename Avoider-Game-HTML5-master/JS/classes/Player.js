@@ -59,29 +59,29 @@ class Player extends GameObject
     {
         if (this.#playerState !== playStates.SHOOT) return false;
         if (this.#coolDownTimer.active) return false;
-
         if (game.ammo <= 0)
         {
             this.#playerState = playStates.AVOID;
             return false;
         }
-
         const firePressed = device.mouseDown || device.keys.isKeyPressed(keyTypes.PLAY_KEY);
         if (!firePressed) return false;
-
-        const def    = spriteTypes.BULLET;
+        const bg    = game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
+        const angle = bg ? bg.angle * 0.3 : 0;
+        const def   = spriteTypes.BULLET;
+        
         const bullet = new Projectile(
             def.name,
             def.w,
             def.h,
             this.posX,
             this.posY - this.halfHeight - def.spawnRatio - (def.h * 0.5),
-            def.speed
+            def.speed,
+            angle
         );
-
         game.projectiles.addObject(bullet);
         game.decreaseAmmo(1);
-        this.#coolDownTimer.reset(game.gameConsts.SHOOT_COOLDOWN, timerModes .COUNTDOWN, false);
+        this.#coolDownTimer.reset(game.gameConsts.SHOOT_COOLDOWN, timerModes.COUNTDOWN, false);
         try { device.audio.playSound(soundTypes.SHOOT.name); } catch(e) {}
         return true;
     }

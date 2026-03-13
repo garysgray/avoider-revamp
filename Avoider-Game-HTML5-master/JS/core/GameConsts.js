@@ -5,8 +5,8 @@
 class GameConsts
 {
     // Screen
-    #SCREEN_WIDTH  = 1000;
-    #SCREEN_HEIGHT = 600;
+    #SCREEN_WIDTH  = 1280;
+    #SCREEN_HEIGHT = 720;
 
     // Timings
     #SHIELD_TIME                       = 3;

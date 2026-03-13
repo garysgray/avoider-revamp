@@ -56,6 +56,32 @@ function renderProjectiles(device, game)
     catch (e) { console.error("renderProjectiles error:", e); }
 }
 
+// function renderPlayer(device, game)
+// {
+//     try
+//     {
+//         const obj       = game.player;
+//         const playerImg = device.images.getImage(playerSpriteTypes.PLAYER.name);
+//         if (!playerImg) return;
+
+//         // Get background angle and lean ship against it
+//         const bg           = game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
+//         const counterAngle = bg ? bg.angle * 0.3 : 0;
+
+//         device.ctx.save();
+//         device.ctx.translate(obj.posX, obj.posY);
+//         device.ctx.rotate(counterAngle);
+//         device.ctx.translate(-obj.posX, -obj.posY);
+
+//         getPlayerEffects().draw(device.ctx, obj);
+//         device.renderClip(playerImg, obj.posX, obj.posY, obj.width, obj.height, obj.playerState);
+
+//         device.ctx.restore();
+
+//         if (DebugUtil.DRAW_DEBUG_HITBOXES) renderHitBoxs(device, obj);
+//     }
+//     catch (e) { console.error("renderPlayer error:", e); }
+// }
 function renderPlayer(device, game)
 {
     try
@@ -63,21 +89,15 @@ function renderPlayer(device, game)
         const obj       = game.player;
         const playerImg = device.images.getImage(playerSpriteTypes.PLAYER.name);
         if (!playerImg) return;
-
-        // Get background angle and lean ship against it
-        const bg           = game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
-        const counterAngle = bg ? bg.angle * 0.3 : 0;
-
+        const bg    = game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
+        const angle = bg ? bg.angle * 0.3 : 0;
         device.ctx.save();
         device.ctx.translate(obj.posX, obj.posY);
-        device.ctx.rotate(counterAngle);
+        device.ctx.rotate(angle);
         device.ctx.translate(-obj.posX, -obj.posY);
-
         getPlayerEffects().draw(device.ctx, obj);
         device.renderClip(playerImg, obj.posX, obj.posY, obj.width, obj.height, obj.playerState);
-
         device.ctx.restore();
-
         if (DebugUtil.DRAW_DEBUG_HITBOXES) renderHitBoxs(device, obj);
     }
     catch (e) { console.error("renderPlayer error:", e); }
