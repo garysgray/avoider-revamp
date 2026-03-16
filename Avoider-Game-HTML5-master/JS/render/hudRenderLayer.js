@@ -13,7 +13,7 @@ function renderHUDLayer(device, game)
     {
         ammoX:  0.20,
         scoreX: 0.70,
-        hudY:   0.059,
+        hudY:   0.054,
     };
 
     const showHUD = game.gameState === gameStates.PLAY ||

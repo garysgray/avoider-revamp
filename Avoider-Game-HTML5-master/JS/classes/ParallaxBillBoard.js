@@ -75,7 +75,7 @@ class CircularParallaxBillBoard extends ParallaxBillBoard
         if (this.#holdTimer >= this.#holdDuration)
         {
             const direction    = Math.random() > 0.5 ? 1 : -1;
-            this.#targetAngle += direction * (this.#rotateAmount * Math.PI / 180);
+            this.#targetAngle  = this.#currentAngle + direction * (this.#rotateAmount * Math.PI / 180);
             this.#holdTimer    = 0;
         }
 
@@ -90,7 +90,7 @@ class CircularParallaxBillBoard extends ParallaxBillBoard
         const h     = game.gameConsts.SCREEN_HEIGHT;
         const cx    = w * 0.5;
         const cy    = h * 0.5;
-        const scale = 1.5;
+        const scale = 1.3;
 
         // --- Base space ---
         ctx.fillStyle = "#02010a";
