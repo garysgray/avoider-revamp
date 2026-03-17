@@ -43,7 +43,8 @@ function generateNPCS(device, game)
     {
         if (Math.random() >= DRONE.spawnRatio + game.npcSpawnMultiplyer)
         {
-            spawnNPC(device, game, DRONE.name, DRONE.w, DRONE.h, DRONE.speed, DRONE.spawnRatio);
+            //spawnNPC(device, game, DRONE.name, DRONE.w, DRONE.h, DRONE.speed, DRONE.spawnRatio);
+            spawnNPC(device, game, DRONE);
         }
     }
     catch (e) { console.error("Drone spawn error:", e); }
@@ -53,17 +54,42 @@ function generateNPCS(device, game)
         const tweak = AMMO.spawnRatio * game.npcSpawnMultiplyer;
         if (Math.random() >= AMMO.spawnRatio + (game.npcSpawnMultiplyer - tweak))
         {
-            spawnNPC(device, game, AMMO.name, AMMO.w, AMMO.h, AMMO.speed, AMMO.spawnRatio);
+            //spawnNPC(device, game, AMMO.name, AMMO.w, AMMO.h, AMMO.speed, AMMO.spawnRatio);
+            spawnNPC(device, game, AMMO);
         }
     }
     catch (e) { console.error("Ammo spawn error:", e); }
 }
 
-function spawnNPC(device, game, name, width, height, speed, spawnRatio)
+// function spawnNPC(device, game, name, width, height, speed, spawnRatio)
+// {
+//     try
+//     {
+//         const npc  = new NPC(name, width, height, 0, 0, speed, Math.floor(Math.random() * 3));
+//         const minX = npc.halfWidth;
+//         const maxX = device.canvas.width - npc.halfWidth;
+//         const topY = npc.halfHeight;
+
+//         npc.movePos(minX + Math.random() * (maxX - minX), topY);
+
+//         let attempts = 0;
+//         while (attempts < game.gameConsts.SPAWN_ATTEMPTS && overlapsAny(npc, game.gameSprites))
+//         {
+//             npc.movePos(minX + Math.random() * (maxX - minX), topY);
+//             attempts++;
+//         }
+
+//         game.gameSprites.addObject(npc);
+//     }
+//     catch (e) { console.error("spawnNPC error:", e); }
+// }
+
+function spawnNPC(device, game, spriteType)
 {
     try
     {
-        const npc  = new NPC(name, width, height, 0, 0, speed, Math.floor(Math.random() * 3));
+        const { name, w, h, speed } = spriteType;
+        const npc  = new NPC(name, w, h, 0, 0, speed, Math.floor(Math.random() * 3));
         const minX = npc.halfWidth;
         const maxX = device.canvas.width - npc.halfWidth;
         const topY = npc.halfHeight;
@@ -98,9 +124,7 @@ function overlapsAny(npc, holder)
     return false;
 }
 
-
 // ---- Collision --------------------------------------------------------------
-
 function check_NPC_Collision(device, game)
 {
     const player  = game.player;
@@ -109,41 +133,16 @@ function check_NPC_Collision(device, game)
     {
         const npc = sprites.getIndex(i);
         if (!roughNear(player, npc)) continue;
-        const playerBox = player.getHitbox(1.0, 0);
-        const npcBox    = npc.getHitbox(1.0, 0);
-        if (!rectsCollide(playerBox, npcBox)) continue;
+        if (!rectsCollide(player.getHitbox(1.0, 0), npc.getHitbox(1.0, 0))) continue;
+
         npc.kill();
         if (npc.name === spriteTypes.AMMO.name)
         {
-            try { device.audio.playSound(soundTypes.GET.name); } catch(e) {}
-            if (npc.type === ammoEnum.FIRE)
-            {
-                player.playerState = playStates.SHOOT;
-                game.increaseAmmo(game.gameConsts.AMMO_AMOUNT);
-            }
-            else
-            {
-                player.playerState = (npc.type === ammoEnum.GHOST)
-                    ? playStates.SHIELD
-                    : playStates.ULTRA;
-                game.gameTimers.getObjectByName(timerTypes.SHIELD_TIMER)
-                    .reset(game.gameConsts.SHIELD_TIME, timerModes.COUNTDOWN, false);
-            }
+            handleAmmoPickup(device, game, npc);
         }
         else
         {
-            if (player.playerState === playStates.ULTRA)
-            {
-                try { device.audio.playSound(soundTypes.HIT.name); } catch(e) {}
-                game.increaseScore(game.gameConsts.SCORE_INCREASE);
-            }
-            else
-            {
-                try { device.audio.playSound(soundTypes.HURT.name); } catch(e) {}
-                player.playerState = playStates.DEATH;
-                game.gameState     = gameStates.LOSE;
-                return false;
-            }
+            if (!handleEnemyContact(device, game)) return false;
         }
     }
     return true;

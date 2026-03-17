@@ -102,8 +102,6 @@ class Game
         device.setImagesForType(billBoardTypes, boardDef => 
         {
             const board = boardDef.name === billBoardTypes.BACKGROUND.name
-                //? new ParallaxBillBoard(boardDef.name, boardDef.w, boardDef.h, 0, 0, 60, boardDef.isCenter, parallexEnum.VERTICLE)
-                //? new CircularParallaxBillBoard(boardDef.name, boardDef.w, boardDef.h, 0, 0, 60, boardDef.isCenter, 0.2)
                 ? new CircularParallaxBillBoard(boardDef.name, boardDef.w, boardDef.h, 0, 0, 175, boardDef.isCenter, parallexEnum.VERTICLE, 
                 {
                     holdDuration: 6,

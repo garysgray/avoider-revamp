@@ -38,8 +38,7 @@ class Sound
     {
         try
         {
-            let a = this.#pool[this.#index];
-            if (!a.paused) a = a.cloneNode(true);
+            const a       = this.#pool[this.#index];
             a.volume      = this.#volume;
             a.currentTime = 0;
             a.play();

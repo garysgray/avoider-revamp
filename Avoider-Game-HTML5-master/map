@@ -11,46 +11,55 @@
 
 
 Avoider-Game-HTML5-master/
-├── index.html                     // Main HTML file for the game
+├── index.html                     
 |
 ├── css/
-│   └── style.css                 // CSS file for styling the game
+│   └── style.css                 
 |
 ├── js/
-│   ├── core/
-│   │   ├── gameConfig.js         // Configuration constants for the game
-│   │   ├── gameController.js      // Controller class for managing game state
-│   │   ├── gameDefs.js            // Enumerations and definitions used across the game
-|   |
-│   ├── logic/
-│   │   ├── mainStateLogic.js      // Logic handling game states and transitions
-│   │   ├── npcLogic.js            // Logic for Non-Playable Characters (NPCs)
-│   │   └── projectileLogic.js      // Logic for projectile updates and collisions
 │   │
-│   ├── objects/
-│   │   ├── gameEntities.js        // Definitions for game objects, NPC, projectiles etc.)
-│   │   └── player.js              // Definitions for player
+│   ├── classes/
+│   │   ├── GameObject.js.js        
+│   │   └── NPC.js  
+│   │   └── Projectile.js  
+│   │   └── BillBoard.js  
+│   │   └── Timer.js  
+│   │   └── KeyButtonManager.js  
+│   │   └── AudioPlayer.js  
+│   │   └── Player.js  
+│   │   └── Device.js  
+│   │   └── Layer.js    
+│   │
+│   ├── core/
+│   │   ├── Game.js                 
+│   │   ├── GameController.js      
+│   │   ├── GameConsts.js   
+│   │   ├── UpdateGameStates.js            
 │   │
 │   ├── render/
-│   │   ├── gameObjectsRenderLayer.js // Rendering logic for game objects
-│   │   ├── hudRenderLayer.js      // Rendering logic for the Heads-Up Display (HUD)
-│   │   ├── layer.js               // Class definition for managing rendering layers
-│   │   ├── renderBillBoardsLayer.js // Logic for rendering backgrounds and UI overlays
-│   │   └── textRenderLayer.js     // Rendering logic for text messages on screen
+│   │   ├── GameObjectsRenderLayer.js 
+│   │   ├── HudRenderLayer.js      
+│   │   ├── RenderBillBoardsLayer.js 
+│   │   └── TextRenderLayer.js     
+│   │
+│   ├── settings/
+│   │   ├── KeysAndButtons.js 
+│   │   ├── Texts.js      
+│   │   ├── Enums.js 
+│   │   └── AssetTypes.js 
+│   │
+│   ├── systems/
+│   │   ├── CollisionHandlers.js      
+│   │   ├── NPCLogic.js            
+│   │   └── ProjectileLogic.js      
 │   │
 │   ├── utils/
-│   │   ├── collisionUtilities.js   // Utility functions for collision detection
-│   │   ├── gameUtilities.js        // Utility classes for rendering, input, timers, etc.
-│   │   └── renderUtilities.js      // Rendering utilities for sprites, hitboxes, etc.
+│   │   ├── CollisionUtilities.js   
+│   │   ├── DebugUtilities.js        
+│   │   └── FullScreenUtilities.js      
+│   │   ├── PlayerEffects.js        
+│   │   └── RenderUtilities.js      
 │   │
-│   └── main.js                    // Main entry point for the game execution
-│   │
-├── spec/
-│   ├── deviceSpec.js              // Unit tests for the Device class
-│   ├── gameControllerSpec.js       // Unit tests for the Controller class
-│   └── playerSpec.js               // Unit tests for the Player class
-│   │
-├── test/
-│   └── index.html                  // Test HTML file for running Jasmine tests
+│   └── Main.js                    
 |
-└── README.md                      // Documentation and instructions for the project
+└── README.md                      

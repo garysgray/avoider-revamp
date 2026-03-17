@@ -36,23 +36,16 @@ function updateProjectilesCollision(device, game)
     {
         const projCount   = game.projectiles.getSize();
         const spriteCount = game.gameSprites.getSize();
-
         for (let i = projCount - 1; i >= 0; i--)
         {
             const proj    = game.projectiles.getIndex(i);
             const projBox = proj.getHitbox(1.0, 0);
-
             for (let j = spriteCount - 1; j >= 0; j--)
             {
-                const npc    = game.gameSprites.getIndex(j);
-                const npcBox = npc.getHitbox(1.0, 0);
-
-                if (rectsCollide(projBox, npcBox))
+                const npc = game.gameSprites.getIndex(j);
+                if (rectsCollide(projBox, npc.getHitbox(1.0, 0)))
                 {
-                    try { device.audio.playSound(soundTypes.HIT.name); } catch(e) {}
-                    npc.kill();
-                    proj.kill();
-                    game.increaseScore(game.gameConsts.SCORE_INCREASE);
+                    handleProjectileHit(device, game, proj, npc);
                     break;
                 }
             }
@@ -60,3 +53,4 @@ function updateProjectilesCollision(device, game)
     }
     catch (e) { console.error("updateProjectilesCollision error:", e); }
 }
+
