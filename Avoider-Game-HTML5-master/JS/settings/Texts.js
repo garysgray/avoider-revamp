@@ -4,11 +4,11 @@ const gameTexts=
     {
         INSTRUCTIONS: 
         [
-            "Mouse to Move!",
-            "Mouse-Btn to Fire!!",
-            "Catch the Power-Ups!",
-            "Deal with the Drones!!!",
-            "Press Space-Bar to Start!!",
+            "Mouse to Move!!!",
+            "Mouse-Btn to Fire!!!",
+            "Get the Power-Orbs!!!",
+            "Deal with the Drones!!!!!",
+            "Press Space-Bar to Start!",
         ]
     },
 

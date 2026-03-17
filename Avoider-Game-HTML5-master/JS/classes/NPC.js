@@ -13,10 +13,15 @@ class NPC extends GameObject
     get type()  { return this.#type; }
     set type(v) { this.#type = v; }
 
-    update(device, game, delta, moveStrategy = this.moveDown)
+    update(device, game, delta)
     {
         const hudBuff = game.gameConsts.HUD_BUFFER * game.gameConsts.SCREEN_HEIGHT;
-        moveStrategy.call(this, game, delta);
+        switch (this.#type)
+        {
+            case enemyEnum.BUG: this.moveDiagonalDownLeft(game, delta);  break;
+            case enemyEnum.UFO: this.moveDiagonalDownRight(game, delta); break;
+            default:            this.moveDown(game, delta);
+        }
         if (this.posY > game.gameConsts.SCREEN_HEIGHT + hudBuff) this.kill();
     }
 

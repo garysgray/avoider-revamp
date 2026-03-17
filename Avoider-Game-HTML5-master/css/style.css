@@ -2,7 +2,6 @@
     --color-orange: #b85809;
     --color-black: #000000;
     --color-white: #fcf8f8;
-    --font-format: bold 20px Calibri;
     --border-width: 4px;
     --border-radius: 18px;
     --border-style: solid;
@@ -18,6 +17,7 @@
     --glass-bg: rgba(0, 0, 0, 0.7);
     --glass-blur: blur(4px);
     --image-url: url(../assets/sprites/space.png);
+    --font-format: bold 18px 'Orbitron', sans-serif;
 }
 
 body 
@@ -56,6 +56,7 @@ p { word-spacing: 0.2em; }
     display: inline-block;
     padding: var(--body-padding);
     box-sizing: border-box;
+    position: relative;
 }
 
 #top_menu 
@@ -136,7 +137,9 @@ p { word-spacing: 0.2em; }
 
 #message .message-text.fade-out { opacity: 0; }
 
-canvas:fullscreen
+canvas:fullscreen,
+canvas:-webkit-full-screen,
+canvas:-moz-full-screen
 {
     width         : 100vw  !important;
     height        : 100vh  !important;
@@ -145,11 +148,13 @@ canvas:fullscreen
     margin        : 0      !important;
 }
 
-canvas:-webkit-full-screen
-{
-    width         : 100vw  !important;
-    height        : 100vh  !important;
-    border        : none   !important;
-    border-radius : 0      !important;
-    margin        : 0      !important;
+#avg_logo {
+    position: fixed;   /* fixed to the viewport instead of container */
+    bottom: 10px;
+    left: 0;           /* flush against the left edge */
+    width: 180px;
+    height: auto;
+    z-index: 5000;
+    opacity: 0.50;
+    filter: drop-shadow(2px 2px 4px #000);
 }

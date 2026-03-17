@@ -65,7 +65,9 @@ class CircularParallaxBillBoard extends ParallaxBillBoard
         this.#rotateSpeed  = options.rotateSpeed  ?? 0.3;
         this.#rotateAmount = options.rotateAmount ?? 20;
     }
+
     get angle() { return this.#currentAngle; }
+    
     update(delta, game)
     {
         super.update(delta, game);
@@ -90,7 +92,7 @@ class CircularParallaxBillBoard extends ParallaxBillBoard
         const h     = game.gameConsts.SCREEN_HEIGHT;
         const cx    = w * 0.5;
         const cy    = h * 0.5;
-        const scale = 1.3;
+        const scale = 1.5;
 
         // --- Base space ---
         ctx.fillStyle = "#02010a";

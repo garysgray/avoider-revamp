@@ -25,10 +25,11 @@ class GameConsts
     #SPAWN_ATTEMPTS          = 5;
 
     // Visuals
-    #FONT_SETTINGS          = "bold 21pt Century Gothic";
+    // #FONT_SETTINGS          = "bold 21pt Century Gothic";
+    #FONT_SETTINGS = "bold 26px 'Orbitron', sans-serif"
     #FONT_COLOR             = "#faf7f7e0";
     #DEBUG_TEXT_COLOR       = "yellow";
-    #HUD_BUFFER             = 0.08;
+    #HUD_BUFFER             = 0.06;
     #BILLBOARDS_OFFSET_BUFF = 0;
 
     // Audio

@@ -18,19 +18,7 @@ function updateNPCSprites(device, game, delta)
 
             try
             {
-                if (npc.name === "ammo")
-                {
-                    npc.update(device, game, delta);
-                }
-                else
-                {
-                    switch (npc.type)
-                    {
-                        case enemyEnum.EYE: npc.update(device, game, delta);                              break;
-                        case enemyEnum.BUG: npc.update(device, game, delta, npc.moveDiagonalDownLeft);    break;
-                        case enemyEnum.UFO: npc.update(device, game, delta, npc.moveDiagonalDownRight);   break;
-                    }
-                }
+                npc.update(device, game, delta);  // all types handled internally now
             }
             catch (e) { console.error("NPC update error:", e); }
 
@@ -44,7 +32,6 @@ function updateNPCSprites(device, game, delta)
     }
     catch (e) { console.error("updateNPCSprites error:", e); }
 }
-
 
 // ---- NPC Spawning -----------------------------------------------------------
 

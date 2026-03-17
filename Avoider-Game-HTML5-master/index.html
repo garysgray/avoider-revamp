@@ -3,10 +3,14 @@
     <head>
         <title>Avoider</title>
         <link rel="stylesheet" href="css/style.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     </head>
     <body>
+
+        <!-- AVG Company Logo -->
+        <img id="avg_logo" src="assets/sprites/AVG_logo.png" alt="AVG Logo">
+        
         <div id="container">
-            
             <nav id="top_menu">
                 <li><a href="https://github.com/garysgray/avoider-revamp/">GitHub</a></li>
             </nav>
@@ -29,18 +33,18 @@
             <script type="text/javascript" src="js/classes/ObjectHolder.js"></script>
             <script type="text/javascript" src="js/classes/Player.js"></script>
             <script type="text/javascript" src="js/classes/Device.js"></script>
-            <script type="text/javascript" src="js/render/layer.js"></script>
-            <script type="text/javascript" src="js/render/textRenderLayer.js"></script>
-            <script type="text/javascript" src="js/render/hudRenderLayer.js"></script>
-            <script type="text/javascript" src="js/render/renderBillBoardsLayer.js"></script>
-            <script type="text/javascript" src="js/render/gameObjectsRenderLayer.js"></script>
-            <script type="text/javascript" src="js/logic/projectileLogic.js"></script> 
-            <script type="text/javascript" src="js/logic/npcLogic.js"></script>         
-            <script type="text/javascript" src="js/utils/collisionUtilities.js"></script>
-            <script type="text/javascript" src="js/utils/renderUtilities.js"></script>
+            <script type="text/javascript" src="js/classes/Layer.js"></script>
+            <script type="text/javascript" src="js/render/TextRenderLayer.js"></script>
+            <script type="text/javascript" src="js/render/HudRenderLayer.js"></script>
+            <script type="text/javascript" src="js/render/RenderBillBoardsLayer.js"></script>
+            <script type="text/javascript" src="js/render/GameObjectsRenderLayer.js"></script>
+            <script type="text/javascript" src="js/logic/ProjectileLogic.js"></script> 
+            <script type="text/javascript" src="js/logic/NPCLogic.js"></script>         
+            <script type="text/javascript" src="js/utils/CollisionUtilities.js"></script>
+            <script type="text/javascript" src="js/utils/RenderUtilities.js"></script>
             <script type="text/javascript" src="js/utils/DebugUtililties.js"></script>
             <script type="text/javascript" src="js/utils/FullScreenUtilities.js"></script>
-            <script type="text/javascript" src="js/utils/playerEffects.js"></script>
+            <script type="text/javascript" src="js/utils/PlayerEffects.js"></script>
             <script type="text/javascript" src="js/settings/KeysAndButtons.js"></script>
             <script type="text/javascript" src="js/settings/Texts.js"></script>
             <script type="text/javascript" src="js/settings/Enums.js"></script>
@@ -49,10 +53,10 @@
             <script type="text/javascript" src="js/core/Game.js"></script>
             <script type="text/javascript" src="js/core/GameConsts.js"></script>
             <script type="text/javascript" src="js/core/UpdateGameStates.js"></script>         
-            <script type="text/javascript" src="js/main.js"></script>
+            <script type="text/javascript" src="js/Main.js"></script>
             
             <div id="message">
-                <p>Press Ctrl to Pause</p>
+                <p>Press F for Full Screen</p>
             </div>
         </div>
     </body>
