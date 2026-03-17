@@ -1,7 +1,7 @@
 | ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/AVG_logo.png) |
 |:-----------------------------------------------------------------------:|
 
-| ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/AvoiderSplash.png) |
+| ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/avoider_logo.png) |
 |:-----------------------------------------------------------------------:|
 
 # Avoider Game (Revamped)
