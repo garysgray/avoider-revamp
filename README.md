@@ -1,3 +1,6 @@
+| ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/AVG_logo.png) |
+|:-----------------------------------------------------------------------:|
+
 | ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/AvoiderSplash.png) |
 |:-----------------------------------------------------------------------:|
 
