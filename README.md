@@ -1,5 +1,4 @@
-| ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/AVG_logo.png) |
-|:-----------------------------------------------------------------------:|
+
 
 | ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/avoider_logo.png) |
 |:-----------------------------------------------------------------------:|
@@ -149,3 +148,6 @@ Avoider-Game-HTML5-master/
 ## Notes
 - Vanilla JS, no frameworks, no build step
 - Runs directly in Chrome, Firefox, and Edge
+
+| ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/AVG_logo.png) |
+|:-----------------------------------------------------------------------:|
