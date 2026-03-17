@@ -16,11 +16,9 @@ const gameTexts=
     {
         SCORE: "Score: ",
         AMMO:  "Ammo: ",
-        LIVES: "Lives: "
+        CLOCK: "Time: "
     },
 
-    WIN:  { MESSAGE:     "PRESS  ENTER  TO  PLAY  AGAIN"   },
-    
     LOSE: { DIE_MESSAGE: "GAME OVER,  SPACE-BAR  TO  RETRY" }
 }
 

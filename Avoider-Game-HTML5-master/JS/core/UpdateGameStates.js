@@ -1,12 +1,12 @@
+// ============================================================================
+// UpdateGameStates.js
+// Game state handlers — routes each frame to INIT, PLAY, WIN, or LOSE logic.
+// ============================================================================
 
-// ============================================================================
-// GAME STATE HANDLERS
-// ============================================================================
 
+// ---- INIT State -------------------------------------------------------------
+// Waits for the player to press start, then transitions to PLAY.
 
-// ============================================================================
-// INIT STATE
-// ============================================================================
 function handleInitState(device, game, delta)
 {
     try
@@ -21,46 +21,48 @@ function handleInitState(device, game, delta)
 }
 
 
-// ============================================================================
-// PLAY STATE
-// ============================================================================
+// ---- PLAY State -------------------------------------------------------------
+// Main gameplay loop — updates background, clock, NPCs, player, and projectiles.
+
 function handlePlayState(device, game, delta)
 {
     try
     {
-        // Update parallax background billboard
+        // Scroll the parallax background
         game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name).update(delta, game);
 
-        // Update game clock — drives NPC speed increases and scoring
+        // Advance survival clock — drives difficulty scaling and score increases
         const gameClock = game.gameTimers.getObjectByName(timerTypes.GAME_CLOCK);
         updateGameElementsBasedOnClock(game, delta, gameClock);
 
-        // Update NPCs, player, and projectiles
-        updateNPCSprites(device, game, delta);                          
-        game.player.update(device, game, delta, check_NPC_Collision);   
-        generateNPCS(device, game);                                     
+        // Update entities
+        updateNPCSprites(device, game, delta);
+        game.player.update(device, game, delta, check_NPC_Collision);
+        generateNPCS(device, game);
         updateProjectilesSprites(device, game, delta);
-        updateProjectilesCollision(device, game);           
+        updateProjectilesCollision(device, game);
     }
     catch (e) { console.error("PLAY state error:", e); }
 }
 
 
-// ============================================================================
-// LOSE STATE
-// ============================================================================
+// ---- LOSE State -------------------------------------------------------------
+// Freezes the field and waits for the player to restart.
+
 function handleLoseState(device, game, delta)
 {
     try
     {
-        // Freeze player in place and clear the field
+        // Freeze player in place and clear all active entities
         game.player.savePos(game.player.posX, game.player.posY);
         game.projectiles.clearObjects();
         game.gameSprites.clearObjects();
-        game.npcSpeedMuliplyer  = 0;
+
+        // Reset difficulty multipliers
+        game.npcSpeedMultiplier  = 0;
         game.npcSpawnMultiplyer = 0;
 
-        // Restart game on key press
+        // Return to INIT on reset key
         if (device.keys.isKeyDown(keyTypes.RESET_KEY))
         {
             device.audio.stopAll();
@@ -71,9 +73,11 @@ function handleLoseState(device, game, delta)
 }
 
 
-// ============================================================================
-// MAIN STATE LOGIC
-// ============================================================================
+// ---- State Router -----------------------------------------------------------
+// Dispatches the current game state to the appropriate handler.
+// Note: Controller.updateGame() uses a map-based dispatch —
+// this switch version is kept as a fallback reference.
+
 function updateGameStates(device, game, delta)
 {
     try
@@ -84,27 +88,31 @@ function updateGameStates(device, game, delta)
             case gameStates.PLAY: handlePlayState(device, game, delta); break;
             case gameStates.WIN:  handleWinState(device, game, delta);  break;
             case gameStates.LOSE: handleLoseState(device, game, delta); break;
-            default: console.warn("Unknown game state:", game.gameState);        break;
+            default: console.warn("Unknown game state:", game.gameState); break;
         }
     }
     catch (e) { console.error("updateGameStates error:", e); }
 }
 
 
-// ============================================================================
-// CLOCK — NPC speed/spawn rate and scoring
-// ============================================================================
+// ---- Survival Clock ---------------------------------------------------------
+// Advances the survival clock and scales NPC speed and spawn rate over time.
+// Also awards score on each difficulty increase.
+
 function updateGameElementsBasedOnClock(game, delta, gameClock)
 {
     if (!gameClock.active) return;
 
     const lastSpeed = game.npcSpeedMuliplyer;
+
     gameClock.update(delta);
 
-    game.npcSpeedMuliplyer = 1 +
+    // Step up NPC speed based on elapsed time intervals
+    game.npcSpeedMultiplier = 1 +
         Math.floor(gameClock.elapsedTime / game.gameConsts.NPC_SPEED_SPAWN_INCREASE_INTERVALS) *
         game.gameConsts.NPC_SPEED_INCREASE_AMOUNT;
 
+    // Award score and tighten spawn rate on each difficulty step
     if (lastSpeed !== 0 && lastSpeed !== game.npcSpeedMuliplyer)
     {
         game.increaseScore(game.gameConsts.SCORE_INCREASE);

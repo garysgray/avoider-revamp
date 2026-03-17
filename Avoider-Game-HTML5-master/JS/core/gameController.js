@@ -1,129 +1,18 @@
-// // ============================================================================
-// // Controller Class
-// // Manages the game loop, device, and render layers.
-// // ============================================================================
-// class Controller
-// {
-//     #device;
-//     #game;
-//     #layers;
-//     #gameConsts;
-
-//     constructor(gameConsts = new GameConsts())
-//     {
-//         this.#gameConsts = gameConsts;
-
-//         try
-//         {
-//             this.#game = new Game();
-//         }
-//         catch (err)
-//         {
-//             console.error("Failed to initialize Game:", err.message);
-//             alert("An error occurred while initializing the game. Please try again.");
-//             return;
-//         }
-
-//         try
-//         {
-//             this.#device = new Device(this.#gameConsts.SCREEN_WIDTH, this.#gameConsts.SCREEN_HEIGHT);
-//         }
-//         catch (err)
-//         {
-//             console.error("Failed to initialize Device:", err.message);
-//             alert("An error occurred while setting up the game environment.");
-//             return;
-//         }
-
-//         this.#layers = [];
-//         this.initGameObj();
-//     }
-
-//     // ---- Getters ----
-//     get device()     { return this.#device; }
-//     get game()       { return this.#game; }
-//     get layers()     { return this.#layers; }
-//     get gameConsts() { return this.#gameConsts; }
-
-//     // ---- Init ----
-//     initGameObj()
-//     {
-//         try
-//         {
-//             this.#game.initGame(this.#device);
-//             Layer.addRenderLayers(
-//             [
-//                 billBoardsLayer,
-//                 gameObjectsLayer,
-//                 hudRenderLayer,
-//                 textRenderLayer
-//             ],
-//             this.#layers);
-//         }
-//         catch (err)
-//         {
-//             console.error("Failed to initialize game components:", err.message);
-//             alert("An error occurred while initializing game components.");
-//         }
-//     }
-
-//     addLayer(layer)
-//     {
-//         if (!layer) { console.error("addLayer: layer is undefined or null."); return; }
-//         this.#layers.push(layer);
-//     }
-
-//     // ---- Update + Render ----
-//     callUpdateGame(delta)
-//     {
-//         if (typeof delta !== "number" || delta <= 0) delta = this.#gameConsts.FALLBACK_DELTA;
-
-//         try
-//         {
-//             this.updateGame(this.#device, this.#game, delta);
-
-//             for (const layer of this.#layers)
-//             {
-//                 try   { layer.render(this.#device, this.#game); }
-//                 catch (err) { console.error("Layer render error:", err.message); }
-//             }
-
-//             this.#device.keys.clearFrameKeys();
-//         }
-//         catch (err)
-//         {
-//             console.error("Game update error:", err.message);
-//             alert("An error occurred during the game update. Please restart.");
-//         }
-//     }
-
-//     updateGame(device, game, delta)
-//     {
-//         try
-//         {
-//             const stateHandlers =
-//             {
-//                 [gameStates.INIT]: () => handleInitState(device, game, delta),
-//                 [gameStates.PLAY]: () => handlePlayState(device, game, delta),
-//                 [gameStates.LOSE]: () => handleLoseState(device, game, delta),
-//             };
-
-//             const handler = stateHandlers[game.gameState];
-//             if (handler) handler();
-//             else console.warn("Unknown game state:", game.gameState);
-//         }
-//         catch (err)
-//         {
-//             console.error("updateGame error:", err.message);
-//             alert("An error occurred during the game update. Please restart.");
-//         }
-//     }
-// }
-
 // ============================================================================
-// Controller Class
-// Manages the game logic, device, and render layers.
+// GameController.js
+// Owns the device and game instances, drives the update/render cycle,
+// and routes game state to the appropriate handler each frame.
 // ============================================================================
+
+// ---- Controller Constants ---------------------------------------------------
+
+const CONTROLLER_CONSTS = Object.freeze(
+{
+    IDENTITY_TRANSFORM: [1, 0, 0, 1, 0, 0],    // reset canvas transform each frame
+});
+
+
+// ---- Controller -------------------------------------------------------------
 
 class Controller
 {
@@ -138,7 +27,7 @@ class Controller
 
         try
         {
-            this.#game = new Game();
+            this.#game   = new Game();
             this.#device = new Device(
                 this.#gameConsts.SCREEN_WIDTH,
                 this.#gameConsts.SCREEN_HEIGHT
@@ -155,23 +44,21 @@ class Controller
         this.initGameObj();
     }
 
-    // ----------------------------------------------------------------
-    // Getters
-    // ----------------------------------------------------------------
+    // ---- Getters ------------------------------------------------------------
+
     get device()     { return this.#device; }
     get game()       { return this.#game; }
     get layers()     { return this.#layers; }
     get gameConsts() { return this.#gameConsts; }
 
-    // ----------------------------------------------------------------
-    // Initialization
-    // ----------------------------------------------------------------
+    // ---- Initialization -----------------------------------------------------
+
+    // Sets up game assets and registers all render layers
     initGameObj()
     {
         try
         {
             this.#game.initGame(this.#device);
-
             Layer.addRenderLayers(
             [
                 billBoardsLayer,
@@ -181,82 +68,64 @@ class Controller
             ],
             this.#layers);
         }
-        catch (err)
-        {
-            console.error("Game component init failed:", err);
-        }
+        catch (err) { console.error("Game component init failed:", err); }
     }
 
+    // Adds a single render layer — used for dynamic layer registration
     addLayer(layer)
     {
-        if (!layer)
-        {
-            console.error("addLayer: invalid layer.");
-            return;
-        }
-
+        if (!layer) { console.error("addLayer: invalid layer."); return; }
         this.#layers.push(layer);
     }
 
-    // ----------------------------------------------------------------
-    // UPDATE (logic only)
-    // ----------------------------------------------------------------
+    // ---- Update -------------------------------------------------------------
+
+    // Entry point for the fixed timestep loop — validates delta and clears input
     callUpdateGame(delta)
     {
-        if (typeof delta !== "number" || delta <= 0)
-            delta = this.#gameConsts.FALLBACK_DELTA;
+        if (typeof delta !== "number" || delta <= 0) delta = this.#gameConsts.FALLBACK_DELTA;
 
         try
         {
             this.updateGame(this.#device, this.#game, delta);
             this.#device.keys.clearFrameKeys();
         }
-        catch (err)
-        {
-            console.error("Game update error:", err);
-        }
+        catch (err) { console.error("Game update error:", err); }
     }
 
+    // Routes the current game state to the appropriate handler
     updateGame(device, game, delta)
     {
         const stateHandlers =
         {
             [gameStates.INIT]: () => handleInitState(device, game, delta),
             [gameStates.PLAY]: () => handlePlayState(device, game, delta),
-            [gameStates.LOSE]: () => handleLoseState(device, game, delta)
+            [gameStates.LOSE]: () => handleLoseState(device, game, delta),
         };
 
         const handler = stateHandlers[game.gameState];
-
         if (handler) handler();
         else console.warn("Unknown game state:", game.gameState);
     }
 
-    // ----------------------------------------------------------------
-    // RENDER (draw only)
-    // ----------------------------------------------------------------
+    // ---- Render -------------------------------------------------------------
+
+    // Clears the canvas and runs all registered render layers in order
     callRenderGame()
     {
-        const device = this.#device;
-        const game   = this.#game;
+        const { ctx, canvas } = this.#device;
 
-        const ctx    = device.ctx;
-        const canvas = device.canvas;
-
-        // clear frame
-        ctx.setTransform(1,0,0,1,0,0);
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        // Reset any lingering transforms from previous frame
+        ctx.setTransform(...CONTROLLER_CONSTS.IDENTITY_TRANSFORM);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         try
         {
             for (let i = 0; i < this.#layers.length; i++)
             {
-                this.#layers[i].render(device, game);
+                this.#layers[i].render(this.#device, this.#game);
             }
         }
-        catch (err)
-        {
-            console.error("Render error:", err);
-        }
+        catch (err) { console.error("Render error:", err); }
     }
 }

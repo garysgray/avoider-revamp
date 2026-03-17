@@ -1,10 +1,22 @@
 // ============================================================================
-// renderHelpers.js
-// Rendering helpers for NPCs, projectiles, and player.
-// Called from renderGameObjectsLayer.
+// RenderUtilities.js
+// Rendering helpers for NPCs, projectiles, player, and debug hitboxes.
+// Called from GameObjectsRenderLayer — no game logic, drawing only.
 // ============================================================================
 
+// ---- Render Constants -------------------------------------------------------
+
+const RENDER_CONSTS = Object.freeze(
+{
+    ANGLE_DAMPENING : 0.3,        // fraction of background rotation applied to player
+    DEFAULT_ANGLE   : 0,          // fallback angle when no background is present
+    HITBOX_COLOR    : "lime",     // debug hitbox outline color
+});
+
+
 // ---- NPCs -------------------------------------------------------------------
+
+// Renders all active NPC sprites using sprite sheet clipping by type
 function renderNPCSprites(device, game)
 {
     try
@@ -37,6 +49,8 @@ function renderNPCSprites(device, game)
 
 
 // ---- Projectiles ------------------------------------------------------------
+
+// Renders all active projectiles centered on their position
 function renderProjectiles(device, game)
 {
     try
@@ -55,6 +69,10 @@ function renderProjectiles(device, game)
     catch (e) { console.error("renderProjectiles error:", e); }
 }
 
+
+// ---- Player -----------------------------------------------------------------
+
+// Renders the player with background-synced rotation and per-state glow effects
 function renderPlayer(device, game)
 {
     try
@@ -62,40 +80,45 @@ function renderPlayer(device, game)
         const obj       = game.player;
         const playerImg = device.images.getImage(playerSpriteTypes.PLAYER.name);
         if (!playerImg) return;
+
+        // Match player rotation to a fraction of background drift
         const bg    = game.billBoards.getObjectByName(billBoardTypes.BACKGROUND.name);
-        const angle = bg ? bg.angle * 0.3 : 0;
+        const angle = bg ? bg.angle * RENDER_CONSTS.ANGLE_DAMPENING : RENDER_CONSTS.DEFAULT_ANGLE;
+
         device.ctx.save();
         try
         {
             device.ctx.translate(obj.posX, obj.posY);
             device.ctx.rotate(angle);
             device.ctx.translate(-obj.posX, -obj.posY);
+
+            // Draw per-state glow effect beneath the sprite
             getPlayerEffects().draw(device.ctx, obj);
+
             device.renderClip(playerImg, obj.posX, obj.posY, obj.width, obj.height, obj.playerState);
         }
-        finally
-        {
-            device.ctx.restore();
-        }
+        finally { device.ctx.restore(); }
+
         if (DebugUtil.DRAW_DEBUG_HITBOXES) renderHitBoxs(device, obj);
     }
     catch (e) { console.error("renderPlayer error:", e); }
 }
-// ---- Debug Hitboxes ---------------------------------------------------------
-function renderHitBoxs(device, tempObj)
-{
-    try 
-        {
-            const x = tempObj.posX - tempObj.halfWidth;
-            const y = tempObj.posY - tempObj.halfHeight;
-            const w = tempObj.width;
-            const h = tempObj.height;
-            device.ctx.strokeStyle = "lime";
-            device.ctx.strokeRect(x, y, w, h);
-        } 
-        catch (e)
-        {
-            console.error("Error in renderHitBoxs:", e);
-        }
-}
 
+
+// ---- Debug Hitboxes ---------------------------------------------------------
+
+// Draws a wireframe outline around the object's bounding box — toggled by debug flag
+function renderHitBoxs(device, obj)
+{
+    try
+    {
+        device.ctx.strokeStyle = RENDER_CONSTS.HITBOX_COLOR;
+        device.ctx.strokeRect(
+            obj.posX - obj.halfWidth,
+            obj.posY - obj.halfHeight,
+            obj.width,
+            obj.height
+        );
+    }
+    catch (e) { console.error("renderHitBoxs error:", e); }
+}

@@ -1,70 +1,52 @@
 // ============================================================================
-// Layer Class
-// ----------------------------------------------------------------------------
-// A layer is used to organize rendering in the game.  
-// Each layer has a name (for identification) and a render function that draws content.  
-// The main game loop can call each layer in order, giving structure to rendering.
+// Layer.js
+// Wraps a render function with a name and safe error handling.
+// Layers are registered in order and called each frame by the controller.
 // ============================================================================
 
 class Layer
 {
-    // Constructor sets the name of the layer and the rendering function to call
-    constructor(name, renderFn) 
+    // name     — string identifier for debugging and logging
+    // renderFn — function(device, game) called each frame to draw this layer
+    constructor(name, renderFn)
     {
-        this.name = name;       // String identifier for this layer
-        this.renderFn = renderFn; // Function used to render the layer’s content
+        this.name     = name;
+        this.renderFn = renderFn;
     }
 
-    // Render method calls the assigned render function for this layer
-    // Passes in the device (canvas/audio/inputs), game state, and delta time
-    render(dev, game, screenWidth, screenHeight, hudBuff = 0, normFont = null, midFont = null, bigFont = null, highlightColor = null, fontColor = null)
+    // Calls the render function — errors are caught and logged per layer
+    // so a single broken layer never takes down the whole render pass
+    render(device, game)
     {
-        try 
-        {
-            this.renderFn(dev, game, screenWidth, screenHeight, hudBuff, normFont, midFont, bigFont, highlightColor, fontColor);
-        } 
-        catch (e) 
-        {
-            console.error(`Layer '${this.name}': Error during render -`, e);
-        }
+        try   { this.renderFn(device, game); }
+        catch (e) { console.error(`Layer '${this.name}' render error:`, e); }
     }
 
-    // ------------------------------------------------------------------------
-    // Add a render layer
-    // ------------------------------------------------------------------------
-    static addRenderLayer(layer, holder) 
+    // ---- Static Helpers -----------------------------------------------------
+
+    // Adds a single layer to the holder array
+    static addRenderLayer(layer, holder)
     {
         try
         {
             if (!layer) throw new Error("Layer is undefined or null.");
             holder.push(layer);
-        } 
-        catch (error)
-        {
-            console.error("Error adding layer:", error.message);
-            alert("An error occurred while adding a render layer.");
         }
+        catch (e) { console.error("Error adding layer:", e.message); }
     }
-    // ------------------------------------------------------------------------
-    // Add multiple render layers at once
-    // ------------------------------------------------------------------------
-    static addRenderLayers(layers, holder) 
+
+    // Adds multiple layers to the holder array in one call
+    static addRenderLayers(layers, holder)
     {
         try
         {
             if (!Array.isArray(layers)) throw new Error("Layers must be an array.");
-            
-            layers.forEach(layer => 
+            layers.forEach(layer =>
             {
                 if (!layer) throw new Error("Layer is undefined or null.");
                 holder.push(layer);
             });
-        } 
-        catch (error)
-        {
-            console.error("Error adding layers:", error.message);
-            alert("An error occurred while adding render layers.");
         }
+        catch (e) { console.error("Error adding layers:", e.message); }
     }
-
 }

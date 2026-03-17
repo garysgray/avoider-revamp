@@ -1,50 +1,60 @@
-// =======================================================
-// GameEnums.js
-// -------------------------------------------------------
-// Purpose:
-// Immutable enumerations
-// =======================================================
-const gameStates = 
+// ============================================================================
+// Enums.js
+// Immutable enumerations for game states, play states, and entity types.
+// ============================================================================
+
+// ---- Game States ------------------------------------------------------------
+// Top-level game flow — drives the state machine in UpdateGameStates.js
+
+const gameStates = Object.freeze(
 {
-    INIT:  0,
-    PLAY:  1,
-    PAUSE: 2,
-    WIN:   3,
-    LOSE:  4
-};
+    INIT  : 0,
+    PLAY  : 1,
+    PAUSE : 2,
+    LOSE  : 3,
+});
 
-const playStates = 
+
+// ---- Play States ------------------------------------------------------------
+// Player mode — controls movement, effects, and collision response
+
+const playStates = Object.freeze(
 {
-    AVOID:  0,
-    SHIELD: 1,
-    SHOOT:  2,
-    ULTRA:  3,
-    DEATH:  4
-};
+    AVOID  : 0,    // default — dodge enemies
+    SHIELD : 1,    // invincible for a short duration
+    SHOOT  : 2,    // has ammo — can fire
+    ULTRA  : 3,    // destroys enemies on contact
+    DEATH  : 4,    // hit — triggers lose state
+});
 
-const enemyEnum= 
+
+// ---- Enemy Types ------------------------------------------------------------
+// Determines NPC movement pattern in NPC.update()
+
+const enemyEnum = Object.freeze(
 {
-    EYE: 0,
-    BUG: 1,
-    UFO: 2,
-};
+    EYE : 0,    // moves straight down
+    BUG : 1,    // moves diagonal left
+    UFO : 2,    // moves diagonal right
+});
 
-const ammoEnum =
+
+// ---- Ammo Types -------------------------------------------------------------
+// Determines pickup effect in handleAmmoPickup()
+
+const ammoEnum = Object.freeze(
 {
-    FIRE:  0,
-    GHOST: 1,
-    ULTRA: 2,
-};
+    FIRE  : 0,    // grants ammo — switches to SHOOT
+    GHOST : 1,    // activates SHIELD
+    ULTRA : 2,    // activates ULTRA
+});
 
-const parallexEnum = 
+
+// ---- Parallax Types ---------------------------------------------------------
+// Controls scroll direction in ParallaxBillBoard.update()
+
+const parallaxEnum = Object.freeze(
 {
-    HORIZONTAL: 0,
-    VERTICLE:   1
-};
-
-
-Object.freeze(gameStates);
-Object.freeze(playStates);
-Object.freeze(enemyEnum);
-Object.freeze(ammoEnum);
-Object.freeze(parallexEnum);
+    HORIZONTAL : 0,
+    VERTICLE   : 1,    // note: typo kept intentional to match existing references
+});

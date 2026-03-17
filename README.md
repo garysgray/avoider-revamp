@@ -1,8 +1,3 @@
-
-
-| ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/avoider_logo.png) |
-|:-----------------------------------------------------------------------:|
-
 # Avoider Game (Revamped)
 
 A rebuilt version of the original HTML5 avoider game.
@@ -42,28 +37,28 @@ Runs directly in modern browsers (Chrome, Firefox, Edge) — no build step neede
 
 ## Player States
 
-| State  | Description                                   | Visual Effect         |
-|--------|-----------------------------------------------|-----------------------|
-| AVOID  | Default — dodge enemies, no ammo              | Blue engine glow      |
-| SHOOT  | Has ammo — can fire projectiles               | Orange/red fire glow  |
-| SHIELD | Invincible for a short duration               | Blue-white aura       |
-| ULTRA  | Destroys enemies on contact                   | Purple electric ring  |
-| DEATH  | Player hit — triggers lose state              | Skull sprite          |
+| State  | Description                                   | Visual Effect              |
+|--------|-----------------------------------------------|----------------------------|
+| AVOID  | Default — dodge enemies, no ammo              | Blue engine exhaust glow   |
+| SHOOT  | Has ammo — can fire projectiles               | Orange/red fire glow       |
+| SHIELD | Invincible for a short duration               | Blue-white radial aura     |
+| ULTRA  | Destroys enemies on contact                   | Purple burst + electric ring |
+| DEATH  | Player hit — triggers lose state              | Skull sprite               |
 
 ---
 
 ## Project Structure
+
 ```
 Avoider-Game-HTML5-master/
-│
 ├── index.html
 ├── README.md
 │
 ├── css/
 │   └── style.css
 │
-└── js/
-    ├── Main.js
+└── JS/
+    ├── main.js
     │
     ├── classes/
     │   ├── AudioPlayer.js
@@ -73,8 +68,10 @@ Avoider-Game-HTML5-master/
     │   ├── KeyButtonManager.js
     │   ├── Layer.js
     │   ├── NPC.js
+    │   ├── ObjectHolder.js
     │   ├── Player.js
     │   ├── Projectile.js
+    │   ├── Sprite.js
     │   └── Timer.js
     │
     ├── core/
@@ -112,42 +109,49 @@ Avoider-Game-HTML5-master/
 
 ## Architecture Overview
 
-- **classes/** — core game object definitions with private fields throughout
-- **core/** — game loop, state machine, and constants
-- **render/** — rendering passes for backgrounds, game objects, HUD, and text
-- **settings/** — enums, asset definitions, key bindings, and UI text
-- **systems/** — per-frame game logic for NPCs, projectiles, and collision response
-- **utils/** — pure utility functions for collision math, rendering helpers, debug tools, and fullscreen
+- **classes/** — core game object definitions using private fields throughout. `GameObject` is the base for all entities. `ObjHolder` manages all collections. `Layer` wraps render functions for the render pipeline.
+- **core/** — `Game` is the central data hub holding all state, collections, and constants. `GameConsts` holds all tunable values. `GameController` owns `Device` and `Game` and drives the update/render cycle. `UpdateGameStates` routes each frame to the correct state handler.
+- **render/** — four render layers called in order each frame: backgrounds, game objects, HUD, and text. No game logic — drawing only.
+- **settings/** — all immutable definitions in one place. `Enums.js` for game/play/entity states. `AssetTypes.js` for sprite, sound, and timer definitions. `KeysAndButtons.js` for input mappings. `Texts.js` for all UI strings.
+- **systems/** — per-frame logic for NPCs, projectiles, and collision response. `CollisionHandlers.js` handles game-state responses to collisions. `CollisionUtilities.js` in utils handles pure math.
+- **utils/** — stateless helpers. `CollisionUtilities` for AABB and broad-phase math. `RenderUtilities` for NPC, projectile, and player drawing. `PlayerEffects` for per-state glow effects. `DebugUtilities` for hitbox and panel overlays. `FullScreenUtilities` for fullscreen toggling.
 
 ---
 
 ## Notable Features
 
-- **Modular OOP** — private fields throughout, clear separation of concerns
-- **Collision System** — broad-phase radius check before precise AABB test, safe reverse-loop removal
-- **Audio Pooling** — `Sound` class with configurable pool size prevents dropped sounds on rapid playback
-- **Parallax Background** — dual-copy scrolling with optional slow rotation and cosmic bloom effect
-- **Player Effects** — per-state glow effects via radial gradients and `"lighter"` compositing
-- **NPC Movement** — EYE moves straight down, BUG diagonal left, UFO diagonal right
-- **Difficulty Scaling** — NPC speed and spawn rate increase over time driven by game clock
-- **Timer System** — unified `Timer` class handles cooldowns, shield duration, and game clock with COUNTDOWN/COUNTUP modes
-- **Fullscreen Support** — press F, scales canvas to fit any screen while preserving aspect ratio
-- **Debug Tools** — toggleable hitbox rendering (H key) and debug panel (` key)
-- **Fixed Timestep Loop** — 60fps accumulator pattern with `requestIdleCallback` for smooth startup
-- **Defensive Coding** — try/catch throughout ensures errors never break the game loop
+- **Fixed Timestep Loop** — 60fps accumulator pattern in `main.js` with `requestIdleCallback` for smooth startup and tab-visibility reset to prevent delta spikes
+- **Modular OOP** — private fields throughout, every file has a single responsibility
+- **Collision System** — broad-phase `roughNear()` radius check before precise `rectsCollide()` AABB test, safe reverse-loop removal during iteration
+- **Audio Pooling** — `Sound` class pre-loads a configurable pool of `Audio` nodes. Pool cycles with `currentTime = 0` on each play — no cloning, no stacking. `AudioPlayer.requestSound()` supports priority gating to prevent low-priority sounds stomping high-priority ones within a 120ms window
+- **Parallax Background** — `CircularParallaxBillBoard` renders two copies of a starfield with seamless wrapping, slow random rotation via lerp, and layered cosmic bloom and vignette effects using Canvas `"screen"` compositing
+- **Player Effects** — lazily initialized in `PlayerEffects.js`, keyed by `playStates` value. Each state has a distinct radial gradient glow drawn beneath the player sprite. ULTRA state includes an animated pulsing electric ring driven by `Math.sin(Date.now())`
+- **NPC Movement** — movement strategy dispatched internally in `NPC.update()` via switch on `#type`. EYE moves straight down, BUG diagonal left, UFO diagonal right. Speed scaled by `npcSpeedMultiplier`
+- **Difficulty Scaling** — survival clock drives NPC speed increases at fixed intervals. Spawn rate tightens as difficulty increases. Both tracked via multipliers in `Game`
+- **Timer System** — unified `Timer` class with COUNTDOWN and COUNTUP modes, optional looping, `progress` getter (0-1), and `formatted` getter (M:SS) used for the HUD survival clock
+- **Render Pipeline** — ordered `Layer` objects registered in `GameController`, called each frame. Each layer is isolated — a render error in one layer never breaks others
+- **Fullscreen** — F key toggles via standard `:fullscreen` CSS, no vendor prefixes
+- **Debug Tools** — `DEV_MODE` flag gates all debug features. H key toggles hitbox outlines. Backtick toggles a debug panel showing player position, positioned to the left of the canvas
 
 ---
 
 ## Known Issues / Planned
+
+- Sprite animations scaffolded but not implemented — `renderClip` uses a static state index
+- Touch / mobile controls not yet implemented
+- Lives system defined but game is currently single-life
+- WIN state defined in enum but handler not yet implemented
 - More enemy types and movement patterns planned
 - Additional power-up types planned
 - Difficulty curve and spawn rates may need tuning
+- No asset preload manager — game can theoretically start before all images and sounds are ready
+- High scores not persisted — no save system yet
 
 ---
 
 ## Notes
+
 - Vanilla JS, no frameworks, no build step
 - Runs directly in Chrome, Firefox, and Edge
-
-| ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/AVG_logo.png) |
-|:-----------------------------------------------------------------------:|
+- All magic numbers live in `GameConsts.js` — one place to tune the game
+- `Object.freeze` applied to all settings objects at definition time

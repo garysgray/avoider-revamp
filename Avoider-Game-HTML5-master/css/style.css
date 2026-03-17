@@ -137,9 +137,7 @@ p { word-spacing: 0.2em; }
 
 #message .message-text.fade-out { opacity: 0; }
 
-canvas:fullscreen,
-canvas:-webkit-full-screen,
-canvas:-moz-full-screen
+canvas:fullscreen
 {
     width         : 100vw  !important;
     height        : 100vh  !important;

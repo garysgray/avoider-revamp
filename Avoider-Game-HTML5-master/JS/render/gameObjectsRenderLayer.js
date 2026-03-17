@@ -1,5 +1,5 @@
 // ============================================================================
-// gameObjectsLayer.js
+// GameObjectsLayer.js
 // Renders all gameplay visuals (NPCs, projectiles, player).
 // No game logic — drawing only.
 // ============================================================================
