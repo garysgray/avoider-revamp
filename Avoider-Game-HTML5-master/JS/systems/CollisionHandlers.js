@@ -42,6 +42,9 @@ function handleEnemyContact(device, game)
     {
         try { device.audio.playSound(soundTypes.HIT.name); } catch(e) {}
         game.increaseScore(game.gameConsts.SCORE_INCREASE);
+
+        
+
         return true;
     }
 
@@ -60,5 +63,6 @@ function handleProjectileHit(device, game, proj, npc)
     try { device.audio.playSound(soundTypes.HIT.name); } catch(e) {}
     npc.kill();
     proj.kill();
+    game.effects.spawnExplosion(npc.posX, npc.posY);
     game.increaseScore(game.gameConsts.SCORE_INCREASE);
 }

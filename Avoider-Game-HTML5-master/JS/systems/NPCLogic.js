@@ -5,8 +5,6 @@
 // ============================================================================
 
 
-// ---- NPC Updates ------------------------------------------------------------
-
 // Advances all NPCs and removes any that are dead or scrolled off-screen
 function updateNPCSprites(device, game, delta)
 {
@@ -32,29 +30,25 @@ function updateNPCSprites(device, game, delta)
     catch (e) { console.error("updateNPCSprites error:", e); }
 }
 
-
 // ---- NPC Spawning -----------------------------------------------------------
-
-// Rolls spawn chances each frame and spawns drones and ammo pickups
-function generateNPCS(device, game)
+function generateNPCS(device, game, delta)
 {
+    
+    const droneSpawnTimer = game.gameTimers.getObjectByName(timerTypes.DRONE_TIMER);
+    const ammoSpawnTimer = game.gameTimers.getObjectByName(timerTypes.AMMO_TIMER);
+
     const { DRONE, AMMO } = spriteTypes;
 
-    try
-    {
-        if (Math.random() >= DRONE.spawnRatio + game.npcSpawnMultiplyer)
-            spawnNPC(device, game, DRONE);
-    }
-    catch (e) { console.error("Drone spawn error:", e); }
-
-    try
-    {
-        // Tweak reduces ammo spawn rate proportionally as difficulty increases
-        const tweak = AMMO.spawnRatio * game.npcSpawnMultiplyer;
-        if (Math.random() >= AMMO.spawnRatio + (game.npcSpawnMultiplyer - tweak))
-            spawnNPC(device, game, AMMO);
-    }
-    catch (e) { console.error("Ammo spawn error:", e); }
+        if (droneSpawnTimer.update(delta))
+        {
+            for (let i = 0; i < game.droneSpawnCount; i++)
+                spawnNPC(device, game, DRONE);
+        }
+            if (ammoSpawnTimer.update(delta))
+        {
+            for (let i = 0; i < game.ammoSpawnCount; i++)
+                spawnNPC(device, game, AMMO);
+        }
 }
 
 // Spawns a single NPC of the given sprite type at a random x position along the top.
@@ -116,14 +110,22 @@ function check_NPC_Collision(device, game)
         if (!rectsCollide(player.getHitbox(1.0, 0), npc.getHitbox(1.0, 0))) continue;
 
         npc.kill();
-
+        
         if (npc.name === spriteTypes.AMMO.name)
         {
             handleAmmoPickup(device, game, npc);
         }
         else
         {
-            if (!handleEnemyContact(device, game)) return false;
+            if (!handleEnemyContact(device, game))
+            {
+                return false;
+            } 
+            else
+            {
+                //game.attractMode.spawnExplosion(npc.posX, npc.posY);
+                game.effects.spawnExplosion(npc.posX, npc.posY);
+            }
         }
     }
     return true;

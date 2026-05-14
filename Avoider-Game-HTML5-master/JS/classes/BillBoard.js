@@ -12,7 +12,7 @@ const BILLBOARD_CONSTS = Object.freeze(
     HOLD_DURATION  : 5,
     ROTATE_SPEED   : 0.3,
     ROTATE_AMOUNT  : 20,
-    SCALE          : 1.5,
+    SCALE          : 1,
 
     // Nebula bloom color stops
     NEBULA_INNER   : "rgba(90,120,255,0.10)",   // blue core
@@ -144,6 +144,112 @@ class ParallaxBillBoard extends BillBoard
 // Used for the space background — slowly drifts between random angles,
 // layered with a nebula bloom and vignette for depth.
 
+// class CircularParallaxBillBoard extends ParallaxBillBoard
+// {
+//     #currentAngle = 0;
+//     #targetAngle  = 0;
+//     #holdTimer    = 0;
+//     #holdDuration;
+//     #rotateSpeed;
+//     #rotateAmount;
+
+//     // options: { holdDuration, rotateSpeed, rotateAmount }
+//     constructor(name, width, height, x, y, speed, isCenter, parallaxType, options = {})
+//     {
+//         super(name, width, height, x, y, speed, isCenter, parallaxType);
+//         this.#holdDuration = options.holdDuration ?? BILLBOARD_CONSTS.HOLD_DURATION;
+//         this.#rotateSpeed  = options.rotateSpeed  ?? BILLBOARD_CONSTS.ROTATE_SPEED;
+//         this.#rotateAmount = options.rotateAmount ?? BILLBOARD_CONSTS.ROTATE_AMOUNT;
+//     }
+
+//     get angle() { return this.#currentAngle; }
+
+//     // Scrolls via parent, then lerps toward a new random target angle on each hold expiry
+//     update(delta, game)
+//     {
+//         super.update(delta, game);
+
+//         this.#holdTimer += delta;
+
+//         // Pick a new target angle once the hold duration elapses
+//         if (this.#holdTimer >= this.#holdDuration)
+//         {
+//             const direction    = Math.random() > 0.5 ? 1 : -1;
+//             this.#targetAngle  = this.#currentAngle + direction * (this.#rotateAmount * Math.PI / 180);
+//             this.#holdTimer    = 0;
+//         }
+
+//         // Smooth lerp toward target
+//         const diff         = this.#targetAngle - this.#currentAngle;
+//         this.#currentAngle += diff * this.#rotateSpeed * delta;
+//     }
+
+//     // Renders: dark base → rotating scaled starfield → nebula bloom → vignette
+//     render(device, game, image)
+//     {
+//         const ctx = device.ctx;
+//         const w   = game.gameConsts.SCREEN_WIDTH;
+//         const h   = game.gameConsts.SCREEN_HEIGHT;
+//         const cx  = w * BILLBOARD_CONSTS.CENTER;
+//         const cy  = h * BILLBOARD_CONSTS.CENTER;
+//         const { SCALE, SPACE_COLOR, NEBULA_INNER, NEBULA_MID, NEBULA_OUTER, NEBULA_FADE,
+//                 NEBULA_R_INNER, NEBULA_R_OUTER, NEBULA_STOP_0, NEBULA_STOP_1, NEBULA_STOP_2, NEBULA_STOP_3,
+//                 VIG_CLEAR, VIG_MID, VIG_OUTER, VIG_EDGE,
+//                 VIG_R_INNER, VIG_R_OUTER, VIG_STOP_0, VIG_STOP_1, VIG_STOP_2, VIG_STOP_3 } = BILLBOARD_CONSTS;
+
+//         // Base space fill
+//         ctx.fillStyle = SPACE_COLOR;
+//         ctx.fillRect(0, 0, w, h);
+
+//         // Rotating starfield — scaled up so edges never show during rotation
+//         ctx.save();
+//         ctx.translate(cx, cy);
+//         ctx.rotate(this.#currentAngle);
+//         ctx.scale(SCALE, SCALE);
+//         ctx.translate(-cx, -cy);
+
+//         super.render(device, game, image);
+
+//         ctx.restore();
+
+//         // Nebula bloom — subtle color overlay using screen compositing
+//         ctx.save();
+//         ctx.globalCompositeOperation = "screen";
+
+//         const nebula = ctx.createRadialGradient(cx, cy, cx * NEBULA_R_INNER, cx, cy, cx * NEBULA_R_OUTER);
+//         nebula.addColorStop(NEBULA_STOP_0, NEBULA_INNER);
+//         nebula.addColorStop(NEBULA_STOP_1, NEBULA_MID);
+//         nebula.addColorStop(NEBULA_STOP_2, NEBULA_OUTER);
+//         nebula.addColorStop(NEBULA_STOP_3, NEBULA_FADE);
+
+//         ctx.fillStyle = nebula;
+//         ctx.fillRect(0, 0, w, h);
+
+//         ctx.restore();
+
+//         // Vignette — darkens edges for depth and focus
+//         const vignette = ctx.createRadialGradient(cx, cy, cx * VIG_R_INNER, cx, cy, cx * VIG_R_OUTER);
+
+//         vignette.addColorStop(VIG_STOP_0, VIG_CLEAR);
+//         vignette.addColorStop(VIG_STOP_1, VIG_MID);
+//         vignette.addColorStop(VIG_STOP_2, VIG_OUTER);
+//         vignette.addColorStop(VIG_STOP_3, VIG_EDGE);
+
+//         ctx.fillStyle = vignette;
+//         ctx.fillRect(0, 0, w, h);
+//     }
+
+//     // Resets rotation state — call on game reset
+//     reset()
+//     {
+//         this.#currentAngle = 0;
+//         this.#targetAngle  = 0;
+//         this.#holdTimer    = 0;
+//     }
+// }
+
+
+
 class CircularParallaxBillBoard extends ParallaxBillBoard
 {
     #currentAngle = 0;
@@ -152,8 +258,9 @@ class CircularParallaxBillBoard extends ParallaxBillBoard
     #holdDuration;
     #rotateSpeed;
     #rotateAmount;
+    #pattern      = null;
+    #tileSize     = 0;
 
-    // options: { holdDuration, rotateSpeed, rotateAmount }
     constructor(name, width, height, x, y, speed, isCenter, parallaxType, options = {})
     {
         super(name, width, height, x, y, speed, isCenter, parallaxType);
@@ -164,86 +271,101 @@ class CircularParallaxBillBoard extends ParallaxBillBoard
 
     get angle() { return this.#currentAngle; }
 
-    // Scrolls via parent, then lerps toward a new random target angle on each hold expiry
     update(delta, game)
     {
-        super.update(delta, game);
+        this.posY -= this.speed * delta;
+        if (this.#tileSize > 0 && this.posY <= -this.#tileSize) this.posY = 0;
 
         this.#holdTimer += delta;
-
-        // Pick a new target angle once the hold duration elapses
         if (this.#holdTimer >= this.#holdDuration)
         {
-            const direction    = Math.random() > 0.5 ? 1 : -1;
-            this.#targetAngle  = this.#currentAngle + direction * (this.#rotateAmount * Math.PI / 180);
-            this.#holdTimer    = 0;
+            const direction   = Math.random() > 0.5 ? 1 : -1;
+            this.#targetAngle = this.#currentAngle + direction * (this.#rotateAmount * Math.PI / 180);
+            this.#holdTimer   = 0;
         }
-
-        // Smooth lerp toward target
         const diff         = this.#targetAngle - this.#currentAngle;
         this.#currentAngle += diff * this.#rotateSpeed * delta;
     }
 
-    // Renders: dark base → rotating scaled starfield → nebula bloom → vignette
     render(device, game, image)
+{
+    const ctx = device.ctx;
+    const w   = game.gameConsts.SCREEN_WIDTH;
+    const h   = game.gameConsts.SCREEN_HEIGHT;
+    const cx  = w * BILLBOARD_CONSTS.CENTER;
+    const cy  = h * BILLBOARD_CONSTS.CENTER;
+
+    const { SPACE_COLOR, 
+            NEBULA_INNER, NEBULA_MID, NEBULA_OUTER, NEBULA_FADE,
+            NEBULA_R_INNER, NEBULA_R_OUTER,
+            NEBULA_STOP_0, NEBULA_STOP_1, NEBULA_STOP_2, NEBULA_STOP_3,
+            VIG_CLEAR, VIG_MID, VIG_OUTER, VIG_EDGE,
+            VIG_R_INNER, VIG_R_OUTER,
+            VIG_STOP_0, VIG_STOP_1, VIG_STOP_2, VIG_STOP_3 } = BILLBOARD_CONSTS;
+
+    if (!this.#pattern)
     {
-        const ctx = device.ctx;
-        const w   = game.gameConsts.SCREEN_WIDTH;
-        const h   = game.gameConsts.SCREEN_HEIGHT;
-        const cx  = w * BILLBOARD_CONSTS.CENTER;
-        const cy  = h * BILLBOARD_CONSTS.CENTER;
-        const { SCALE, SPACE_COLOR, NEBULA_INNER, NEBULA_MID, NEBULA_OUTER, NEBULA_FADE,
-                NEBULA_R_INNER, NEBULA_R_OUTER, NEBULA_STOP_0, NEBULA_STOP_1, NEBULA_STOP_2, NEBULA_STOP_3,
-                VIG_CLEAR, VIG_MID, VIG_OUTER, VIG_EDGE,
-                VIG_R_INNER, VIG_R_OUTER, VIG_STOP_0, VIG_STOP_1, VIG_STOP_2, VIG_STOP_3 } = BILLBOARD_CONSTS;
-
-        // Base space fill
-        ctx.fillStyle = SPACE_COLOR;
-        ctx.fillRect(0, 0, w, h);
-
-        // Rotating starfield — scaled up so edges never show during rotation
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.rotate(this.#currentAngle);
-        ctx.scale(SCALE, SCALE);
-        ctx.translate(-cx, -cy);
-
-        super.render(device, game, image);
-
-        ctx.restore();
-
-        // Nebula bloom — subtle color overlay using screen compositing
-        ctx.save();
-        ctx.globalCompositeOperation = "screen";
-
-        const nebula = ctx.createRadialGradient(cx, cy, cx * NEBULA_R_INNER, cx, cy, cx * NEBULA_R_OUTER);
-        nebula.addColorStop(NEBULA_STOP_0, NEBULA_INNER);
-        nebula.addColorStop(NEBULA_STOP_1, NEBULA_MID);
-        nebula.addColorStop(NEBULA_STOP_2, NEBULA_OUTER);
-        nebula.addColorStop(NEBULA_STOP_3, NEBULA_FADE);
-
-        ctx.fillStyle = nebula;
-        ctx.fillRect(0, 0, w, h);
-
-        ctx.restore();
-
-        // Vignette — darkens edges for depth and focus
-        const vignette = ctx.createRadialGradient(cx, cy, cx * VIG_R_INNER, cx, cy, cx * VIG_R_OUTER);
-
-        vignette.addColorStop(VIG_STOP_0, VIG_CLEAR);
-        vignette.addColorStop(VIG_STOP_1, VIG_MID);
-        vignette.addColorStop(VIG_STOP_2, VIG_OUTER);
-        vignette.addColorStop(VIG_STOP_3, VIG_EDGE);
-
-        ctx.fillStyle = vignette;
-        ctx.fillRect(0, 0, w, h);
+        this.#pattern  = ctx.createPattern(image, "repeat");
+        this.#tileSize = image.naturalWidth;
     }
 
-    // Resets rotation state — call on game reset
+    // 1. Draw Background
+    ctx.fillStyle = SPACE_COLOR;
+    ctx.fillRect(0, 0, w, h);
+
+    // 2. Draw Rotating Stars
+    ctx.save();
+    
+    // Move origin to center to rotate
+    ctx.translate(cx, cy);
+    ctx.rotate(this.#currentAngle);
+
+    /* 
+       To prevent tearing:
+       - We translate the pattern back by cx/cy so it aligns with the screen center.
+       - We add this.posY to handle the vertical scrolling.
+    */
+    const matrix = new DOMMatrix();
+    matrix.translateSelf(-cx, -cy + this.posY);
+    this.#pattern.setTransform(matrix);
+
+    ctx.fillStyle = this.#pattern;
+
+    /* 
+       IMPORTANT: We fill a much larger area than the screen (3x size).
+       Since we translated to cx/cy, we fill from negative offsets to cover 
+       the rotation radius.
+    */
+    ctx.fillRect(-w, -h, w * 2, h * 2); 
+    
+    ctx.restore();
+
+    // 3. Nebula Layer
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    const nebula = ctx.createRadialGradient(cx, cy, cx * NEBULA_R_INNER, cx, cy, cx * NEBULA_R_OUTER);
+    nebula.addColorStop(NEBULA_STOP_0, NEBULA_INNER);
+    nebula.addColorStop(NEBULA_STOP_1, NEBULA_MID);
+    nebula.addColorStop(NEBULA_STOP_2, NEBULA_OUTER);
+    nebula.addColorStop(NEBULA_STOP_3, NEBULA_FADE);
+    ctx.fillStyle = nebula;
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+
+    // 4. Vignette Layer
+    const vignette = ctx.createRadialGradient(cx, cy, cx * VIG_R_INNER, cx, cy, cx * VIG_R_OUTER);
+    vignette.addColorStop(VIG_STOP_0, VIG_CLEAR);
+    vignette.addColorStop(VIG_STOP_1, VIG_MID);
+    vignette.addColorStop(VIG_STOP_2, VIG_OUTER);
+    vignette.addColorStop(VIG_STOP_3, VIG_EDGE);
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, w, h);
+}
     reset()
     {
         this.#currentAngle = 0;
         this.#targetAngle  = 0;
         this.#holdTimer    = 0;
+        this.posY          = 0;
     }
 }

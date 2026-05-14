@@ -21,30 +21,36 @@ function renderNPCSprites(device, game)
 {
     try
     {
-        const droneImg = device.images.getImage(spriteTypes.DRONE.name);
-        const ammoImg  = device.images.getImage(spriteTypes.AMMO.name);
-
-        for (let i = 0; i < game.gameSprites.getSize(); i++)
-        {
-            const obj = game.gameSprites.getIndex(i);
-            if (!obj) continue;
-
-            switch (obj.name)
-            {
-                case spriteTypes.DRONE.name:
-                    device.renderClip(droneImg, obj.posX, obj.posY, spriteTypes.DRONE.w, spriteTypes.DRONE.h, obj.type);
-                    break;
-                case spriteTypes.AMMO.name:
-                    device.renderClip(ammoImg,  obj.posX, obj.posY, spriteTypes.AMMO.w,  spriteTypes.AMMO.h,  obj.type);
-                    break;
-                default:
-                    console.warn("Unknown NPC name:", obj.name);
-            }
-
-            if (DebugUtil.DRAW_DEBUG_HITBOXES) renderHitBoxs(device, obj);
-        }
+        const objects = [];
+        game.gameSprites.forEach(obj => objects.push(obj));
+        renderNPCs(device, objects);
     }
     catch (e) { console.error("renderNPCSprites error:", e); }
+}
+
+function renderNPCs(device, objects)
+{
+    const droneImg = device.images.getImage(spriteTypes.DRONE.name);
+    const ammoImg  = device.images.getImage(spriteTypes.AMMO.name);
+
+    objects.forEach(obj =>
+    {
+        if (!obj || !obj.alive) return;
+
+        switch (obj.name)
+        {
+            case spriteTypes.DRONE.name:
+                device.renderClip(droneImg, obj.posX, obj.posY, spriteTypes.DRONE.w, spriteTypes.DRONE.h, obj.type);
+                break;
+            case spriteTypes.AMMO.name:
+                device.renderClip(ammoImg, obj.posX, obj.posY, spriteTypes.AMMO.w, spriteTypes.AMMO.h, obj.type);
+                break;
+            default:
+                console.warn("Unknown NPC name:", obj.name);
+        }
+
+        if (DebugUtil.DRAW_DEBUG_HITBOXES) renderHitBoxs(device, obj);
+    });
 }
 
 
@@ -77,7 +83,12 @@ function renderPlayer(device, game)
 {
     try
     {
-        const obj       = game.player;
+        const obj = game.gameState === gameStates.INIT
+            ? game.attractMode.player
+            : game.player;
+
+        if (!obj) return;
+
         const playerImg = device.images.getImage(playerSpriteTypes.PLAYER.name);
         if (!playerImg) return;
 

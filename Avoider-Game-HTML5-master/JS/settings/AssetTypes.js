@@ -17,7 +17,7 @@ const playerSpriteTypes = Object.freeze(
 const spriteTypes = Object.freeze(
 {
     DRONE:  { name: "drone",  w: 24, h: 24, speed: 220, spawnRatio: 0.9,  path: "assets/sprites/drones.png" },
-    AMMO:   { name: "ammo",   w: 20, h: 20, speed: 150, spawnRatio: 0.99, path: "assets/sprites/ammos.png"  },
+    AMMO:   { name: "ammo",   w: 20, h: 20, speed: 150, spawnRatio: 1, path: "assets/sprites/ammos.png"  },
     BULLET: { name: "bullet", w: 8,  h: 8,  speed: 550, spawnRatio: 0,    path: "assets/sprites/bullet.png" },
 });
 
@@ -60,4 +60,6 @@ const timerTypes = Object.freeze(
     SHIELD_TIMER:          "shieldTimer",
     SHOOT_COOL_DOWN_TIMER: "shootCooldownTimer",
     GAME_CLOCK:            "gameClock",
+    DRONE_TIMER:           "droneSpawnTimer",
+    AMMO_TIMER:            "ammoSpawnTimer",
 });

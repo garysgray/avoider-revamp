@@ -5,7 +5,7 @@
 
 // ---- Loop Constants ---------------------------------------------------------
 
-const FIXED_TIMESTEP = 1 / 60;   // target update rate — 60fps
+const FIXED_TIMESTEP = 1 / 60;    // target update rate — 60fps
 const MAX_FRAME_TIME = 0.25;      // clamp large frame spikes to prevent spiral of death
 const MAX_STEPS      = 5;         // max update steps per frame before draining accumulator
 const SAFE_START_MS  = 100;       // polling interval while waiting for canvas to be ready
@@ -25,8 +25,10 @@ window.addEventListener("load", () =>
     try
     {
         myController = new Controller();
+
         DebugUtil.updateDebugPanelVisibility();
         DebugUtil.updateDebugPanelPosition();
+        
         safeStartGame();
     }
     catch (e) { console.error("Initialization failed:", e); }

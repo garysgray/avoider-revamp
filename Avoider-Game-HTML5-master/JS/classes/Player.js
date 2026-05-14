@@ -141,6 +141,7 @@ class Player extends GameObject
         if (collisionFunction(device, game) === false)
         {
             this.savePos(this.posX, this.posY);
+            game.effects.spawnExplosion(this.posX, this.posY);
             this.#playerState = playStates.DEATH;
 
             // Reset background rotation on death

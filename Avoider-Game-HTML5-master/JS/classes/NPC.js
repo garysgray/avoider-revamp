@@ -46,21 +46,21 @@ class NPC extends GameObject
     }
 
     // Returns the current speed multiplier — falls back to 1 if unset or invalid
-    #multiplier(game)
+    multiplier(game)
     {
-        return game.npcSpeedMuliplyer > 0 ? game.npcSpeedMuliplyer : NPC_CONSTS.MIN_MULTIPLIER;
+        return game.npcSpeedMultiplier > 0 ? game.npcSpeedMultiplier : NPC_CONSTS.MIN_MULTIPLIER;
     }
 
     // Moves straight down
     moveDown(game, delta)
     {
-        this.posY += this.speed * this.#multiplier(game) * delta;
+        this.posY += this.speed * this.multiplier(game) * delta;
     }
 
     // Moves down and to the left at the configured angle
     moveDiagonalDownLeft(game, delta)
     {
-        const s    = this.speed * this.#multiplier(game) * delta;
+        const s    = this.speed * this.multiplier(game) * delta;
         this.posY += s * game.gameConsts.Y_ANGLE_SPEED;
         this.posX -= s * game.gameConsts.X_ANGLE_SPEED;
     }
@@ -68,7 +68,7 @@ class NPC extends GameObject
     // Moves down and to the right at the configured angle
     moveDiagonalDownRight(game, delta)
     {
-        const s    = this.speed * this.#multiplier(game) * delta;
+        const s    = this.speed * this.multiplier(game) * delta;
         this.posY += s * game.gameConsts.Y_ANGLE_SPEED;
         this.posX += s * game.gameConsts.X_ANGLE_SPEED;
     }

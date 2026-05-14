@@ -32,6 +32,7 @@ class Timer
     get timeLeft()    { return Math.max(0, this.#timeLeft); }
 
     get elapsedTime() { return this.#elapsedTime; }
+    get duration() { return this.#duration; }
 
     // Returns 0–1 progress — COUNTDOWN counts up to 1 as time runs out,
     // COUNTUP counts up to 1 as elapsed approaches duration
