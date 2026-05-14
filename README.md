@@ -160,5 +160,4 @@ Avoider-Game-HTML5-master/
 - All magic numbers live in `GameConsts.js` — one place to tune the game
 - `Object.freeze` applied to all settings objects at definition time
 
-| ![Game Splash](Avoider-Game-HTML5-master/assets/sprites/AVG_logo.png) |
 |:-----------------------------------------------------------------------:|
