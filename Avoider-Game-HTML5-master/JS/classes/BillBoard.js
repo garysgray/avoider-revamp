@@ -303,12 +303,17 @@ class CircularParallaxBillBoard extends ParallaxBillBoard
             VIG_R_INNER, VIG_R_OUTER,
             VIG_STOP_0, VIG_STOP_1, VIG_STOP_2, VIG_STOP_3 } = BILLBOARD_CONSTS;
 
-    if (!this.#pattern)
-    {
-        this.#pattern  = ctx.createPattern(image, "repeat");
-        this.#tileSize = image.naturalWidth;
+    if (!this.#pattern) {
+        // Ensure image is actually loaded before creating pattern
+        if (image.complete && image.naturalWidth > 0) {
+            this.#pattern = ctx.createPattern(image, "repeat");
+            this.#tileSize = image.naturalWidth;
+        }
     }
 
+    // FIX: Only proceed with pattern logic if pattern exists
+    if (!this.#pattern) return;
+    
     // 1. Draw Background
     ctx.fillStyle = SPACE_COLOR;
     ctx.fillRect(0, 0, w, h);
